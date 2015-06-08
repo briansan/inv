@@ -55,31 +55,29 @@ class Item():
         else:
           print "You do not have permission to access this option..."
 
-      @staticmethod
-      def view(db,user):
-        opt = 0
-        while opt != 4:
-          print ""
-          print "View Item"
-          print "1. Lookup by Category"
-          print "2. Lookup by Manufacturer"
-          print "3. List all"
-          print "4. Back"
-          opt = input('Select an option: ')
+    @staticmethod
+    def view(db,user):
+      opt = 0
+      while opt != 4:
+        print ""
+        print "View Item"
+        print "1. Lookup by Category"
+        print "2. Lookup by Manufacturer"
+        print "3. List all"
+        print "4. Back"
+        opt = input('Select an option: ')
 
-         
+    @staticmethod
+    def edit(db,user):
+      pass
 
-      @staticmethod
-      def edit(db,user):
-        pass
+    @staticmethod
+    def add(db,user):
+      pass
 
-      @staticmethod
-      def add(db,user):
-        pass
-
-      @staticmethod
-      def remove(db,user):
-        pass
+    @staticmethod
+    def remove(db,user):
+      pass
 
   class DBHelper():
     @staticmethod
