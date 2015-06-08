@@ -28,7 +28,12 @@ def read_float(prompt):
 def read_bool(prompt):
   try:
     y_str=raw_input(prompt)
-    y=bool(y_str)
+    if y_str in 'yY':
+      y=True
+    elif y_str in 'nN':
+      y=False
+    else:
+      raise Exception()
   except:
     print "invalid input, expecting boolean value (y/n)"
     y=read_bool(prompt)
