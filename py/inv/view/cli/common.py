@@ -6,11 +6,14 @@
 """
 
 import sys
+import signal
 
 def read_int(prompt):
   try:
     y_str=raw_input(prompt)
     y=int(y_str)
+  except KeyboardInterrupt:
+    y=None
   except:
     print "invalid input, expecting integer value"
     y=read_int(prompt)
@@ -20,6 +23,8 @@ def read_float(prompt):
   try:
     y_str=raw_input(prompt)
     y=float(y_str)
+  except KeyboardInterrupt:
+    y=None
   except:
     print "invalid input, expecting floating-point value"
     y=read_float(prompt)
@@ -34,6 +39,8 @@ def read_bool(prompt):
       y=False
     else:
       raise Exception()
+  except KeyboardInterrupt:
+    y=None
   except:
     print "invalid input, expecting boolean value (y/n)"
     y=read_bool(prompt)
@@ -42,6 +49,8 @@ def read_bool(prompt):
 def read_str(prompt):
   try:
     y=raw_input(prompt)
+  except KeyboardInterrupt:
+    y=None
   except:
     print "invalid input"
     y=read_str(prompt)
