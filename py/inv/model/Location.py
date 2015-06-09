@@ -7,7 +7,7 @@
 """
 
 class Location():
-  def __init__( self, building, room, id=-1 ):
+  def __init__( self, building="CEER", room="005", id=-1 ):
     self.building = building
     self.room = room
     self.id = id
@@ -32,8 +32,8 @@ class Location():
       return c.lastrowid
 
     @staticmethod
-    def delete( db, id ):
-      db.execute( "DELETE FROM locations WHERE id=?", (id,) )
+    def delete( db, loc ):
+      db.execute( "DELETE FROM locations WHERE id=?", (loc.id,) )
       db.commit()
 
     @staticmethod

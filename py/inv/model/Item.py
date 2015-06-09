@@ -108,12 +108,12 @@ class Item():
       return c.lastrowid
 
     @staticmethod
-    def delete( db, id ):
+    def delete( db, item ):
       """
       deletes a row in the Item table using the
       id of the Item
       """
-      db.execute( "DELETE FROM items WHERE id=?", (id,) )
+      db.execute( "DELETE FROM items WHERE id=?", (item.id,) )
       db.commit()
 
     @staticmethod
