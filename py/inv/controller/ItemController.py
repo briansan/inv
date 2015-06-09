@@ -35,10 +35,10 @@ class ItemController( ItemMenu.Delegate ):
     return 0
 
   def itemMenuLookupByManufacturer( self, mfc ):
-    Item.DBHelper.get_by_manufacturer( self.db, item )
+    return Item.DBHelper.get_by_manufacturer( self.db, mfc )
 
   def itemMenuLookupByCategory( self, cat ):
-    Item.DBHelper.get_by_category( self.db, cat )
+    return Item.DBHelper.get_by_category( self.db, cat )
 
   #
   # lifecycle methods
@@ -49,5 +49,5 @@ class ItemController( ItemMenu.Delegate ):
     self.interface = ItemMenu( self )
 
   def start( self ):
-    self.interface.main()
+    self.interface.start()
     
