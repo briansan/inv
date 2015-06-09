@@ -12,6 +12,8 @@ from ItemMenu import ItemMenu
 
 class MainMenu():
   class Delegate( ):
+    def init( self ):
+      print "initializing"
     def login( self, uname, pw ):
       return 0
     def register( self, uname,pw,fname,lname,phone,email ):
@@ -130,6 +132,8 @@ class MainMenu():
 
   def main(self):
     self.displayHeader()
+    print "\tinitializing..."
+    self.delegate.init()
     opt = self.mainMenu()
     if opt == 1:   # login
       self.login()
