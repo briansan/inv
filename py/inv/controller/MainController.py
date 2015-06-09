@@ -5,6 +5,7 @@
 """
 
 from inv.controller.ItemController import ItemController
+from inv.controller.LocationController import LocationController
 
 from inv.view.cli.MainMenu import MainMenu
 
@@ -72,14 +73,14 @@ class MainController( MainMenu.Delegate ):
   def mainMenuWantsPersonMenu( self ):
     pass 
   def mainMenuWantsLocationMenu( self ):
-    pass 
+    LocationController(self.db,self.user).start() 
 
   def __init__( self ):
     self.interface = MainMenu(self)
     self.user = None
 
   def start( self ):
-    self.interface.main()
+    self.interface.start()
 
 if __name__ == "__main__":
   MainController().start()
