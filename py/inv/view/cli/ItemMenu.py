@@ -24,7 +24,7 @@ class ItemMenu():
     #
     # view methods
     #
-    def itemMenuListAll( self, menu ):
+    def itemMenuListAll( self):
       """
       return: all items in the db
       """
@@ -90,6 +90,7 @@ class ItemMenu():
     opt = 0
     # display the menu repeatedly until back is selected
     while opt != 5:
+      print ""
       print "============"
       print "Item Menu"
       print "============"
@@ -98,6 +99,7 @@ class ItemMenu():
       print "3. Add"
       print "4. Remove"
       print "5. Back"
+      print ""
       opt = read_int('Select an option: ')
 
       # go through all the option values and check permissions
@@ -117,19 +119,23 @@ class ItemMenu():
     displays a menu of possible ways to search through items
     and then returns a list of those items
     """
+    print ""
     print "============"
     print "List Items "
     print "============"
     print "1. Lookup by Category"
     print "2. Lookup by Manufacturer"
     print "3. List all"
+    print ""
     opt = read_int('Select an option: ')
 
     # go through the options...
     if opt == 1: # lookup by category
+      print ""
       x = read_str("Category: ")
       y = self.delegate.itemMenuLookupByCategory(x)
     elif opt == 2: # lookup by manufacturer
+      print ""
       x = read_str("Manufacturer: ")
       y = self.delegate.itemMenuLookupByManufacturer(x)
     elif opt == 3: # list all items
@@ -147,6 +153,7 @@ class ItemMenu():
     n = len(x)
     # check for empty list
     if n == 0:
+      print ""
       print "No Results Found..."
       return None
     # print out the list
@@ -158,6 +165,7 @@ class ItemMenu():
     # get index
     opt = -1                 # to make sure we get a valid index...
     while opt != -1:         # until opt is NOT equal to -1
+      print ""
       opt = read_int("Select an item: ") 
       if opt < 1 or opt > n: # if opt falls outside the proper range, 
         opt = -1             # set it back to -1
@@ -203,6 +211,7 @@ class ItemMenu():
       print "1. edit"
       print "2. remove"
       print "3. back"
+      print ""
       opt = read_int('Select an option: ')
       
       if opt == 1: # edit
@@ -211,6 +220,7 @@ class ItemMenu():
         if self.removeItem(x):
           return
       elif opt != 3: # other (not back)
+        print ""
         print "invalid option, try again..."
         self.itemViewMenu(x) # try again
 
@@ -220,6 +230,8 @@ class ItemMenu():
     """
     if x == None:
       return None
+
+    print ""
     # read category
     category = read_str( 'Category: ' )
     x.category = category if category != '' else x.category # check empty input
@@ -238,6 +250,10 @@ class ItemMenu():
     also checks for successful save and displays the proper error msg
     """
     # edit the item
+    print ""
+    print "============"
+    print "Item Edit"
+    print "============"
     item = self.editItemMenu(x)
     # request the delegate to save the edit
     if self.delegate.itemMenuWantsEdit(item) == 0:
@@ -249,6 +265,7 @@ class ItemMenu():
     """
     prompts a confirm delete message
     """
+    print ""
     return read_bool('Are you sure you want to delete this item (y/n)? ')
 
   def removeItem( self, x ):
@@ -297,7 +314,11 @@ class ItemMenu():
     tries to save that item
     """
     item = Item()
-    item = self.editInfoMenu(item)
+    print ""
+    print "============"
+    print "Add Item"
+    print "============"
+    item = self.editItemMenu(item)
     if self.delegate.itemMenuWantsAdd(item) == 0:
       print "Successfully saved!"
     else:
