@@ -13,7 +13,7 @@ class Item():
   the class that defines an item of a certain
   category, manufacturer, and model
   """
-  def __init__( self, category, manufacturer, model, id=-1 ):
+  def __init__( self, category="Computer", manufacturer="Dell", model="T3400", id=-1 ):
     """
     constructor method
     """
