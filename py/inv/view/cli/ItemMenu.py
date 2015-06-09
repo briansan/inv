@@ -158,13 +158,14 @@ class ItemMenu():
       return None
     # print out the list
     print ""
-    print str(x) + "Results:"
-    for i in len(x): 
+    print str(n) + " Results:"
+    for i in range(n):
       item = x[i]
       print str(i+1)+". "+str(item)
+
     # get index
     opt = -1                 # to make sure we get a valid index...
-    while opt != -1:         # until opt is NOT equal to -1
+    while opt == -1:         # until opt is NOT equal to -1
       print ""
       opt = read_int("Select an item: ") 
       if opt < 1 or opt > n: # if opt falls outside the proper range, 
@@ -182,21 +183,23 @@ class ItemMenu():
     if x == None: 
       return
 
-    # repeatedly display the item info until back
-      print ""
-      print "==================="
-      print "Item Information"
-      print "==================="
-      print "Category: " + x.category
-      print "Manufacturer: " + x.manufacturer
-      print "Model: " + x.model
-      print ""
+    # display the item info until back
+    print ""
+    print "==================="
+    print "Item Information"
+    print "==================="
+    print "Category: " + x.category
+    print "Manufacturer: " + x.manufacturer
+    print "Model: " + x.model
+    print ""
       
   def getItem( self ):
     """
     convenience method to retrieve an item from a list search
     """
     itemlist = self.listItemMenu()
+    if itemlist == None:
+      return None
     item = self.selectItemMenu(itemlist)
     return item
     
@@ -204,6 +207,10 @@ class ItemMenu():
     """
     method to display a menu after viewing an item
     """
+    # display the information
+    self.displayItemInfo(x)
+
+    # request action
     opt = 0
     while opt != 3:
       print ""
@@ -215,6 +222,7 @@ class ItemMenu():
       opt = read_int('Select an option: ')
       
       if opt == 1: # edit
+        self.displayItemInfo(x)
         self.editItem(x)
       elif opt == 2: # remove
         if self.removeItem(x):
