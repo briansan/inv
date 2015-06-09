@@ -82,7 +82,7 @@ class ItemMenu():
     """
     self.delegate=delegate
 
-  def main( self ):
+  def start( self ):
     """
     prints out the item main menu 
     """
@@ -128,15 +128,21 @@ class ItemMenu():
     print "3. List all"
     print ""
     opt = read_int('Select an option: ')
+    if not opt:
+      return []
 
     # go through the options...
     if opt == 1: # lookup by category
       print ""
-      x = read_str("Category: ")
+      x = read_str("Category: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
       y = self.delegate.itemMenuLookupByCategory(x)
     elif opt == 2: # lookup by manufacturer
       print ""
       x = read_str("Manufacturer: ")
+      if not x: # cancel if ctrl+c
+        return None
       y = self.delegate.itemMenuLookupByManufacturer(x)
     elif opt == 3: # list all items
       y = self.delegate.itemMenuListAll()
@@ -168,6 +174,8 @@ class ItemMenu():
     while opt == -1:         # until opt is NOT equal to -1
       print ""
       opt = read_int("Select an item: ") 
+      if not opt: # cancel if ctrl+C
+        return None
       if opt < 1 or opt > n: # if opt falls outside the proper range, 
         opt = -1             # set it back to -1
       
@@ -191,7 +199,6 @@ class ItemMenu():
     print "Category: " + x.category
     print "Manufacturer: " + x.manufacturer
     print "Model: " + x.model
-    print ""
       
   def getItem( self ):
     """
@@ -222,7 +229,6 @@ class ItemMenu():
       opt = read_int('Select an option: ')
       
       if opt == 1: # edit
-        self.displayItemInfo(x)
         self.editItem(x)
       elif opt == 2: # remove
         if self.removeItem(x):
@@ -242,12 +248,18 @@ class ItemMenu():
     print ""
     # read category
     category = read_str( 'Category: ' )
+    if not category:
+      return None
     x.category = category if category != '' else x.category # check empty input
     # read category
     manufacturer = read_str( 'Manufacturer: ' )
+    if not manufacturer:
+      return None
     x.manufacturer = manufacturer if manufacturer != '' else x.manufacturer # check empty input
     # read category
     model = read_str( 'Model: ' )
+    if not model:
+      return None
     x.model = model if model != '' else x.model # check empty input
     # set the fields
     return x
@@ -262,14 +274,19 @@ class ItemMenu():
     print "============"
     print "Item Edit"
     print "============"
-    item = self.editItemMenu(x)
+    chk = self.editItemMenu(x)
+    # check for ctrl+c
+    if chk:
+      item = chk
+    else:
+      return
     # request the delegate to save the edit
     if self.delegate.itemMenuWantsEdit(item) == 0:
       print "Successfully saved!"
     else:
       print "Failed to save, try again later..."
 
-  def confirmDelete():
+  def confirmDelete(self):
     """
     prompts a confirm delete message
     """
@@ -283,13 +300,15 @@ class ItemMenu():
     """
     # confirm the delete
     if self.confirmDelete() == False:
-      return
+      return False
     
     # request the delegate to delete the item
-    if self.delegate.itemMenuWantsDelete(item) == 0:
+    if self.delegate.itemMenuWantsDelete(x) == 0:
       print "Successfully removed!"
+      return True
     else:
       print "Failed to remove, try again later..."
+      return False
   
   def viewMenu( self ):
     """
@@ -326,7 +345,14 @@ class ItemMenu():
     print "============"
     print "Add Item"
     print "============"
-    item = self.editItemMenu(item)
+    # call edit menu
+    chk = self.editItemMenu(item)
+    # cancel if ctrl+c
+    if chk:
+      item = chk
+    else:
+      return
+    # ask delegate to add item
     if self.delegate.itemMenuWantsAdd(item) == 0:
       print "Successfully saved!"
     else:
@@ -343,3 +369,6 @@ class ItemMenu():
       return
     self.displayItemInfo(item)
     self.removeItem(item)
+
+if __name__=="__main__":
+  ItemMenu().start()
