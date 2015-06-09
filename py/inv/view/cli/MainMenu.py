@@ -28,7 +28,7 @@ class MainMenu():
     def mainMenuWantsLoanMenu( self ):
       pass
     def mainMenuWantsItemMenu( self ):
-      ItemMenu().main()
+      ItemMenu().start()
     def mainMenuWantsPersonMenu( self ):
       pass
     def mainMenuWantsLoanMenu( self ):
@@ -44,9 +44,11 @@ class MainMenu():
     print "             by: BK"
     print "************************************"
 
-  def mainMenu(self):
+  def authMenu(self):
     print ""
-    print "Main Menu"
+    print "==================="
+    print "Authentication Menu"
+    print "==================="
     print "1. Login"
     print "2. Register"
     print "3. Quit"
@@ -56,7 +58,9 @@ class MainMenu():
 
   def login(self):
     print ""
+    print "=================="
     print "Login"
+    print "=================="
   
     # request credentials
     uname = read_str('username: ')
@@ -71,7 +75,9 @@ class MainMenu():
 
   def register(self):
     print ""
+    print "=================="
     print "Registration"
+    print "=================="
 
     # request information
     uname = read_str("Username: ")
@@ -104,7 +110,9 @@ class MainMenu():
     opt = 0
     while opt != 6:
       print ""
+      print "================="
       print "Main Menu:"
+      print "================="
       print "1. Assets"
       print "2. Loans"
       print "3. Items"
@@ -125,20 +133,28 @@ class MainMenu():
         elif opt == 4:
           self.delegate.mainMenuWantsLocationMenu()
         elif opt == 5:
-          self.delegate.mainMenuWantsPeopleMenu()
+          self.delegate.mainMenuWantsPersonMenu()
 
       elif opt == 6:
         print "Goodbye!"
 
-  def main(self):
+  def start(self):
+    # display the header
     self.displayHeader()
+    # let the delegate do its initialization
     print "\tinitializing..."
     self.delegate.init()
-    opt = self.mainMenu()
-    if opt == 1:   # login
+    # go to the authentication menu
+    opt = self.authMenu()
+    # login
+    if opt == 1:   
       self.login()
-    elif opt == 2: # register
+    # register
+    elif opt == 2: 
       self.register()
-    elif opt == 3: # quit
+    # quit
+    elif opt == 3: 
       print "Goodbye!"
 
+if __name__=="__main__":
+  MainMenu().start()
