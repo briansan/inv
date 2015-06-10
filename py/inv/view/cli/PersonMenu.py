@@ -27,7 +27,7 @@ class PersonMenu():
     #
     def personMenuWantsEdit( self, item ):
       """
-      receives the location that has been modified
+      receives the person that has been modified
       return: 0 for success, negative num for error
       """
       return -1
@@ -37,13 +37,13 @@ class PersonMenu():
     # 
     def personMenuWantsAdd( self, item ):
       """
-      receives the location that wants to be created (no id)
+      receives the person that wants to be created (no id)
       """
       return -1
 
     def personMenuWantsDelete( self, item ):
       """
-      receives the location that has wants to be deleted 
+      receives the person that has wants to be deleted 
       return: 0 for success, negative num for error
       """
       return -1
@@ -57,6 +57,13 @@ class PersonMenu():
       """
       return []
 
+    def personMenuLookupByUsername( self, uname ):
+      """
+      looking up people by username
+      return: a list of matching people
+      """
+      return []
+
     def personMenuLookupByFirstName( self, fname ):
       """
       looking up people by first name
@@ -64,29 +71,41 @@ class PersonMenu():
       """
       return []
  
-    def personMenuLookupByLastName( self, fname ):
+    def personMenuLookupByLastName( self, lname ):
       """
       looking up people by last name
-      return: a list of matching locations
+      return: a list of matching people
       """
+      return []
 
-    def personMenuLookupByType( self, fname ):
+    def personMenuLookupByPhone( self, phone ):
       """
-      looking up people by last name
-      return: a list of matching locations
+      looking up people by phone number
+      return: a list of matching people
       """
+      return []
 
-    def personMenuLookupByGetByYear( self, fname ):
+    def personMenuLookupByEmail( self, email ):
       """
-      looking up people by last name
-      return: a list of matching locations
+      looking up people by email
+      return: a list of matching people
       """
+      return []
 
-    def personMenuLookupByLastName( self, fname ):
+    def personMenuLookupByGroup( self, group ):
       """
-      looking up people by last name
-      return: a list of matching locations
+      looking up people by group 
+      return: a list of matching people
       """
+      return []
+
+    def personMenuLookupByYear( self, year ):
+      """
+      looking up people by year
+      return: a list of matching people
+      """
+      return []
+
   """
   Menu class definition
   """
@@ -103,63 +122,108 @@ class PersonMenu():
     # set default option
     opt = 0
     # display the menu repeatedly until back is selected
-    while opt != 5:
+    while opt != 3:
       print ""
       print "============"
-      print "Location Menu"
+      print "Person Menu"
       print "============"
-      print "1. View"
-      print "2. Edit"
-      print "3. Add"
-      print "4. Remove"
-      print "5. Back"
+      print "1. My Profile"
+      print "2. Directory"
+      print "3. Back"
       print ""
       opt = read_int('Select an option: ')
 
       # go through all the option values and check permissions
-      if opt == 1 and self.delegate.locationMenuCheckUserPermission(Permissions.LocationRead):
-        self.viewMenu()
-      elif opt == 2 and self.delegate.locationMenuCheckUserPermission(Permissions.LocationUpdate):
-        self.editMenu()
-      elif opt == 3 and self.delegate.locationMenuCheckUserPermission(Permissions.LocationCreate):
-        self.addMenu()
-      elif opt == 4 and self.delegate.locationMenuCheckUserPermission(Permissions.LocationDelete):
-        self.removeMenu()
-      elif opt != 5:
+      if opt == 1:
+        self.viewProfile()
+      elif opt == 2 and self.delegate.personMenuCheckUserPermission(Permissions.LocationUpdate):
+        self.directoryMenu()
+      elif opt != 3:
         print "Invalid option (maybe insufficient permissions?), try again..."
         
-  def listLocationMenu( self ):
+  def directoryMenu( self ):
     """
-    displays a menu of possible ways to search through locations
-    and then returns a list of those locations
+    displays a menu of possible ways to search through the people directory
+    and then returns a list of those people
     """
     print ""
-    print "=============="
-    print "List Locations "
-    print "=============="
-    print "1. Lookup by Building"
-    print "2. List all"
+    print "================"
+    print "People Directory "
+    print "================"
+    print "1. Lookup by Username"
+    print "2. Lookup by First Name"
+    print "3. Lookup by Last Name"
+    print "4. Lookup by Phone"
+    print "5. Lookup by Email"
+    print "6. Lookup by Group"
+    print "7. Lookup by Year"
+    print "8. List all"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 1: # lookup by category
+    if opt == 1: # lookup by username
       print ""
-      x = read_str("Building: ") # get the value
+      x = read_str("Username: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.locationMenuLookupByBuilding(x)
-    elif opt == 2: # list all locations
-      y = self.delegate.locationMenuListAll()
+      y = self.delegate.personMenuLookupByUsername(x)
+
+    elif opt == 2: # lookup by first name
+      print ""
+      x = read_str("First Name: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.personMenuLookupByFirstName()
+
+    elif opt == 3: # lookup by last name
+      print ""
+      x = read_str("Last Name: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.personMenuLookupByLastName()
+
+    elif opt == 4: # lookup by phone
+      print ""
+      x = read_str("Phone Number: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.personMenuLookupByPhone()
+
+    elif opt == 5: # lookup by email
+      print ""
+      x = read_str("Email: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.personMenuLookupByEmail()
+
+    elif opt == 6: # lookup by group
+      return None
+      print ""
+      x = read_str("Group: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.personMenuLookupByGroup()
+
+    elif opt == 7: # lookup by year
+      print ""
+      x = read_int("Year: ") # get the value
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.personMenuLookupByYear()
+
+    elif opt == 8: # lookup all
+      y = self.delegate.personMenuListAll()
+
     else: # any other option will repeat this menu
       y = self.listLocationMenu()
     return y
 
-  def displayLocationInfo( self, x=None ):
+  def displayPersonInfo( self, x=None ):
     """
-    displays the contents of a location
+    displays the contents of a person
     """
     # check for null obj
     if x == None: 
@@ -168,27 +232,32 @@ class PersonMenu():
     # display the location info until back
     print ""
     print "===================="
-    print "Location Information"
+    print "Person Information"
     print "===================="
-    print "Building: " + x.building
-    print "Room: " + x.room
+    print "Username: " + x.uname
+    print "First Name: " + x.fname
+    print "Last Name: " + x.lname
+    print "Phone Number: " + x.phone
+    print "Email Address: " + x.email
+    print "Group: " + x.ptype
+    print "Year: " + x.year
       
-  def getLocation( self ):
+  def getPerson( self ):
     """
     convenience method to retrieve a location from a list search
     """
-    loclist = self.listLocationMenu()
-    if loclist == None:
+    personlist = self.directoryMenu()
+    if personlist == None:
       return None
-    loc = select_obj_from_list(loclist)
-    return loc
+    person = select_obj_from_list(personlist)
+    return person
     
-  def locationViewMenu( self, x ):
+  def personViewMenu( self, x ):
     """
     method to display a menu after viewing a location
     """
     # display the information
-    self.displayLocationInfo(x)
+    self.displayPersonInfo(x)
 
     # request action
     opt = 0
