@@ -150,39 +150,6 @@ class ItemMenu():
       y = self.listItemMenu()
     return y
 
-  def selectItemMenu( self, x=[] ):
-    """
-    displays a list of items 'x' and then asks the user to select
-    an item, returning that item
-    """
-    # check list length
-    n = len(x)
-    # check for empty list
-    if n == 0:
-      print ""
-      print "No Results Found..."
-      return None
-    # print out the list
-    print ""
-    print str(n) + " Results:"
-    for i in range(n):
-      item = x[i]
-      print str(i+1)+". "+str(item)
-
-    # get index
-    opt = -1                 # to make sure we get a valid index...
-    while opt == -1:         # until opt is NOT equal to -1
-      print ""
-      opt = read_int("Select an item: ") 
-      if not opt: # cancel if ctrl+C
-        return None
-      if opt < 1 or opt > n: # if opt falls outside the proper range, 
-        opt = -1             # set it back to -1
-      
-    # get that item
-    y = x[opt-1] 
-    return y
-
   def displayItemInfo( self, x=None ):
     """
     displays the contents of an item
@@ -207,7 +174,7 @@ class ItemMenu():
     itemlist = self.listItemMenu()
     if itemlist == None:
       return None
-    item = self.selectItemMenu(itemlist)
+    item = select_obj_from_list(itemlist)
     return item
     
   def itemViewMenu( self, x ):
@@ -319,7 +286,6 @@ class ItemMenu():
     item = self.getItem()
     if item == None:
       return
-    self.displayItemInfo(item)
     self.itemViewMenu(item)
  
   def editMenu( self ):

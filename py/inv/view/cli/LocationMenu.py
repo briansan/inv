@@ -138,39 +138,6 @@ class LocationMenu():
       y = self.listLocationMenu()
     return y
 
-  def selectLocationMenu( self, x=[] ):
-    """
-    displays a list of locations 'x' and then asks the user to select
-    an location, returning that location
-    """
-    # check list length
-    n = len(x)
-    # check for empty list
-    if n == 0:
-      print ""
-      print "No Results Found..."
-      return None
-    # print out the list
-    print ""
-    print str(n) + " Results:"
-    for i in range(n):
-      loc = x[i]
-      print str(i+1)+". "+str(loc)
-
-    # get index
-    opt = -1                 # to make sure we get a valid index...
-    while opt == -1:         # until opt is NOT equal to -1
-      print ""
-      opt = read_int("Select a location: ") 
-      if not opt: # cancel if ctrl+C
-        return None
-      if opt < 1 or opt > n: # if opt falls outside the proper range, 
-        opt = -1             # set it back to -1
-      
-    # get that item
-    y = x[opt-1] 
-    return y
-
   def displayLocationInfo( self, x=None ):
     """
     displays the contents of a location
@@ -194,7 +161,7 @@ class LocationMenu():
     loclist = self.listLocationMenu()
     if loclist == None:
       return None
-    loc = self.selectLocationMenu(loclist)
+    loc = select_obj_from_list(loclist)
     return loc
     
   def locationViewMenu( self, x ):
@@ -301,7 +268,6 @@ class LocationMenu():
     item = self.getLocation()
     if item == None:
       return
-    self.displayLocationInfo(item)
     self.locationViewMenu(item)
  
   def editMenu( self ):
