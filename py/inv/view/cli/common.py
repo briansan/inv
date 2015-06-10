@@ -55,3 +55,44 @@ def read_str(prompt):
     print "invalid input"
     y=read_str(prompt)
   return y
+
+def select_obj_from_list( x ):
+  """
+  displays a list of objects 'x' and prompts the user for an
+  index to select an object, returning that object 
+  """
+  # check list length
+  n = len(x)
+
+  # check for empty list
+  if n == 0:
+    print ""
+    print "No Results Found..."
+    return None
+  
+  # check for 1 obj list
+  if n == 1:
+    print ""
+    print " 1 Result:"
+    return x[0]
+
+  # otherwise do the normal thing
+  for i in range(n):
+    obj = x[i]
+    print str(i+1)+". "+str(obj)
+
+  # prompt for index
+  opt = -1
+  while opt == -1:
+    print "" # item is a more user-friendly term than object
+    opt = read_int('Select an item: ')
+    # cancel if ctrl+c
+    if not opt:
+      return None
+    if opt < 1 or opt > n: # if opt falls outside the proper range,
+      opt = -1             # try again
+
+  # get that object
+  y = x[opt-1]
+  return y
+
