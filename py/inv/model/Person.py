@@ -117,7 +117,7 @@ class Person():
 
     @staticmethod
     def get_by_fname( db, fname ):
-      c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE fname=?", (fname,) )
+      c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE fname LIKE '%?%'", (fname,) )
       y = []
       for rows in c.fetchall():
         y.append( Person(rows) )
@@ -134,12 +134,26 @@ class Person():
     @staticmethod
     def get_by_uname( db, uname ):
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE uname=?", (uname,) )
-      # fetch a row ( should only be one )
-      rows = c.fetchone()
-      if not rows == None:
-        return Person(rows) 
-      else:
-        return None
+      y = []
+      for rows in c.fetchall():
+        y.append( Person(rows) )
+      return y
+
+    @staticmethod
+    def get_by_phone( db, phone ):
+      c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE phone=?", (phone,) )
+      y = []
+      for rows in c.fetchall():
+        y.append( Person(rows) )
+      return y
+
+    @staticmethod
+    def get_by_email( db, email ):
+      c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE email=?", (email,) )
+      y = []
+      for rows in c.fetchall():
+        y.append( Person(rows) )
+      return y
 
     @staticmethod
     def get_by_type( db, ptype ):
