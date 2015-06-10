@@ -88,8 +88,8 @@ class Person():
         return True
 
     @staticmethod
-    def delete( db, id ):
-      db.execute( "DELETE FROM persons WHERE id=?", (id,) )
+    def delete( db, user ):
+      db.execute( "DELETE FROM persons WHERE id=?", (user.id,) )
       db.commit()
 
     @staticmethod
