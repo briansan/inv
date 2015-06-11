@@ -71,7 +71,7 @@ class Permissions():
     self.value &= ~value
 
   def __str__( self ):
-    y = "permissions:\n"
+    y = "Permissions:\n"
     perms = [2**i for i in range(24)]
     for i in perms:
       y += '\t' + Permissions.info[i] + '\n' if self.check(i) else ''
