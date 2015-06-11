@@ -87,6 +87,7 @@ class MainMenu():
     lname = read_str("Last Name: ")
     phone = read_str("Phone Number: ")
     email = read_str("Email: ")
+    year  = read_int("Graduation Year: ")
 
     # check the password
     if pw != pw_chk:
@@ -94,7 +95,7 @@ class MainMenu():
       return self.register()
 
     # ask delegate to register acct into db
-    if self.delegate.register(uname,pw,fname,lname,phone,email) == 0:
+    if self.delegate.register(uname,pw,fname,lname,phone,email,year=year):
       self.userMainMenu() # success
     else: # fail
       print "Failed to create user account, try again later"
