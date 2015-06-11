@@ -70,10 +70,16 @@ class Permissions():
   def remove( self, value ):
     self.value &= ~value
 
+  def __repr__( self ):
+    y = "Permissions:\n"
+    for i in range(24):
+      perm = 2**i
+      y += '\t' + str(i+1) + '. ' + ('YES' if self.check(perm) else 'NO ') + '\t' + Permissions.info[perm] + '\n'
+    return y
+
   def __str__( self ):
     y = "Permissions:\n"
     perms = [2**i for i in range(24)]
     for i in perms:
       y += '\t' + Permissions.info[i] + '\n' if self.check(i) else ''
     return y
-  
