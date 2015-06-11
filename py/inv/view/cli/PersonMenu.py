@@ -40,6 +40,13 @@ class PersonMenu():
       return: 0 for success, negative num for error
       """
       return -1
+   
+    def personMenuWantsPasswordChange( self, user, old, new ):
+      """
+      receives the old and new requested pw, 
+      return 0 for success, -1 for wrong old
+      """
+      return -1
 
     #
     # add/remove methods
@@ -313,11 +320,6 @@ class PersonMenu():
     if x == None:
       return None
 
-    print ""
-    print "======================="
-    print "enter fields to modify"
-    print "(blank entry skips)"
-    print "======================="
     # read username
     uname = read_str( 'Username: ' )
     if not uname:
@@ -362,27 +364,39 @@ class PersonMenu():
     print "===================="
     # confirm old password
     oldpw = getpass('Old Password: ')
-    newpw = getpass('Old Password: ')
-    newpw_chk = getpass('Old Password: ')
+    newpw = getpass('New Password: ')
+    newpw_chk = getpass('Confirm New Password: ')
+    print ""
     
-  def editLocation( self, x ):
+    if newpw != newpw_chk:
+      print "Passwords don't match!"
+      return
+   
+    if self.delegate.personMenuWantsPasswordChange( x, oldpw, newpw ) == 0:
+      print "Success!"
+    else:
+      print "Incorret password..."
+    
+  def editPerson( self, x ):
     """
-    method to edit the location and then save the changes
+    method to edit the person and then save the changes
     also checks for successful save and displays the proper error msg
     """
-    # edit the location
+    # edit the person
     print ""
-    print "============="
-    print "Location Edit"
-    print "============="
-    chk = self.editLocationMenu(x)
+    print "======================="
+    print "Person edit"
+    print "enter fields to modify"
+    print "(blank entry skips)"
+    print "======================="
+    chk = self.editPersonMenu(x)
     # check for ctrl+c
     if chk:
       loc = chk
     else:
       return
     # request the delegate to save the edit
-    if self.delegate.locationMenuWantsEdit(loc) == 0:
+    if self.delegate.personMenuWantsEdit(loc) == 0:
       print "Successfully saved!"
     else:
       print "Failed to save, try again later..."
@@ -394,7 +408,7 @@ class PersonMenu():
     print ""
     return read_bool('Are you sure you want to delete this item (y/n)? ')
 
-  def removeLocation( self, x ):
+  def removePerson( self, x ):
     """
     method to edit the item and then save the changes
     also checks for successful save and displays the proper error msg
@@ -404,7 +418,7 @@ class PersonMenu():
       return False
     
     # request the delegate to delete the item
-    if self.delegate.locationMenuWantsDelete(x) == 0:
+    if self.delegate.personMenuWantsDelete(x) == 0:
       print "Successfully removed!"
       return True
     else:
@@ -417,11 +431,11 @@ class PersonMenu():
     displays that location's information
     asks if the user wants to do anything more
     """
-    item = self.getLocation()
+    item = self.getPerson()
     if item == None:
       return
-    self.displayLocationInfo(item)
-    self.locationViewMenu(item)
+    self.displayPersonInfo(item)
+    self.personViewMenu(item)
  
   def editMenu( self ):
     """
@@ -429,11 +443,11 @@ class PersonMenu():
     displays that location's information
     prompts the edits that are to be made
     """
-    item = self.getLocation()
+    item = self.getPerson()
     if item == None:
       return
-    self.displayLocationInfo(item)
-    self.editLocation(item)
+    self.displayPersonInfo(item)
+    self.editPerson(item)
 
   def addMenu( self ):
     """
@@ -465,11 +479,11 @@ class PersonMenu():
     displays that item's information
     removes that item
     """
-    item = self.getLocation()
+    item = self.getPerson()
     if item == None:
       return
-    self.displayLocationInfo(item)
-    self.removeLocation(item)
+    self.displayPersonInfo(item)
+    self.removePerson)
 
 if __name__=="__main__":
-  LocationMenu().start()
+  PersonMenu().start()
