@@ -6,6 +6,7 @@
 
 from inv.controller.ItemController import ItemController
 from inv.controller.LocationController import LocationController
+from inv.controller.PersonController import PersonController
 
 from inv.view.cli.MainMenu import MainMenu
 
@@ -13,6 +14,7 @@ from inv.model.Person import Person
 from inv.model.Asset import Asset
 from inv.model.Item import Item
 from inv.model.Location import Location
+from inv.model.PersonGroup import PersonGroup
 
 import sqlite3 
 from os.path import expanduser
@@ -40,7 +42,7 @@ class MainController( MainMenu.Delegate ):
       print "\tadmin account successfully created!"
 
   def login( self, uname, pw ):
-    user = Person.DBHelper.get_by_uname( self.db, uname )
+    user = Person.DBHelper.get_by_uname( self.db, uname )[0]
     if not user:
       return -1 # user does not exist
     if Person.DBHelper.auth( self.db, user, pw ):
@@ -49,16 +51,18 @@ class MainController( MainMenu.Delegate ):
     else:
       return -2 # incorrect password
 
-  def register( self, uname, pw, fname, lname, phone, email ):
+  def register( self, uname, pw, fname, lname, phone, email, group=PersonGroup.Guest, year=2015 ):
     # create a user object
     user = Person(uname,fname,lname,phone,email)
     # try to create user into db
-    uid = Person.DBHelper.add(db,user,pw)
+    uid = Person.DBHelper.add(self.db,user,pw)
     # check for success
     if uid == -1:
       print "User with that name already exists! Try again"
+      return None
     else:
       print "Thank you for registering with inv!"
+      self.user = user
     return user
 
   def currentUser( self ):
@@ -71,7 +75,7 @@ class MainController( MainMenu.Delegate ):
   def mainMenuWantsItemMenu( self ):
     ItemController(self.db,self.user).start() 
   def mainMenuWantsPersonMenu( self ):
-    pass 
+    PersonController(self.db,self.user).start() 
   def mainMenuWantsLocationMenu( self ):
     LocationController(self.db,self.user).start() 
 
