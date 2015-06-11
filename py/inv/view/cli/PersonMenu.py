@@ -48,6 +48,13 @@ class PersonMenu():
       """
       return -1
 
+    def personMenuWantsPermissionChange( self, user, perm ):
+      """
+      receives the user to change permissions to
+      returns 0 for success, -1 for error
+      """
+      return -1
+
     #
     # add/remove methods
     # 
@@ -377,6 +384,36 @@ class PersonMenu():
     else:
       print "Incorret password..."
     
+  def changePermissions( self, user ):
+    
+    # header
+    print "=========================="
+    print "Modify Permissions"
+    print "  enter a number to toggle"
+    print "  0 to save changes"
+    print "  ctrl+c to cancel"
+    print "=========================="
+
+    # edit loop
+    i = -1
+    while i != 0:
+      # print out perms
+      print repr(user.permissions)
+      # input perm to toggle
+      i = read_int('Select a permission: ')
+   
+      # 0 = save&quit, ctrl+c = cancel&quit
+      if i == 0:
+        self.delegate.personMenuWantsEdit(user)
+        return
+      elif i == None:
+        return
+
+      # toggle perm
+      perm = 2**(i-1)
+      exists = user.permissions.check(perm)
+      user.permissions.value = user.permissions.value ^ perm
+
   def editPerson( self, x ):
     """
     method to edit the person and then save the changes
