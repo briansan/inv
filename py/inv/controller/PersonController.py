@@ -26,6 +26,13 @@ class PersonController( PersonMenu.Delegate ):
       return 0
     else:
       return -1
+ 
+  def personMenuWantsPasswordChange( self, user, old, new ):
+    if Person.DBHelper.auth( self.db, user, old ):
+      Person.DBHelper.update_pw( self.db, user, new )
+      return 0
+    else:
+      return -1
 
   def personMenuWantsAdd( self, item ):
     if Person.DBHelper.add( self.db, item ) > 0:
