@@ -11,6 +11,10 @@ class PersonController( PersonMenu.Delegate ):
   #
   # ItemMenu delegate methods
   # 
+  
+  def currentUser( self ):
+    return self.user
+
   def personMenuCheckUserPermission( self, action ):
     return self.user.permissions.check( action )
 
