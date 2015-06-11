@@ -42,11 +42,11 @@ class MainController( MainMenu.Delegate ):
       print "\tadmin account successfully created!"
 
   def login( self, uname, pw ):
-    user = Person.DBHelper.get_by_uname( self.db, uname )[0]
-    if not user:
+    userlist = Person.DBHelper.get_by_uname( self.db, uname )
+    if len( userlist ) == 0:
       return -1 # user does not exist
-    if Person.DBHelper.auth( self.db, user, pw ):
-      self.user = user
+    if Person.DBHelper.auth( self.db, userlist[0], pw ):
+      self.user = userlist[0]
       return 0  # successful login
     else:
       return -2 # incorrect password
