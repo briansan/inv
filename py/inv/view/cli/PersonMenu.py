@@ -9,6 +9,7 @@ from inv.model.Permissions import Permissions
 from inv.model.Person import Person
 from inv.model.PersonGroup import PersonGroup
 from common import *
+from getpass import getpass
 
 class PersonMenu():
   class Delegate():
@@ -276,48 +277,94 @@ class PersonMenu():
     # display the information
     self.displayPersonInfo(x)
 
-    # request action
-    opt = 0
-    while opt != 3:
-      print ""
-      print "What would you like to do?"
-      print "1. edit"
-      print "2. remove"
-      print "3. back"
-      print ""
-      opt = read_int('Select an option: ')
-      
-      if opt == 1: # edit
-        self.editLocation(x)
-      elif opt == 2: # remove
-        if self.removeLocation(x):
-          return
-      elif opt != 3: # other (not back)
-        print ""
-        print "invalid option, try again..."
-        self.locationViewMenu(x) # try again
+    # actions are only available for self or for admins
+    isSelf = x==self.delegate.currentUser()
+    isAdmin = self.delegate.personMenuCheckUserPermission(Permissions.PersonUpdateWorld)
 
-  def editLocationMenu( self, x ):
+    if isSelf or isAdmin:
+      # request action
+      opt = 0
+      while opt != 3:
+        print ""
+        print "What would you like to do?"
+        print "1. edit"
+        print "2. change password"
+        print "3. back"
+        if isAdmin:
+          print "4. change permissions"
+        print ""
+        opt = read_int('Select an option: ')
+        
+        if opt == 1: # edit
+          self.editPerson(x)
+        elif opt == 2: # back
+          self.changePassword(x)
+        elif opt == 4 and isAdmin:
+          self.changePermissions(x)
+        elif opt != 3:
+          print ""
+          print "invalid option, try again..."
+          self.personViewMenu(x) # try again
+
+  def editPersonMenu( self, x ):
     """
-    method to prompt the editing of the location fields
+    method to prompt the editing of the person fields
     """
     if x == None:
       return None
 
     print ""
-    # read building
-    building = read_str( 'Building: ' )
-    if not building:
+    print "======================="
+    print "enter fields to modify"
+    print "(blank entry skips)"
+    print "======================="
+    # read username
+    uname = read_str( 'Username: ' )
+    if not uname:
       return None
-    x.building = building if building != '' else x.building # check empty input
-    # read room
-    room = read_str( 'Room: ' )
-    if not room:
+    x.uname = uname if uname != '' else x.uname # check empty input
+    # read first name
+    fname = read_str( 'First Name: ' )
+    if not fname:
       return None
-    x.room = room if room != '' else x.room # check empty input
+    x.fname = fname if fname != '' else x.fname # check empty input
+    # read last name
+    lname = read_str( 'Last Name: ' )
+    if not lname:
+      return None
+    x.lname = lname if lname != '' else x.lname # check empty input
+    # read phone number
+    phone = read_str( 'Phone Number: ' )
+    if not phone:
+      return None
+    x.phone = phone if phone != '' else x.phone # check empty input
+    # read email
+    email = read_str( 'Email: ' )
+    if not email:
+      return None
+    x.email = email if email != '' else x.email # check empty input
+    # read grad year
+    year = read_str( 'Graduation Year: ' )
+    if not year:
+      return None
+    x.year = year if year != '' else x.year # check empty input
     # set the fields
     return x
 
+  def changePassword( self, x ):
+    """
+    changes the password of the select user (only admin should
+    be able to change world passwords
+    """
+    print ""
+    print "===================="
+    print "change password"
+    print "===================="
+    # confirm old password
+    oldpw = getpass('Old Password: ')
+    newpw = getpass('Old Password: ')
+    newpw_chk = getpass('Old Password: ')
+    
   def editLocation( self, x ):
     """
     method to edit the location and then save the changes
