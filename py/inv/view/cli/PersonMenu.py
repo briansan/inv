@@ -483,7 +483,7 @@ class PersonMenu():
     if item == None:
       return
     self.displayPersonInfo(item)
-    self.removePerson)
+    self.removePerson(item)
 
 if __name__=="__main__":
   PersonMenu().start()
