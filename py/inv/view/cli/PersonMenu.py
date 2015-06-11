@@ -7,6 +7,7 @@
 
 from inv.model.Permissions import Permissions
 from inv.model.Person import Person
+from inv.model.PersonGroup import PersonGroup
 from common import *
 
 class PersonMenu():
@@ -15,6 +16,13 @@ class PersonMenu():
     a set of methods that should be defined by the using
     class in order to respond to interface events
     """
+
+    def currentUser(self):
+      y = Person('123456790')
+      y.fname = 'John'
+      y.lname = 'Smith'
+      return y
+
     def personMenuCheckUserPermission( self, action ):
       """
       determine whether a user has permission
@@ -136,12 +144,16 @@ class PersonMenu():
       # go through all the option values and check permissions
       if opt == 1:
         self.viewProfile()
-      elif opt == 2 and self.delegate.personMenuCheckUserPermission(Permissions.LocationUpdate):
+      elif opt == 2 and self.delegate.personMenuCheckUserPermission(Permissions.PersonRead):
         self.directoryMenu()
       elif opt != 3:
         print "Invalid option (maybe insufficient permissions?), try again..."
         
   def directoryMenu( self ):
+    x = self.getPerson()
+    self.personViewMenu(x)
+
+  def listPersonMenu( self ):
     """
     displays a menu of possible ways to search through the people directory
     and then returns a list of those people
@@ -176,28 +188,28 @@ class PersonMenu():
       x = read_str("First Name: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.personMenuLookupByFirstName()
+      y = self.delegate.personMenuLookupByFirstName(x)
 
     elif opt == 3: # lookup by last name
       print ""
       x = read_str("Last Name: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.personMenuLookupByLastName()
+      y = self.delegate.personMenuLookupByLastName(x)
 
     elif opt == 4: # lookup by phone
       print ""
       x = read_str("Phone Number: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.personMenuLookupByPhone()
+      y = self.delegate.personMenuLookupByPhone(x)
 
     elif opt == 5: # lookup by email
       print ""
       x = read_str("Email: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.personMenuLookupByEmail()
+      y = self.delegate.personMenuLookupByEmail(x)
 
     elif opt == 6: # lookup by group
       return None
@@ -205,21 +217,24 @@ class PersonMenu():
       x = read_str("Group: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.personMenuLookupByGroup()
+      y = self.delegate.personMenuLookupByGroup(x)
 
     elif opt == 7: # lookup by year
       print ""
       x = read_int("Year: ") # get the value
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.personMenuLookupByYear()
+      y = self.delegate.personMenuLookupByYear(x)
 
     elif opt == 8: # lookup all
       y = self.delegate.personMenuListAll()
 
     else: # any other option will repeat this menu
-      y = self.listLocationMenu()
+      y = self.listPersonMenu()
     return y
+
+  def viewProfile( self ):
+    self.personViewMenu( self.delegate.currentUser() )
 
   def displayPersonInfo( self, x=None ):
     """
@@ -239,14 +254,16 @@ class PersonMenu():
     print "Last Name: " + x.lname
     print "Phone Number: " + x.phone
     print "Email Address: " + x.email
-    print "Group: " + x.ptype
-    print "Year: " + x.year
+    print "Group: " + PersonGroup.info[x.ptype]
+    if self.delegate.currentUser().permissions.check(Permissions.PersonUpdateWorld):
+      print x.permissions
+    print "Year: " + str(x.year)
       
   def getPerson( self ):
     """
     convenience method to retrieve a location from a list search
     """
-    personlist = self.directoryMenu()
+    personlist = self.listPersonMenu()
     if personlist == None:
       return None
     person = select_obj_from_list(personlist)
@@ -254,7 +271,7 @@ class PersonMenu():
     
   def personViewMenu( self, x ):
     """
-    method to display a menu after viewing a location
+    method to display a menu after viewing a person
     """
     # display the information
     self.displayPersonInfo(x)
