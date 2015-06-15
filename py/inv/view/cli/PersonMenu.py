@@ -318,7 +318,6 @@ class PersonMenu():
         elif opt != 3:
           print ""
           print "invalid option, try again..."
-          self.personViewMenu(x) # try again
 
   def editPersonMenu( self, x ):
     """
@@ -327,34 +326,29 @@ class PersonMenu():
     if x == None:
       return None
 
-    # read username
-    uname = read_str( 'Username: ' )
-    if not uname:
-      return None
-    x.uname = uname if uname != '' else x.uname # check empty input
     # read first name
     fname = read_str( 'First Name: ' )
-    if not fname:
+    if fname == None:
       return None
     x.fname = fname if fname != '' else x.fname # check empty input
     # read last name
     lname = read_str( 'Last Name: ' )
-    if not lname:
+    if lname == None:
       return None
     x.lname = lname if lname != '' else x.lname # check empty input
     # read phone number
     phone = read_str( 'Phone Number: ' )
-    if not phone:
+    if phone == None:
       return None
     x.phone = phone if phone != '' else x.phone # check empty input
     # read email
     email = read_str( 'Email: ' )
-    if not email:
+    if email == None:
       return None
     x.email = email if email != '' else x.email # check empty input
     # read grad year
     year = read_str( 'Graduation Year: ' )
-    if not year:
+    if year == None:
       return None
     x.year = year if year != '' else x.year # check empty input
     # set the fields
