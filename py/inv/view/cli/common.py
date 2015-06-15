@@ -56,6 +56,20 @@ def read_str(prompt):
     y=read_str(prompt)
   return y
 
+def read_date(prompt):
+  try:
+    y=raw_input(prompt)
+    if y=='':
+      return None
+    from dateutil import parser
+    y=parser.parse(y)
+  except KeyboardInterrupt:
+    y=None
+  except:
+    print "invalid input (MM/DD/YYYY)"
+    y=read_date(prompt)
+  return y  
+
 def select_obj_from_list( x ):
   """
   displays a list of objects 'x' and prompts the user for an
