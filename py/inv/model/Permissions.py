@@ -59,6 +59,8 @@ class Permissions():
   }
 
   def __init__( self, value ):
+    if not isinstance(value,int):
+      raise Exception('Permissions: type int got '+str(value.__class__))
     self.value = value
 
   def add( self, value ):
