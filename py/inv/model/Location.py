@@ -7,7 +7,7 @@
 """
 
 class Location():
-  def __init__( self, building="CEER", room="005", id=-1 ):
+  def __init__( self, building="", room="", id=0 ):
     self.building = building
     self.room = room
     self.id = id
@@ -22,6 +22,7 @@ class Location():
         (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
          building TEXT NOT NULL,
          room TEXT NOT NULL); ''')
+      db.execute( 'INSERT OR IGNORE INTO locations (id,building,room) values (0,"","")')
       db.commit()
     
     @staticmethod
@@ -56,7 +57,7 @@ class Location():
 
     @staticmethod
     def get_all( db ):
-      c = db.execute( "SELECT * FROM locations" )
+      c = db.execute( "SELECT * FROM locations WHERE id>0" )
       y = []
       for rows in c.fetchall():
         y.append( Location( rows[1], rows[2], rows[0] ))

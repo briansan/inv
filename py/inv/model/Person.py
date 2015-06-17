@@ -11,8 +11,8 @@ from Permissions import Permissions
 from PersonGroup import PersonGroup
 
 class Person():
-  def __init__( self, uname, fname=None, lname=None, phone=None, email=None,
-                      ptype=None, permissions=None, year=0, id=-1):
+  def __init__( self, uname="", fname="", lname="", phone="", email="",
+                      ptype=PersonGroup.Guest, permissions=PersonGroup.permissions[PersonGroup.Guest], year=0, id=0):
     # init by database row
     if fname == None:
       self.id = uname[0]
@@ -45,6 +45,18 @@ class Person():
   def __str__( self ):
     return self.uname +' ('+self.fname+' '+self.lname+')'
 
+  @staticmethod
+  def init_from_db_row( db, row ):
+    id = row[0]
+    uname = row[1]
+    fname = row[2]
+    lname = row[3]
+    phone = row[4]
+    email = row[5]
+    ptype = row[6]
+    permissions = int(row[8])
+    year = row[7]
+    return Person(uname,fname,lname,phone,email,ptype,permissions,year,id)
   
   class DBHelper():
     @staticmethod
@@ -60,6 +72,7 @@ class Person():
          ptype INTEGER NOT NULL,
          year INTEGER NOT NULL,
          permissions INTEGER NOT NULL); ''')
+      db.execute('INSERT OR IGNORE INTO persons (id,uname,passwd,fname,lname,phone,email,ptype,year,permissions) values (0,"","","","","","",0,0,0)')
       db.commit()
     
     @staticmethod
@@ -98,7 +111,7 @@ class Person():
       # fetch a row (should only be one)
       rows = c.fetchone()
       if not rows == None:
-        return Person( rows )
+        return Person.init_from_db_row(db, rows )
       else:
         return None
 
@@ -120,7 +133,7 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE fname LIKE '%?%'", (fname,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
@@ -128,7 +141,7 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE lname=?", (lname,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
@@ -136,7 +149,7 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE uname=?", (uname,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
@@ -144,7 +157,7 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE phone=?", (phone,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
@@ -152,7 +165,7 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE email=?", (email,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
@@ -160,7 +173,7 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE ptype=?", (ptype,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
@@ -168,20 +181,20 @@ class Person():
       c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE year=?", (year,) )
       y = []
       for rows in c.fetchall():
-        y.append( Person(rows) )
+        y.append( Person.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
     def get_all( db ):
-      c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons" )
+      c = db.execute( "SELECT id,uname,fname,lname,phone,email,ptype,year,permissions FROM persons WHERE id>0" )
       y = []
       for rows in c.fetchall():
-        y.append( Person( rows ))
+        y.append( Person.init_from_db_row(db, rows ))
       return y
 
     @staticmethod
     def set( db, person ):
-      if person.id == -1:
+      if person.id == 0:
         raise Exception( 'Person: DBHelper: set: invalid id' )
       args = (person.uname, person.fname, person.lname, person.phone, person.email,
               person.ptype, person.year, person.permissions.value, person.id)

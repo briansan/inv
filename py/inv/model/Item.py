@@ -13,7 +13,7 @@ class Item():
   the class that defines an item of a certain
   category, manufacturer, and model
   """
-  def __init__( self, category="Computer", manufacturer="Dell", model="T3400", id=-1 ):
+  def __init__( self, category="None", manufacturer="", model="", id=0 ):
     """
     constructor method
     """
@@ -28,57 +28,6 @@ class Item():
     """
     return self.manufacturer+' '+self.model+' ('+self.category+')'
   
-  class CLI():
-    @staticmethod
-    def main(db,user):
-      opt = 0
-      while opt != 5:
-        print ""
-        print "Item Menu"
-        print "1. View"
-        print "2. Edit"
-        print "3. Add"
-        print "4. Remove"
-        print "5. Back"
-        opt = input('Select an option: ')
-
-        if opt == 1 and user.permissions.check(Permissions.ItemRead):
-          Item.CLI.view(db,user)
-        elif opt == 2 and user.permissions.check(Permissions.ItemUpdate):
-          Item.CLI.edit(db,user)
-        elif opt == 3 and user.permissions.check(Permissions.ItemCreate):
-          Item.CLI.add(db,user)
-        elif opt == 4 and user.permissions.check(Permissions.ItemDelete):
-          Item.CLI.remove(db,user)
-        elif opt == 5:
-          print ""
-        else:
-          print "You do not have permission to access this option..."
-
-    @staticmethod
-    def view(db,user):
-      opt = 0
-      while opt != 4:
-        print ""
-        print "View Item"
-        print "1. Lookup by Category"
-        print "2. Lookup by Manufacturer"
-        print "3. List all"
-        print "4. Back"
-        opt = input('Select an option: ')
-
-    @staticmethod
-    def edit(db,user):
-      pass
-
-    @staticmethod
-    def add(db,user):
-      pass
-
-    @staticmethod
-    def remove(db,user):
-      pass
-
   class DBHelper():
     @staticmethod
     def create_table( db ):
@@ -94,6 +43,7 @@ class Item():
          category TEXT NOT NULL,
          manufacturer TEXT NOT NULL,
          model TEXT NOT NULL); ''')
+      db.execute( 'INSERT OR IGNORE INTO items (id,category,manufacturer,model) values (0,"None","","")')
       db.commit()
     
     @staticmethod
@@ -172,7 +122,7 @@ class Item():
       returns all the rows in the Item table as 
       a list of Item objects
       """
-      c = db.execute( "SELECT * FROM items" )
+      c = db.execute( "SELECT * FROM items WHERE id>0" )
       y = []
       for rows in c.fetchall():
         y.append( Item( rows[1], rows[2], rows[3], rows[0] ))
@@ -185,7 +135,7 @@ class Item():
       by the Item object
       the Item object must have a valid id
       """
-      if item.id == -1:
+      if item.id == 0:
         raise Exception( 'Item: DBHelper: set: invalid id' )
       args = (item.category,item.manufacturer,item.model,item.id)
       c = db.execute( "UPDATE items SET category=?, manufacturer=?, model=? WHERE id=?", args )
