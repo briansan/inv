@@ -7,6 +7,7 @@
 from inv.controller.ItemController import ItemController
 from inv.controller.LocationController import LocationController
 from inv.controller.PersonController import PersonController
+from inv.controller.AssetController import AssetController
 
 from inv.view.cli.MainMenu import MainMenu
 
@@ -69,7 +70,7 @@ class MainController( MainMenu.Delegate ):
     return self.user
 
   def mainMenuWantsAssetMenu( self ):
-    pass 
+    AssetController(self.db,self.user).start() 
   def mainMenuWantsLoanMenu( self ):
     pass 
   def mainMenuWantsItemMenu( self ):
