@@ -128,9 +128,23 @@ class AssetMenu():
       """
       return []
 
-    def assetMenuLookupByLoaner( self, loaner ):
+    def assetMenuLookupByHolder( self, loaner ):
       """
-      looking up asset by loaner
+      looking up asset by holder
+      return: a list of matching items
+      """
+      return []
+
+    def assetMenuLookupByHome( self, home ):
+      """
+      looking up asset by home
+      return: a list of matching items
+      """
+      return []
+
+    def assetMenuLookupByDest( self, dest ):
+      """
+      looking up asset by dest
       return: a list of matching items
       """
       return []
@@ -183,7 +197,7 @@ class AssetMenu():
     """
     print ""
     print "============"
-    print "List Items "
+    print "List Assets "
     print "============"
     print "1. Lookup by ECE Tag"
     print "2. Lookup by VU Tag"
@@ -192,7 +206,9 @@ class AssetMenu():
     print "5. Lookup by Status"
     print "6. Lookup by Owner"
     print "7. Lookup by Loaner"
-    print "8. List all"
+    print "8. Lookup by Home Location"
+    print "9. Lookup by Destination"
+    print "10. List all"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
@@ -240,11 +256,23 @@ class AssetMenu():
       x = read_str("Loaner: ")
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.assetMenuLookupByLoaner(x)
-    elif opt == 8: # list all items
-      y = self.delegate.itemMenuListAll()
+      y = self.delegate.assetMenuLookupByHolder(x)
+    elif opt == 8: # lookup by loaner
+      print ""
+      x = read_str("Home: ")
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.assetMenuLookupByHome(x)
+    elif opt == 7: # lookup by loaner
+      print ""
+      x = read_str("Destination: ")
+      if not x: # cancel if ctrl+c
+        return None
+      y = self.delegate.assetMenuLookupByDest(x)
+    elif opt == 10: # list all items
+      y = self.delegate.assetMenuListAll()
     else: # any other option will repeat this menu
-      y = self.listItemMenu()
+      y = self.listAssetMenu()
     return y
 
   def displayAssetInfo( self, x=None ):
@@ -261,28 +289,28 @@ class AssetMenu():
     print "Asset Information"
     print "==================="
     print "ECE Tag: " + x.ece_tag
-    print " VU Tag: " + x.vu_tag
-    print "  Service Tag: " + x.service_tag
+    print "VU Tag: " + x.vu_tag
+    print "Service Tag: " + x.service_tag
     print "Serial Number: " + x.serial_number
-    print "Item: " + x.item
-    print "Value ($): " + x.price
-    print "Purchase Date: " + x.purchased
-    print "Deploy Date: " + x.deployed
-    print "Last Inventory: " + x.inventoried
+    print "Item: " + str(x.item)
+    print "Value ($): " + str(x.price)
+    print "Purchase Date: " + str(x.purchased.date())
+    print "Deploy Date: " + str(x.deployed.date())
+    print "Last Inventory: " + str(x.inventoried.date())
     print "Image Path: " + x.img
-    print "Status: " + x.status
-    print "Disposal Date: " + x.disposed
-    print "Home: " + x.home
-    print "Destination: " + x.dest
-    print "Loanable: " + x.loanable
-    print "Owner: " + x.owner
-    print "Holder: " + x.holder
+    print "Status: " + str(x.status)
+    print "Disposal Date: " + str(x.disposed.date())
+    print "Home: " + str(x.home)
+    print "Destination: " + str(x.dest)
+    print "Loanable: " + str(x.loanable)
+    print "Owner: " + str(x.owner)
+    print "Holder: " + str(x.holder)
       
   def getAsset( self ):
     """
     convenience method to retrieve an item from a list search
     """
-    assetlist = self.assetItemMenu()
+    assetlist = self.listAssetMenu()
     if assetlist == None:
       return None
     asset = select_obj_from_list(assetlist)
@@ -326,30 +354,32 @@ class AssetMenu():
     print ""
     # read ece tag
     ece_tag = read_str( 'ECE Tag: ' )
-    if not ece_tag:
+    if ece_tag==None:
       return None
     x.ece_tag = ece_tag if ece_tag != '' else x.ece_tag # check empty input
     # read vu_tag
     vu_tag = read_str( 'VU Tag: ' )
-    if not vu_tag:
+    if vu_tag==None:
       return None
     x.vu_tag = vu_tag if vu_tag != '' else x.vu_tag # check empty input
     # read service tag
     svc_tag = read_str( 'Service Tag: ' )
-    if not svc_tag:
+    if svc_tag==None:
       return None
     x.service_tag = svc_tag if svc_tag != '' else x.service_tag # check empty input
     # read serial_number
     serial_number = read_str( 'Serial Number: ' )
-    if not serial_number:
+    if serial_number==None:
       return None
     x.serial_number = serial_number if serial_number != '' else x.serial_number # check empty input
     # read item
+    print ''
+    print 'Item: ' 
     item = self.delegate.assetMenuWantsItem()
     x.item = item if item != None else x.item # check empty input
     # read value
     price = read_float( 'Value ($): ' )
-    if not price:
+    if price==None:
       return None
     x.price = price if price < 0 else x.price # check empty input
     # read purchased
@@ -362,32 +392,49 @@ class AssetMenu():
     inventoried = read_date( 'Last Inventory Date (MM/DD/YYYY): ' )
     x.inventoried = inventoried if inventoried != None else x.inventoried
     # read home
+    print ''
+    print 'Home Location: ' 
     home = self.delegate.assetMenuWantsLocation()
     x.home = home if home != None else x.home # check empty input
     # read dest
+    print ''
+    print 'Destination: ' 
     dest = self.delegate.assetMenuWantsLocation()
     x.dest = dest if dest != None else x.dest # check empty input
+    # read loan
+    loanable = read_bool( 'Loanable? (y/n): ' )
+    x.loanable = loanable if loanable != None else x.loanable 
+    # read owner
+    print ''
+    print 'Owner: ' 
+    owner = self.delegate.assetMenuWantsPerson()
+    x.owner = owner if owner !=  None else x.owner
+    # read holder
+    print ''
+    print 'Current Holder: ' 
+    holder = self.delegate.assetMenuWantsPerson()
+    x.holder = holder if holder != None else x.holder
     # set the fields
     return x
 
   def editItem( self, x ):
     """
-    method to edit the item and then save the changes
+    method to edit the asset and then save the changes
     also checks for successful save and displays the proper error msg
     """
     # edit the item
     print ""
     print "============"
-    print "Item Edit"
+    print "Asset Edit"
     print "============"
-    chk = self.editItemMenu(x)
+    chk = self.editAssetMenu(x)
     # check for ctrl+c
     if chk:
       item = chk
     else:
       return
     # request the delegate to save the edit
-    if self.delegate.itemMenuWantsEdit(item) == 0:
+    if self.delegate.AssetMenuWantsEdit(item) == 0:
       print "Successfully saved!"
     else:
       print "Failed to save, try again later..."
@@ -397,9 +444,9 @@ class AssetMenu():
     prompts a confirm delete message
     """
     print ""
-    return read_bool('Are you sure you want to delete this item (y/n)? ')
+    return read_bool('Are you sure you want to delete this asset (y/n)? ')
 
-  def removeItem( self, x ):
+  def removeAsset( self, x ):
     """
     method to edit the item and then save the changes
     also checks for successful save and displays the proper error msg
@@ -409,7 +456,7 @@ class AssetMenu():
       return False
     
     # request the delegate to delete the item
-    if self.delegate.itemMenuWantsDelete(x) == 0:
+    if self.delegate.assetMenuWantsDelete(x) == 0:
       print "Successfully removed!"
       return True
     else:
@@ -422,10 +469,10 @@ class AssetMenu():
     displays that item's information
     asks if the user wants to do anything more
     """
-    item = self.getItem()
+    item = self.getAsset()
     if item == None:
       return
-    self.itemViewMenu(item)
+    self.assetViewMenu(item)
  
   def editMenu( self ):
     """
@@ -433,11 +480,11 @@ class AssetMenu():
     displays that item's information
     prompts the edits that are to be made
     """
-    item = self.getItem()
+    item = self.getAsset()
     if item == None:
       return
-    self.displayItemInfo(item)
-    self.editItem(item)
+    self.displayAssetInfo(item)
+    self.editAsset(item)
 
   def addMenu( self ):
     """
@@ -445,20 +492,20 @@ class AssetMenu():
     edits that item 
     tries to save that item
     """
-    item = Item()
+    item = Asset()
     print ""
     print "============"
-    print "Add Item"
+    print "Add Asset"
     print "============"
     # call edit menu
-    chk = self.editItemMenu(item)
+    chk = self.editAssetMenu(item)
     # cancel if ctrl+c
     if chk:
       item = chk
     else:
       return
     # ask delegate to add item
-    if self.delegate.itemMenuWantsAdd(item) == 0:
+    if self.delegate.assetMenuWantsAdd(item) == 0:
       print "Successfully saved!"
     else:
       print "Failed to add, try again later..."
@@ -469,11 +516,11 @@ class AssetMenu():
     displays that item's information
     removes that item
     """
-    item = self.getItem()
+    item = self.getAsset()
     if item == None:
       return
-    self.displayItemInfo(item)
-    self.removeItem(item)
+    self.displayAssetInfo(item)
+    self.removeAsset(item)
 
 if __name__=="__main__":
-  ItemMenu().start()
+  AssetMenu().start()
