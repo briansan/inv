@@ -23,10 +23,13 @@ class Asset():
     Transferred = 5
     Traded  = 6
     Donated = 7
-  def __init__( self, ece_tag, vu_tag=None, service_tag=None, serial_number=None,
-                      item=None, price=None, purchased=None, deployed=None, img=None, 
-                      inventoried=None, disposed=None, status=None, home=None, dest=None,
-                      loanable=None, owner=None, holder=None, id=-1):
+  def __init__( self, ece_tag='', vu_tag='', service_tag='', serial_number='',
+                      item=Item(), price=0, purchased=datetime.datetime.now(),
+                      deployed=datetime.datetime.now(), img='', 
+                      inventoried=datetime.datetime.now(), 
+                      disposed=datetime.datetime.fromtimestamp(0), 
+                      status=0, home=Location(), dest=Location(),
+                      loanable=False, owner=Person(), holder=Person(), id=0):
     """
     constructor method
       $<str> ece_tag, vu_tag, service_tag, serial_number
@@ -107,20 +110,25 @@ class Asset():
          owner INTEGER NOT NULL,
          holder INTEGER NOT NULL
         ); ''')
+      db.execute("INSERT OR IGNORE INTO assets (id,ece_tag,vu_tag,service_tag,serial_number,item,price,purchased,deployed,img,inventoried,disposed,status,home,dest,loanable,owner,holder) values (0,'','','','',0,0,0,0,'',0,0,0,0,0,0,0,0)")
+      
       db.commit()
     
     @staticmethod
     def add( db, asset ):
-      args = (asset.ece_tag, asset.vu_tag, asset.service_tag, asset.serial_number, asset.item.id, asset.price,
-              asset.purchased, asset.deployed, asset.img, asset.inventoried, asset.disposed, asset.status,
+      args = (asset.ece_tag, asset.vu_tag, asset.service_tag, 
+              asset.serial_number, asset.item.id, asset.price,
+              int(asset.purchased.strftime("%s")), int(asset.deployed.strftime("%s")), 
+	      asset.img, int(asset.inventoried.strftime("%s")), 
+              int(asset.disposed.strftime("%s")), asset.status,
               asset.home.id, asset.dest.id, asset.loanable, asset.owner.id, asset.holder.id)
       c = db.execute( "INSERT INTO assets (ece_tag,vu_tag,service_tag,serial_number,item,price,purchased,deployed,img,inventoried,disposed,status,home,dest,loanable,owner,holder) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);", args )
       db.commit()
       return c.lastrowid
 
     @staticmethod
-    def delete( db, id ):
-      db.execute( "DELETE FROM assets WHERE id=?", (id,) )
+    def delete( db, asset ):
+      db.execute( "DELETE FROM assets WHERE id=?", (asset.id,) )
       db.commit()
 
     @staticmethod
@@ -145,7 +153,7 @@ class Asset():
 
     @staticmethod
     def get_by_item( db, item ):
-      c = db.execute( "SELECT * FROM assets WHERE item=?", (item,) )
+      c = db.execute( "SELECT * FROM assets WHERE item=?", (item.id,) )
       y = []
       for rows in c.fetchall():
         y.append( Asset.init_from_db_row(db,rows) )
@@ -160,16 +168,32 @@ class Asset():
       return y
 
     @staticmethod
-    def get_by_owner( db, uid ):
-      c = db.execute( "SELECT * FROM assets WHERE owner=?", (owner,) )
+    def get_by_owner( db, owner ):
+      c = db.execute( "SELECT * FROM assets WHERE owner=?", (owner.id,) )
       y = []
       for rows in c.fetchall():
         y.append( Asset.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
-    def get_by_loaner( db, uid ):
-      c = db.execute( "SELECT * FROM assets WHERE owner=?", (owner,) )
+    def get_by_holder( db, owner ):
+      c = db.execute( "SELECT * FROM assets WHERE owner=?", (owner.id,) )
+      y = []
+      for rows in c.fetchall():
+        y.append( Asset.init_from_db_row(db,rows) )
+      return y
+
+    @staticmethod
+    def get_by_home( db, owner ):
+      c = db.execute( "SELECT * FROM assets WHERE home=?", (owner.id,) )
+      y = []
+      for rows in c.fetchall():
+        y.append( Asset.init_from_db_row(db,rows) )
+      return y
+
+    @staticmethod
+    def get_by_dest( db, owner ):
+      c = db.execute( "SELECT * FROM assets WHERE dest=?", (owner.id,) )
       y = []
       for rows in c.fetchall():
         y.append( Asset.init_from_db_row(db,rows) )
@@ -177,7 +201,7 @@ class Asset():
 
     @staticmethod
     def get_all( db ):
-      c = db.execute( "SELECT * FROM assets" )
+      c = db.execute( "SELECT * FROM assets WHERE id>0" )
       y = []
       for rows in c.fetchall():
         y.append( Asset.init_from_db_row(db,rows))
