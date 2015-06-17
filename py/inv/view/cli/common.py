@@ -87,7 +87,7 @@ def select_obj_from_list( x ):
   # check for 1 obj list
   if n == 1:
     print ""
-    print " 1 Result:"
+    print "1 Result: " + str(x[0])
     return x[0]
 
   # otherwise do the normal thing
