@@ -250,7 +250,20 @@ class Asset():
         for asset in asset_list:
           ecetag = asset['ECETag']
           vutag  = asset['VUTag']
-          unittag = asset['UNITTag']
+          svctag = asset['SvcTag']
+          serial = asset['Serial']
+          category = asset['Category']
+          manufacturer = asset['Manufacturer']
+          model  = asset['Model']
+          price  = asset['Price']
+          purchased = asset['Purchased']
+          img    = asset['img']
+          invetoried = asset['LastInventory']
+	  home_b = asset['HomeBuilding']
+	  home_r = asset['HomeRoom']
+          dest_b = asset['DestBuilding']
+          dest_r = asset['DestRoom']
+          
 
 if __name__ == "__main__":
   print "========================="
