@@ -15,14 +15,27 @@ import datetime
 
 class Asset():
   class Status():
+    Purchased = 0
     Found = 0
-    Moved = 1
+    Loaned = 1
     Lost  = 2
     Discarded = 3
     Sold    = 4
     Transferred = 5
     Traded  = 6
     Donated = 7
+    info = {
+      Purchased : "Purchased",
+      Found : "Found",
+      Loaned : "Loaned Out",
+      Lost  : "Lost",
+      Discarded : "Discarded",
+      Sold : "Sold",
+      Transferred : "Transferred",
+      Traded : "Traded",
+      Donated : "Donated",
+
+    }
   def __init__( self, ece_tag='', vu_tag='', service_tag='', serial_number='',
                       item=Item(), price=0, purchased=datetime.datetime.now(),
                       deployed=datetime.datetime.now(), img='', 
@@ -209,14 +222,35 @@ class Asset():
 
     @staticmethod
     def set( db, asset ):
-      if asset.id == -1:
+      if asset.id == 0:
         raise Exception( 'Asset: DBHelper: set: invalid id' )
-      args = (asset.ece_tag, asset.vu_tag, asset.service_tag, asset.serial_number, asset.item.id, asset.price,
-              asset.purchased, asset.deployed, asset.img, asset.inventoried, asset.disposed, asset.status,
-              asset.home.id, asset.dest.id, asset.loanable, asset.owner.id, asset.holder.id, asset.id)
+      # do a little validation
+      item_id = 0 if not asset.item else asset.item.id
+      home_id = 0 if not asset.home else asset.home.id
+      dest_id = 0 if not asset.dest else asset.dest.id
+      owner_id = 0 if not asset.owner else asset.owner.id
+      holder_id = 0 if not asset.holder else asset.holder.id
+      args = (asset.ece_tag, asset.vu_tag, asset.service_tag, 
+              asset.serial_number, item_id, asset.price,
+              asset.purchased, asset.deployed, asset.img, 
+              asset.inventoried, asset.disposed, asset.status,
+              home_id, dest_id, asset.loanable, 
+              owner_id, holder_id, asset.id)
       c = db.execute( "UPDATE assets SET ece_tag=?,vu_tag=?,service_tag=?,serial_number=?,item=?,price=?,purchased=?,deployed=?,img=?,inventoried=?,disposed=?,status=?,home=?,dest=?,loanable=?,owner=?,holder=? WHERE id=?", args) 
       db.commit()
       return c.rowcount
+ 
+  class FileParser():
+    @staticmethod
+    def loadJSON( fname ):
+      import json
+      with open(fname) as fp:
+        json_str = fp.read():
+        asset_list = json.loads(json_dict)         
+        for asset in asset_list:
+          ecetag = asset['ECETag']
+          vutag  = asset['VUTag']
+          unittag = asset['UNITTag']
 
 if __name__ == "__main__":
   print "========================="
