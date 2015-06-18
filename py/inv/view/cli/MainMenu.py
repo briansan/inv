@@ -45,16 +45,26 @@ class MainMenu():
     print "************************************"
 
   def authMenu(self):
-    print ""
-    print "==================="
-    print "Authentication Menu"
-    print "==================="
-    print "1. Login"
-    print "2. Register"
-    print "3. Quit"
-    print ""
-    opt = read_int('Select your option: ')
-    return opt
+    opt = 0
+    while opt != 3:
+      print ""
+      print "==================="
+      print "Authentication Menu"
+      print "==================="
+      print "1. Login"
+      print "2. Register"
+      print "3. Quit"
+      print ""
+      opt = read_int('Select your option: ')
+      # login
+      if opt == 1:   
+        self.login()
+      # register
+      elif opt == 2: 
+        self.register()
+      # quit
+      elif opt == 3: 
+        print "Goodbye!"
 
   def login(self):
     print ""
@@ -81,13 +91,29 @@ class MainMenu():
 
     # request information
     uname = read_str("Username: ")
+    if uname == None:
+      return
     pw = getpass("Password: ")
+    if pw == None:
+      return
     pw_chk = getpass("Re-type Password: ")
+    if pw_chk == None:
+      return
     fname = read_str("First Name: ")
+    if fname == None:
+      return
     lname = read_str("Last Name: ")
+    if lname == None:
+      return
     phone = read_str("Phone Number: ")
+    if phone == None:
+      return
     email = read_str("Email: ")
+    if email == None:
+      return
     year  = read_int("Graduation Year: ")
+    if year == None:
+      return
 
     # check the password
     if pw != pw_chk:
@@ -146,16 +172,7 @@ class MainMenu():
     print "\tinitializing..."
     self.delegate.init()
     # go to the authentication menu
-    opt = self.authMenu()
-    # login
-    if opt == 1:   
-      self.login()
-    # register
-    elif opt == 2: 
-      self.register()
-    # quit
-    elif opt == 3: 
-      print "Goodbye!"
+    self.authMenu()
 
 if __name__=="__main__":
   MainMenu().start()

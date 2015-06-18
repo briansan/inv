@@ -118,22 +118,22 @@ class LocationMenu():
     print "=============="
     print "List Locations "
     print "=============="
+    print "0. List all"
     print "1. Lookup by Building"
-    print "2. List all"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 1: # lookup by category
+    if opt == 1: # list all locations
+      y = self.delegate.locationMenuListAll()
+    elif opt == 1: # lookup by category
       print ""
       x = read_str("Building: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.locationMenuLookupByBuilding(x)
-    elif opt == 2: # list all locations
-      y = self.delegate.locationMenuListAll()
     else: # any other option will repeat this menu
       y = self.listLocationMenu()
     return y

@@ -177,6 +177,7 @@ class PersonMenu():
     print "================"
     print "People Directory "
     print "================"
+    print "0. List all"
     print "1. Lookup by Username"
     print "2. Lookup by First Name"
     print "3. Lookup by Last Name"
@@ -184,14 +185,15 @@ class PersonMenu():
     print "5. Lookup by Email"
     print "6. Lookup by Group"
     print "7. Lookup by Year"
-    print "8. List all"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 1: # lookup by username
+    if opt == 0: # lookup all
+      y = self.delegate.personMenuListAll()
+    elif opt == 1: # lookup by username
       print ""
       x = read_str("Username: ") # get the value
       if not x: # cancel if ctrl+c
@@ -241,8 +243,6 @@ class PersonMenu():
         return None
       y = self.delegate.personMenuLookupByYear(x)
 
-    elif opt == 8: # lookup all
-      y = self.delegate.personMenuListAll()
 
     else: # any other option will repeat this menu
       y = self.listPersonMenu()

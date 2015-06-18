@@ -198,7 +198,8 @@ class AssetMenu():
     print ""
     print "============"
     print "List Assets "
-    print "============"
+    print "============" 
+    print "0. List all"
     print "1. Lookup by ECE Tag"
     print "2. Lookup by VU Tag"
     print "3. Lookup by Service Tag"
@@ -208,14 +209,15 @@ class AssetMenu():
     print "7. Lookup by Loaner"
     print "8. Lookup by Home Location"
     print "9. Lookup by Destination"
-    print "10. List all"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 1: # lookup by ece tag
+    if opt == 0: # list all items
+      y = self.delegate.assetMenuListAll()
+    elif opt == 1: # lookup by ece tag
       print ""
       x = read_str("ECE Tag: ") # get the value
       if not x: # cancel if ctrl+c
@@ -269,8 +271,6 @@ class AssetMenu():
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByDest(x)
-    elif opt == 10: # list all items
-      y = self.delegate.assetMenuListAll()
     else: # any other option will repeat this menu
       y = self.listAssetMenu()
     return y
@@ -417,7 +417,7 @@ class AssetMenu():
     # set the fields
     return x
 
-  def editItem( self, x ):
+  def editAsset( self, x ):
     """
     method to edit the asset and then save the changes
     also checks for successful save and displays the proper error msg
@@ -434,7 +434,7 @@ class AssetMenu():
     else:
       return
     # request the delegate to save the edit
-    if self.delegate.AssetMenuWantsEdit(item) == 0:
+    if self.delegate.assetMenuWantsEdit(item) == 0:
       print "Successfully saved!"
     else:
       print "Failed to save, try again later..."
