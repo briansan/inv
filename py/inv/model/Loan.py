@@ -14,7 +14,7 @@ import calendar
 import time
 import datetime
 
-class Asset():
+class Loan():
   class Status():
     Requested = 0
     Approved  = 1
@@ -26,7 +26,7 @@ class Asset():
       Loaned    : "Loaned",
       Returned  : "Returned"
     }
-  def __init__( self, items=[], status=Asset.Status.Requested, who=Person(),
+  def __init__( self, items=[], status=Loan.Status.Requested, who=Person(),
                       create=datetime.datetime.now(),
                       start=datetime.datetime.now(), 
                       due=datetime.datetime.now(), 
@@ -50,20 +50,22 @@ class Asset():
 
   def __str__( self ):
     y = 'Loan #' + str(self.id) + 'to '+self.who ': \n' 
+    y += '\tfor:\n'
+    for x in self.items:
+      y += str(x)+'\n'
     y += '\trequested: '+str(self.create)+'\n'
-    if self.status > Asset.Status.Requested:
+    if self.status > Loan.Status.Requested:
       y += '\tapproved: '+str(self.start)+'\n'
-    if self.status > Asset.Status.Approved:
+    if self.status > Loan.Status.Approved:
       y += '\tdue: '+str(self.due)+'\n'
-    if self.status > Asset.Status.Returned:
+    if self.status > Loan.Status.Returned:
       y += '\treturned: '+str(self.returnDate)+'\n'
     return y
 
   @staticmethod
   def init_from_db_row( db, row ):
     id     = row[0]
-    items  = []
-    
+    items  = Loan.DBHelper.get_all_assets_from_loan( db, row[1] )
     status = row[2]
     who    = Person.DBHelper.get(row[3])
     create = datetime.datetime.fromtimestamp(row[4])
@@ -84,17 +86,27 @@ class Asset():
          due INTEGER NOT NULL,
          rdate INTEGER NOT NULL
         ); ''')
-      db.execute('''CREATE TABLE IF NOT EXISTS loan_items
+      db.execute('''CREATE TABLE IF NOT EXISTS loan_assets
         (loan_id INTEGER NOT NULL,
          asset_id INTEGER NOT NULL
         );'''
       db.execute("INSERT OR IGNORE INTO loans (id,status,who,create,start,due,rdate) values (0,0,0,0,0,0,0);")
       db.commit()
+
+    @staticmethod
+    def get_all_assets_from_loan( db, loan_id ):
+      c = db.execute( "SELECT * FROM loan_assets WHERE loan_id=?", (loan_id) )
+      y = []
+      for rows in c.fetchall():
+        y.append( Asset.DBHelper.get( db, rows[1] ) )
+      return y
     
     @staticmethod
-    def add( db, asset ):
-      args = (asset.status,asset.who,asset.create,asset.start,asset.due,asset.rdate)
+    def add( db, loan ):
+      args = (loan.status,loan.who.id,loan.create,loan.start,loan.due,loan.returnDate)
       c = db.execute( "INSERT INTO loan (status,who,create,start,due,rdate) values (?,?,?,?,?,?);", args )
+      for asset in loan.items:
+        db.execute( "INSERT INTO loan_assets(loan_id,asset_id) values (?,?);", (c.lastrowid, asset.id )
       db.commit()
       return c.lastrowid
 
@@ -117,11 +129,10 @@ class Asset():
     def get_by_status( db, status ):
       q = "SELECT * FROM loans WHERE status=?"
       c = db.execute( q, (status,) )
-      rows = c.fetchone()
-      if not rows == None:
-        return Loan.init_from_db_row( db, rows )
-      else:
-        return None
+      y = []
+      for rows in c.fetchall():
+        y.append( Loan.init_from_db_row(db,rows) )
+      return y
 
     @staticmethod
     def get_by_who( db, who ):
@@ -172,82 +183,32 @@ class Asset():
       return y
 
     @staticmethod
-    def set( db, asset ):
-      if asset.id == 0:
+    def set_approved( db, loan, start=datetime.datetime.now() ):
+      if loan.id == 0:
         raise Exception( 'Loan: DBHelper: set: invalid id' )
       # do a little validation
-      item_id = 0 if not asset.item else asset.item.id
-      home_id = 0 if not asset.home else asset.home.id
-      dest_id = 0 if not asset.dest else asset.dest.id
-      owner_id = 0 if not asset.owner else asset.owner.id
-      holder_id = 0 if not asset.holder else asset.holder.id
-      args = (asset.ece_tag, asset.vu_tag, asset.service_tag, 
-              asset.serial_number, item_id, asset.price,
-              asset.purchased, asset.deployed, asset.img, 
-              asset.inventoried, asset.disposed, asset.status,
-              home_id, dest_id, asset.loanable, 
-              owner_id, holder_id, asset.id)
-      c = db.execute( "UPDATE assets SET ece_tag=?,vu_tag=?,service_tag=?,serial_number=?,item=?,price=?,purchased=?,deployed=?,img=?,inventoried=?,disposed=?,status=?,home=?,dest=?,loanable=?,owner=?,holder=? WHERE id=?", args) 
+      start = int(start.strftime("%s"))
+      c = db.execute( "UPDATE loans SET status=?, start=? WHERE id=?", (Loan.Status.Approved,start,loan.id)) 
       db.commit()
       return c.rowcount
 
-if __name__ == "__main__":
-  print "========================="
-  print "Asset database test:"
-  print "========================="
-  import sqlite3
-  db = sqlite3.connect('inv.db')
-  print "Test 1: create table"
-  Asset.DBHelper.create_table(db)
-  print "Test 1: success"
-  print "========================="
-  print "Test 2: Create"
-  # create a person
-  p = Person( 'user1', 'John', 'Doe', '8005550123', 0, 1, 0 )
-  p_pw = 'passwd1'
-  print "adding person" + str(p)
-  p.id = Person.DBHelper.add( db, p, p_pw )
-  # create an item
-  i = Item( 'Monitor', 'Dell', 'E172FPb' )
-  print "adding item: " + str(i)
-  i.id = Item.DBHelper.add( db, i )
-  # create a location
-  l = Location( 'CEER', '008' )
-  print "adding location: " + str(l)
-  l.id = Location.DBHelper.add( db, l )
-  # using arbitrary dates
-  now = calendar.timegm(time.gmtime())
-  # create the asset
-  a = Asset( 'ee06637', 'vu11647', '', '031120-00', i, 200.00, now, now, '', 
-             now, 0, Asset.Status.Found, l, l, True, p, p )
-  print "adding asset: " + str(a)
-  Asset.DBHelper.add( db, a )
-  print "Test 2: success"
-  print "========================="
-  print "Test 3: Read"
-  print ""
-  print "get by tag..."
-  asset = Asset.DBHelper.get_by_tag( db, 'ee06637' )
-  print str(asset)
-  print ""
-  print "get all..."
-  assets = Asset.DBHelper.get_all( db )
-  for l in assets:
-    print str(l.id) + '. ' + str(l)
-  print "Test 3: success"
-  print "========================="
-  print "Test 4: Update"
-  print "updating " + str(l)
-  for l in assets:
-    l.ece_tag = 'ee00000'
-    print "to " + str(l)
-    Asset.DBHelper.set(db,l)
-  print "Test 4: success"
-  print "========================="
-  print "Test 5: Delete"
-  print "deleting " + str(l)
-  Asset.DBHelper.delete( db, l.id )
-  print "Test 5: success"
-  print "========================="
-  print "Asset database test succeeded"
-  print "========================="
+    @staticmethod
+    def set_loaned( db, loan, due=datetime.datetime.now()+datetime.timedelta(7) ):
+      if loan.id == 0:
+        raise Exception( 'Loan: DBHelper: set: invalid id' )
+      due = int(due.strftime("%s"))
+      # do a little validation
+      c = db.execute( "UPDATE loans SET status=?, due=? WHERE id=?", (Loan.Status.Loaned, due, loan.id)) 
+      db.commit()
+      return c.rowcount
+
+    @staticmethod
+    def set_returned( db, loan, returned=datetime.datetime.now() ):
+      if loan.id == 0:
+        raise Exception( 'Loan: DBHelper: set: invalid id' )
+      returned = int(returned.strftime("%s"))
+      # do a little validation
+      c = db.execute( "UPDATE loans SET status=?,rdate=? WHERE id=?", (Loan.Status.Returned,returned,loan.id)) 
+      db.commit()
+      return c.rowcount
+
