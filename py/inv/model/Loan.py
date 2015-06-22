@@ -62,7 +62,8 @@ class Asset():
   @staticmethod
   def init_from_db_row( db, row ):
     id     = row[0]
-    items  = row[1]
+    items  = []
+    
     status = row[2]
     who    = Person.DBHelper.get(row[3])
     create = datetime.datetime.fromtimestamp(row[4])
@@ -76,125 +77,104 @@ class Asset():
     def create_table( db ):
       db.execute('''CREATE TABLE IF NOT EXISTS loans 
         (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-         ece_tag TEXT NOT NULL,
-         vu_tag TEXT NOT NULL,
-         service_tag TEXT NOT NULL,
-         serial_number TEXT NOT NULL,
-         item INTEGER NOT NULL,
-         price REAL NOT NULL,
-         purchased INTEGER NOT NULL,
-         deployed INTEGER NOT NULL,
-         img TEXT NOT NULL,
-         inventoried INTEGER NOT NULL,
-         disposed INTEGER NOT NULL,
          status INTEGER NOT NULL,
-         home INTEGER NOT NULL,
-         dest INTEGER NOT NULL,
-         loanable INTEGER NOT NULL,
-         owner INTEGER NOT NULL,
-         holder INTEGER NOT NULL
+         who INTEGER NOT NULL,
+         create INTEGER NOT NULL,
+         start INTEGER NOT NULL,
+         due INTEGER NOT NULL,
+         rdate INTEGER NOT NULL
         ); ''')
-      db.execute("INSERT OR IGNORE INTO assets (id,ece_tag,vu_tag,service_tag,serial_number,item,price,purchased,deployed,img,inventoried,disposed,status,home,dest,loanable,owner,holder) values (0,'','','','',0,0,0,0,'',0,0,0,0,0,0,0,0)")
-      
+      db.execute('''CREATE TABLE IF NOT EXISTS loan_items
+        (loan_id INTEGER NOT NULL,
+         asset_id INTEGER NOT NULL
+        );'''
+      db.execute("INSERT OR IGNORE INTO loans (id,status,who,create,start,due,rdate) values (0,0,0,0,0,0,0);")
       db.commit()
     
     @staticmethod
     def add( db, asset ):
-      args = (asset.ece_tag, asset.vu_tag, asset.service_tag, 
-              asset.serial_number, asset.item.id, asset.price,
-              int(asset.purchased.strftime("%s")), int(asset.deployed.strftime("%s")), 
-	      asset.img, int(asset.inventoried.strftime("%s")), 
-              int(asset.disposed.strftime("%s")), asset.status,
-              asset.home.id, asset.dest.id, asset.loanable, asset.owner.id, asset.holder.id)
-      c = db.execute( "INSERT INTO assets (ece_tag,vu_tag,service_tag,serial_number,item,price,purchased,deployed,img,inventoried,disposed,status,home,dest,loanable,owner,holder) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);", args )
+      args = (asset.status,asset.who,asset.create,asset.start,asset.due,asset.rdate)
+      c = db.execute( "INSERT INTO loan (status,who,create,start,due,rdate) values (?,?,?,?,?,?);", args )
       db.commit()
       return c.lastrowid
 
     @staticmethod
     def delete( db, asset ):
-      db.execute( "DELETE FROM assets WHERE id=?", (asset.id,) )
+      db.execute( "DELETE FROM loans WHERE id=?", (asset.id,) )
       db.commit()
 
     @staticmethod
     def get( db, id ):
-      c = db.execute( "SELECT * FROM assets WHERE id=?", (id,) )
+      c = db.execute( "SELECT * FROM loans WHERE id=?", (id,) )
       # fetch a row (should only be one)
       rows = c.fetchone()
       if not rows == None:
-        return Asset.init_from_db_row( db, rows )
+        return Loan.init_from_db_row( db, rows )
       else:
         return None
-
-    @staticmethod
-    def get_by_tag( db, tag, tag_t='ece' ):
-      q = "SELECT * FROM assets WHERE " + tag_t + "_tag=?"
-      c = db.execute( q, (tag,) )
-      rows = c.fetchone()
-      if not rows == None:
-        return Asset.init_from_db_row( db, rows )
-      else:
-        return None
-
-    @staticmethod
-    def get_by_item( db, item ):
-      c = db.execute( "SELECT * FROM assets WHERE item=?", (item.id,) )
-      y = []
-      for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows) )
-      return y
 
     @staticmethod
     def get_by_status( db, status ):
-      c = db.execute( "SELECT * FROM assets WHERE status=?", (status,) )
+      q = "SELECT * FROM loans WHERE status=?"
+      c = db.execute( q, (status,) )
+      rows = c.fetchone()
+      if not rows == None:
+        return Loan.init_from_db_row( db, rows )
+      else:
+        return None
+
+    @staticmethod
+    def get_by_who( db, who ):
+      c = db.execute( "SELECT * FROM loans WHERE who=?", (who.id,) )
       y = []
       for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows) )
+        y.append( Loan.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
-    def get_by_owner( db, owner ):
-      c = db.execute( "SELECT * FROM assets WHERE owner=?", (owner.id,) )
+    def get_by_create( db, date ):
+      c = db.execute( "SELECT * FROM loans WHERE create=?", (date,) )
       y = []
       for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows) )
+        y.append( Loan.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
-    def get_by_holder( db, owner ):
-      c = db.execute( "SELECT * FROM assets WHERE owner=?", (owner.id,) )
+    def get_by_start( db, date ):
+      c = db.execute( "SELECT * FROM loans WHERE start=?", (date,) )
       y = []
       for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows) )
+        y.append( Loan.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
-    def get_by_home( db, owner ):
-      c = db.execute( "SELECT * FROM assets WHERE home=?", (owner.id,) )
+    def get_by_due( db, date ):
+      c = db.execute( "SELECT * FROM loans WHERE due=?", (date,) )
       y = []
       for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows) )
+        y.append( Loan.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
-    def get_by_dest( db, owner ):
-      c = db.execute( "SELECT * FROM assets WHERE dest=?", (owner.id,) )
+    def get_by_return( db, date ):
+      c = db.execute( "SELECT * FROM loans WHERE rdate=?", (date,) )
       y = []
       for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows) )
+        y.append( Loan.init_from_db_row(db,rows) )
       return y
 
     @staticmethod
     def get_all( db ):
-      c = db.execute( "SELECT * FROM assets WHERE id>0" )
+      c = db.execute( "SELECT * FROM loans WHERE id>0" )
       y = []
       for rows in c.fetchall():
-        y.append( Asset.init_from_db_row(db,rows))
+        y.append( Loan.init_from_db_row(db,rows))
       return y
 
     @staticmethod
     def set( db, asset ):
       if asset.id == 0:
-        raise Exception( 'Asset: DBHelper: set: invalid id' )
+        raise Exception( 'Loan: DBHelper: set: invalid id' )
       # do a little validation
       item_id = 0 if not asset.item else asset.item.id
       home_id = 0 if not asset.home else asset.home.id
