@@ -30,6 +30,12 @@ class LoanMenu():
       """
       return []
 
+    def loanMenuListAllFromUser( self):
+      """
+      return: all loan in the db
+      """
+      return []
+
     #
     # edit methods
     #
@@ -106,6 +112,13 @@ class LoanMenu():
       """
       return []
 
+    def loanMenuLookupByStatusFromUser( self, ecetag ):
+      """
+      looking up loan by its status
+      return: a list of matching items
+      """
+      return []
+
     def loanMenuLookupByCreateDate( self, date ):
       """
       looking up loan by creation date
@@ -175,6 +188,9 @@ class LoanMenu():
       elif opt != 5:
         print "Invalid option (maybe insufficient permissions?), try again..."
         
+  def isOperator( self ):
+    return self.delegate.loanMenuCheckUserPermission(Permissions.LoanUpdateWorld)
+
   def listLoanMenu( self ):
     """
     displays a menu of possible ways to search through items
@@ -184,78 +200,42 @@ class LoanMenu():
     print "============"
     print "List Loans "
     print "============" 
-    print "0. List all"
-    print "1. Lookup by ECE Tag"
-    print "2. Lookup by VU Tag"
-    print "3. Lookup by Service Tag"
-    print "4. Lookup by Item"
-    print "5. Lookup by Status"
-    print "6. Lookup by Owner"
-    print "7. Lookup by Loaner"
-    print "8. Lookup by Home Location"
-    print "9. Lookup by Destination"
-    print ""
+    print "1. List all"
+    print "2. Lookup by Status"
+  
+    
+    if self.isOperator():
+      print "3. Lookup by Requester"
+      print ""
+
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 0: # list all items
-      y = self.delegate.loanMenuListAll()
-    elif opt == 1: # lookup by ece tag
+    if opt == 1: # list all items
+      if self.isOperator():
+        y = self.delegate.loanMenuListAll()
+      else:
+        y = self.delegate.loanMenuListAllFromUser()
+    elif opt == 3 and self.isOperator(): # lookup by request
       print ""
-      x = read_str("ECE Tag: ") # get the value
+      print "Lookup by Requester"
+      x = self.delegate.loanMenuWantsPerson()
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.loanMenuLookupByECETag(x)
-    elif opt == 2: # lookup by vu tag
+      y = self.delegate.loanMenuLookupByRequester(x)
+    elif opt == 2: # lookup by status
       print ""
-      x = read_str("VU Tag: ")
+      statuses = Loan.Status.info
+      x = select_obj_from_list(statuses)
+      x = Loan.Status.ofni[x]
       if not x: # cancel if ctrl+c
         return None
-      y = self.delegate.loanMenuLookupByVUTag(x)
-    elif opt == 3: # lookup by svc tag
-      print ""
-      x = read_str("Service Tag: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByServiceTag(x)
-    elif opt == 4: # lookup by item
-      print ""
-      x = read_str("Item: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByItem(x)
-    elif opt == 5: # lookup by status
-      print ""
-      x = read_str("Status: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByStatus(x)
-    elif opt == 6: # lookup by owner
-      print ""
-      x = read_str("Owner: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByOwner(x)
-    elif opt == 7: # lookup by loaner
-      print ""
-      x = read_str("Loaner: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByHolder(x)
-    elif opt == 8: # lookup by loaner
-      print ""
-      x = read_str("Home: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByHome(x)
-    elif opt == 7: # lookup by loaner
-      print ""
-      x = read_str("Destination: ")
-      if not x: # cancel if ctrl+c
-        return None
-      y = self.delegate.loanMenuLookupByDest(x)
+      if self.isOperator():
+        y = self.delegate.loanMenuLookupByStatus(x)
+      else:
+        y = self.delegate.loanMenuLookupByStatusFromUser(x)
     else: # any other option will repeat this menu
       y = self.listLoanMenu()
     return y
@@ -273,23 +253,14 @@ class LoanMenu():
     print "==================="
     print "Loan Information"
     print "==================="
-    print "ECE Tag: " + x.ece_tag
-    print "VU Tag: " + x.vu_tag
-    print "Service Tag: " + x.service_tag
-    print "Serial Number: " + x.serial_number
-    print "Item: " + str(x.item)
-    print "Value ($): " + str(x.price)
-    print "Purchase Date: " + str(x.purchased.date())
-    print "Deploy Date: " + str(x.deployed.date())
-    print "Last Inventory: " + str(x.inventoried.date())
-    print "Image Path: " + x.img
-    print "Status: " + str(x.status)
-    print "Disposal Date: " + str(x.disposed.date())
-    print "Home: " + str(x.home)
-    print "Destination: " + str(x.dest)
-    print "Loanable: " + str(x.loanable)
-    print "Owner: " + str(x.owner)
-    print "Holder: " + str(x.holder)
+    print "Requester: " + str(x.who)
+    print "Items: " + str(x.items)
+    print "Status: " + Loan.Status.info[x.status]
+    print "Request Date: " + str(x.create.date())
+    print "Approve Date: " + str(x.start.date())
+    print "Due Date: " + str(x.due.date())
+    print "Returned Date: " + str(x.returnDate.date())
+
       
   def getLoan( self ):
     """
@@ -308,26 +279,27 @@ class LoanMenu():
     # display the information
     self.displayLoanInfo(x)
 
-    # request action
-    opt = 0
-    while opt != 3:
-      print ""
-      print "What would you like to do?"
-      print "1. edit"
-      print "2. remove"
-      print "3. back"
-      print ""
-      opt = read_int('Select an option: ')
-      
-      if opt == 1: # edit
-        self.editLoan(x)
-      elif opt == 2: # remove
-        if self.removeLoan(x):
-          return
-      elif opt != 3: # other (not back)
+    if x.status == Loan.Status.Requested or self.isOperator():
+      # request action
+      opt = 0
+      while opt != 3:
         print ""
-        print "invalid option, try again..."
-        self.loanViewMenu(x) # try again
+        print "What would you like to do?"
+        print "1. edit"
+        print "2. remove"
+        print "3. back"
+        print ""
+        opt = read_int('Select an option: ')
+        
+        if opt == 1: # edit
+          self.editLoan(x)
+        elif opt == 2: # remove
+          if self.removeLoan(x):
+            return
+        elif opt != 3: # other (not back)
+          print ""
+          print "invalid option, try again..."
+          self.loanViewMenu(x) # try again
 
   def editLoanMenu( self, x ):
     """

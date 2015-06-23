@@ -123,24 +123,24 @@ class ItemMenu():
     print "============"
     print "List Items "
     print "============"
-    print "0. List all"
-    print "1. Lookup by Category"
-    print "2. Lookup by Manufacturer"
+    print "1. List all"
+    print "2. Lookup by Category"
+    print "3. Lookup by Manufacturer"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 0: # list all items
+    if opt == 1: # list all items
       y = self.delegate.itemMenuListAll()
-    elif opt == 1: # lookup by category
+    elif opt == 2: # lookup by category
       print ""
       x = read_str("Category: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.itemMenuLookupByCategory(x)
-    elif opt == 2: # lookup by manufacturer
+    elif opt == 3: # lookup by manufacturer
       print ""
       x = read_str("Manufacturer: ")
       if not x: # cancel if ctrl+c

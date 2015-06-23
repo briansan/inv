@@ -199,73 +199,73 @@ class AssetMenu():
     print "============"
     print "List Assets "
     print "============" 
-    print "0. List all"
-    print "1. Lookup by ECE Tag"
-    print "2. Lookup by VU Tag"
-    print "3. Lookup by Service Tag"
-    print "4. Lookup by Item"
-    print "5. Lookup by Status"
-    print "6. Lookup by Owner"
-    print "7. Lookup by Loaner"
-    print "8. Lookup by Home Location"
-    print "9. Lookup by Destination"
+    print "1. List all"
+    print "2. Lookup by ECE Tag"
+    print "3. Lookup by VU Tag"
+    print "4. Lookup by Service Tag"
+    print "5. Lookup by Item"
+    print "6. Lookup by Status"
+    print "7. Lookup by Owner"
+    print "8. Lookup by Loaner"
+    print "9. Lookup by Home Location"
+    print "10. Lookup by Destination"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 0: # list all items
+    if opt == 1: # list all items
       y = self.delegate.assetMenuListAll()
-    elif opt == 1: # lookup by ece tag
+    elif opt == 2: # lookup by ece tag
       print ""
       x = read_str("ECE Tag: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByECETag(x)
-    elif opt == 2: # lookup by vu tag
+    elif opt == 3: # lookup by vu tag
       print ""
       x = read_str("VU Tag: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByVUTag(x)
-    elif opt == 3: # lookup by svc tag
+    elif opt == 4: # lookup by svc tag
       print ""
       x = read_str("Service Tag: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByServiceTag(x)
-    elif opt == 4: # lookup by item
+    elif opt == 5: # lookup by item
       print ""
       x = read_str("Item: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByItem(x)
-    elif opt == 5: # lookup by status
+    elif opt == 6: # lookup by status
       print ""
       x = read_str("Status: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByStatus(x)
-    elif opt == 6: # lookup by owner
+    elif opt == 7: # lookup by owner
       print ""
       x = read_str("Owner: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByOwner(x)
-    elif opt == 7: # lookup by loaner
+    elif opt == 8: # lookup by loaner
       print ""
       x = read_str("Loaner: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByHolder(x)
-    elif opt == 8: # lookup by loaner
+    elif opt == 9: # lookup by loaner
       print ""
       x = read_str("Home: ")
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.assetMenuLookupByHome(x)
-    elif opt == 7: # lookup by loaner
+    elif opt == 10: # lookup by loaner
       print ""
       x = read_str("Destination: ")
       if not x: # cancel if ctrl+c

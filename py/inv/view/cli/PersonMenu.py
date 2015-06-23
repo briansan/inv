@@ -177,58 +177,58 @@ class PersonMenu():
     print "================"
     print "People Directory "
     print "================"
-    print "0. List all"
-    print "1. Lookup by Username"
-    print "2. Lookup by First Name"
-    print "3. Lookup by Last Name"
-    print "4. Lookup by Phone"
-    print "5. Lookup by Email"
-    print "6. Lookup by Group"
-    print "7. Lookup by Year"
+    print "1. List all"
+    print "2. Lookup by Username"
+    print "3. Lookup by First Name"
+    print "4. Lookup by Last Name"
+    print "5. Lookup by Phone"
+    print "6. Lookup by Email"
+    print "7. Lookup by Group"
+    print "8. Lookup by Year"
     print ""
     opt = read_int('Select an option: ')
     if not opt:
       return []
 
     # go through the options...
-    if opt == 0: # lookup all
+    if opt == 1: # lookup all
       y = self.delegate.personMenuListAll()
-    elif opt == 1: # lookup by username
+    elif opt == 2: # lookup by username
       print ""
       x = read_str("Username: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.personMenuLookupByUsername(x)
 
-    elif opt == 2: # lookup by first name
+    elif opt == 3: # lookup by first name
       print ""
       x = read_str("First Name: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.personMenuLookupByFirstName(x)
 
-    elif opt == 3: # lookup by last name
+    elif opt == 4: # lookup by last name
       print ""
       x = read_str("Last Name: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.personMenuLookupByLastName(x)
 
-    elif opt == 4: # lookup by phone
+    elif opt == 5: # lookup by phone
       print ""
       x = read_str("Phone Number: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.personMenuLookupByPhone(x)
 
-    elif opt == 5: # lookup by email
+    elif opt == 6: # lookup by email
       print ""
       x = read_str("Email: ") # get the value
       if not x: # cancel if ctrl+c
         return None
       y = self.delegate.personMenuLookupByEmail(x)
 
-    elif opt == 6: # lookup by group
+    elif opt == 7: # lookup by group
       return None
       print ""
       x = read_str("Group: ") # get the value
@@ -236,7 +236,7 @@ class PersonMenu():
         return None
       y = self.delegate.personMenuLookupByGroup(x)
 
-    elif opt == 7: # lookup by year
+    elif opt == 8: # lookup by year
       print ""
       x = read_int("Year: ") # get the value
       if not x: # cancel if ctrl+c
