@@ -245,7 +245,7 @@ class Asset():
     def loadJSON( fname ):
       import json
       with open(fname) as fp:
-        json_str = fp.read():
+        json_str = fp.read()
         asset_list = json.loads(json_dict)         
         for asset in asset_list:
           ecetag = asset['ECETag']
