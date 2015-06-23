@@ -26,11 +26,18 @@ class Loan():
       Loaned    : "Loaned",
       Returned  : "Returned"
     }
-  def __init__( self, items=[], status=Loan.Status.Requested, who=Person(),
+    ofni = {
+      "Requested" : Requested,
+      "Approved" : Approved,
+      "Loaned" : Loaned,
+      "Returned" : Returned,
+    }
+
+  def __init__( self, items=[], status=Status.Requested, who=Person(),
                       create=datetime.datetime.now(),
                       start=datetime.datetime.now(), 
                       due=datetime.datetime.now(), 
-                      returnDate=datetime.datetime.now(), id=0 )
+                      returnDate=datetime.datetime.now(), id=0 ):
     """
     constructor method
       $<list: Assets> items
@@ -49,7 +56,7 @@ class Loan():
     self.id = id
 
   def __str__( self ):
-    y = 'Loan #' + str(self.id) + 'to '+self.who ': \n' 
+    y = 'Loan #' + str(self.id) + 'to '+self.who+': \n' 
     y += '\tfor:\n'
     for x in self.items:
       y += str(x)+'\n'
@@ -89,7 +96,7 @@ class Loan():
       db.execute('''CREATE TABLE IF NOT EXISTS loan_assets
         (loan_id INTEGER NOT NULL,
          asset_id INTEGER NOT NULL
-        );'''
+        );''')
       db.execute("INSERT OR IGNORE INTO loans (id,status,who,create,start,due,rdate) values (0,0,0,0,0,0,0);")
       db.commit()
 
@@ -106,7 +113,7 @@ class Loan():
       args = (loan.status,loan.who.id,loan.create,loan.start,loan.due,loan.returnDate)
       c = db.execute( "INSERT INTO loan (status,who,create,start,due,rdate) values (?,?,?,?,?,?);", args )
       for asset in loan.items:
-        db.execute( "INSERT INTO loan_assets(loan_id,asset_id) values (?,?);", (c.lastrowid, asset.id )
+        db.execute( "INSERT INTO loan_assets(loan_id,asset_id) values (?,?);", (c.lastrowid, asset.id ))
       db.commit()
       return c.lastrowid
 
