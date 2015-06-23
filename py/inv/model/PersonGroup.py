@@ -12,14 +12,14 @@ class PersonGroup():
   NoneType  = 0
   Guest    = 1
   Student  = 2 
-  Staff    = 3
-  Faculty  = 4 
+  Faculty    = 3
+  Operator  = 4 
   Admin    = 5
   info = {
     NoneType  : 'Anonymous',
     Guest     : 'Guest',
     Student   : 'Student',
-    Staff     : 'Staff',
+    Operator  : 'Operator',
     Faculty   : 'Faculty',
     Admin     : 'Admin',
   }
@@ -45,25 +45,6 @@ class PersonGroup():
                 Permissions.LoanRead | 
                 Permissions.LoanUpdateUser | 
                 Permissions.LoanDeleteUser,
-    Staff     : Permissions.ItemCreate | 
-                Permissions.ItemRead | 
-                Permissions.ItemUpdate | 
-                Permissions.ItemDelete | 
-                Permissions.LocationCreate | 
-                Permissions.LocationRead | 
-                Permissions.LocationUpdate | 
-                Permissions.LocationDelete |
-                Permissions.PersonRead | 
-                Permissions.PersonUpdateUser | 
-                Permissions.PersonDeleteUser | 
-                Permissions.AssetCreate | 
-                Permissions.AssetRead | 
-                Permissions.AssetUpdate | 
-                Permissions.AssetDelete |
-                Permissions.LoanCreate | 
-                Permissions.LoanRead | 
-                Permissions.LoanUpdateUser | 
-                Permissions.LoanDeleteUser,
     Faculty   : Permissions.ItemCreate | 
                 Permissions.ItemRead | 
                 Permissions.ItemUpdate | 
@@ -83,6 +64,27 @@ class PersonGroup():
                 Permissions.LoanRead | 
                 Permissions.LoanUpdateUser | 
                 Permissions.LoanDeleteUser,
+    Operator  : Permissions.ItemCreate | 
+                Permissions.ItemRead | 
+                Permissions.ItemUpdate | 
+                Permissions.ItemDelete | 
+                Permissions.LocationCreate | 
+                Permissions.LocationRead | 
+                Permissions.LocationUpdate | 
+                Permissions.LocationDelete |
+                Permissions.PersonRead | 
+                Permissions.PersonUpdateUser | 
+                Permissions.PersonDeleteUser | 
+                Permissions.AssetCreate | 
+                Permissions.AssetRead | 
+                Permissions.AssetUpdate | 
+                Permissions.AssetDelete |
+                Permissions.LoanCreate | 
+                Permissions.LoanRead | 
+                Permissions.LoanUpdateUser | 
+                Permissions.LoanUpdateWorld | 
+                Permissions.LoanDeleteUser |
+                Permissions.LoanDeleteWorld,
     Admin     : Permissions.ItemCreate | 
                 Permissions.ItemRead | 
                 Permissions.ItemUpdate | 
