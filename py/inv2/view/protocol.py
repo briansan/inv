@@ -9,8 +9,6 @@ class AuthenticationInterface():
     class Delegate():
         def Login(self):
             pass
-        def Register(self):
-            pass
         def Quit(self):
             pass
 
@@ -23,17 +21,13 @@ class MainInterface():
     class Delegate():
         def ViewItems(self):
             pass
-        def AddAssets(self):
-            pass
-        def Loans(self):
+        def Add(self):
             pass
         def Locations(self):
             pass
-        def GenerateReport(self):
+        def Users(self):
             pass
         def Settings(self):
-            pass
-        def Logout(self):
             pass
 
 class ListInterface():
@@ -57,16 +51,14 @@ class InvInterface():
         def GenerateReport(self):
             pass
 
-class LoanInterface():
-    class Delegate(InvInterface.Delegate):
-        def CreateRequest(self):
-            pass
-        def ProcessLoan(self):
-            pass
-
 class LocationInterface():
     class Delegate(InvInterface.Delegate):
         def AddLocation(self):
+            pass
+
+class AssetInterface():
+    class Delegate(InvInterface.Delegate):
+        def AddAsset(self):
             pass
 
 class InfoInterface():
@@ -77,18 +69,83 @@ class InfoInterface():
             pass
         def GenerateReport(self):
             pass
+        def Save(self,info): # info is a dict
+            pass
 
-class AssetInfoInterface():
+class LocationInfoInterface(InfoInterface):
     class DataSource():
-        def
-
-    class Delegate(InfoInterface.Delegate):
-        def RequestLoan(self):
+        def Building(self):
+            pass
+        def Room(self):
+            pass
+        def Station(self):
             pass
 
-class LoanInfoInterface():
-    class Delegate(InfoInterface.Delegate):
-        def WhichProcess(self):
+class ItemInfoInterface(InfoInterface):
+    class DataSource():
+        def Category(self):
             pass
-        def Process(self):
+        def Manufacturer(self):
+            pass
+        def Model(self):
+            pass
+
+class UserInfoInterface(InfoInterface):
+    class DataSource():
+        def Username(self):
+            pass
+        def Password(self):
+            pass
+        def FirstName(self):
+            pass
+        def LastName(self):
+            pass
+        def PhoneNumber(self):
+            pass
+        def Group(self):
+            pass
+    class Delegate(InfoInterface.Delegate):
+        def ViewInventory(self):
+            pass
+
+class AssetInfoInterface(InfoInterface):
+    class DataSource():
+        def Tag(self):
+            pass
+        def Status(self):
+            pass
+        def Item(self):
+            pass
+        def PurchaseDate(self):
+            pass
+        def ImagePath(self):
+            pass
+        def Price(self):
+            pass
+        def ReceiptPath(self):
+            pass
+        def IPAddress(self):
+            pass
+        def Comments(self):
+            pass
+        def Location(self):
+            pass
+
+    class Delegate(InfoInterface.Delegate):
+        def DoInventory(self):
+            pass
+        def ViewInventory(self):
+            pass
+
+class AssetTagInfoInterface(InfoInterface):
+    class DataSource():
+        def ECE(self):
+            pass
+        def VU(self):
+            pass
+        def UNIT(self):
+            pass
+        def Service(self):
+            pass
+        def Serial(self):
             pass
