@@ -2,14 +2,13 @@ from flask import Flask
 from flask.ext.testing import TestCase
 import unittest
 
-from api import db
+from model import db
+from api import create_app
 
-class SQLTest(TestCase):
-  SQLALCHEMY_DATABASE_URI = 'sqlite:////tmp/inv.test.db'
-  TESTING = True
+class InvTest(TestCase):
   
   def create_app(self):
-    return Flask(__name__)
+    return create_app('conf/test.cfg')
 
   def setUp(self):
     # init tables
@@ -51,6 +50,7 @@ class SQLTest(TestCase):
     from model import User
     user = User.query.filter_by(uname='bob').first()
     assert user in db.session
+    self.assertEquals(str(user),'bob')
 
   def test_item(self):
     from model import Item
@@ -58,21 +58,25 @@ class SQLTest(TestCase):
     assert item in db.session
     assert item.manufacturer in db.session
     assert item.category in db.session
+    self.assertEquals(str(item),'Dell Optiplex 360 (Computer)')
 
   def test_location(self):
     from model import Location
     loc = Location.query.filter_by(room='008').first()
     assert loc in db.session
+    self.assertEquals(str(loc),'CEER 008')
 
   def test_asset(self):
     from model import AssetInfo, Asset
     asset = Asset.query.filter(Asset.tag.has(ece='ee02547')).first()
     assert asset in db.session
+    self.assertEquals(str(asset),'ee02547: Dell Optiplex 360 (Computer)')
 
   def test_inv(self):
     from model import Inventory
     inv = Inventory.query.filter(Inventory.who.has(uname='bob')).first()
     assert inv in db.session
+    self.assertIn('bob for ee02547: Dell Optiplex 360 (Computer)',str(inv))
   
 if __name__ == '__main__':
   unittest.main()
