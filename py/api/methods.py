@@ -1,5 +1,4 @@
 from model import *
-from api import db
 
 def user_exists(uname):
   return len(User.query.filter_by(uname=uname).all())==1
