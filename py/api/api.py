@@ -1,13 +1,15 @@
 from flask import Flask, session, request
-from flask.ext.sqlalchemy import SQLAlchemy
-import view
+import model, view, methods
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-app.secret_key = 'Bk"\x01\xab\xc5\x00\x81h\xa3\x01`\xf8\xf6\xd7 \xa46\x89\x16\xc3\xfe}\xe5'
-db = SQLAlchemy(app)
+def create_app(fname):
+  # initialize and configure the app
+  app = Flask(__name__)
+  app.config.from_pyfile(fname)
+  # connect the model to the app
+  model.db.init_app(app)
+  return app
 
-import methods
+app = create_app('debug.cfg')
 
 @app.route('/')
 def root():
@@ -65,4 +67,4 @@ def users():
   return ':)'
 
 if __name__=="__main__":
-  app.run(host='0.0.0.0',port=8000,debug=True)
+  app.run(host='0.0.0.0')
