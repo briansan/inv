@@ -41,6 +41,9 @@ class User(db.Model):
   def __repr__(self):
     return '<User %r>' % self.uname
 
+  def __str__(self):
+    return self.uname
+
   def __iter__(self):
     yield ('Username',self.uname)
     yield ('First Name',self.fname)
@@ -66,7 +69,7 @@ class Item(db.Model):
     return '<Item %s>' % self
 
   def __str__(self):
-    return '%s %s (%s)' % self.manufacturer, self.model, self.category
+    return '%s %s (%s)' % (self.manufacturer, self.model, self.category)
 
   def __iter__(self):
     yield ('Category', self.category.name)
@@ -86,7 +89,7 @@ class Location(db.Model):
   def __repr__(self):
     return '<Location %s>' % self
   def __str__(self):
-    return '%s %s' % self.building, self.room
+    return '%s %s' % (self.building, self.room)
   def __iter__(self):
     yield ('Building', self.building.name)
     yield ('Room', self.room)
@@ -145,7 +148,7 @@ class Asset(db.Model):
     return '<Asset %s>' % self
 
   def __str__( self ):
-    return '%s: %s' % self.tag.ece, self.item
+    return '%s: %s' % (self.tag.ece, self.item)
 
   def __iter__( self ):
     yield ('Tag', dict(self.tag))
@@ -183,7 +186,7 @@ class Inventory(db.Model):
     return '<Inventory %s>' % self
 
   def __str__( self ):
-    return '%s for %s on %s in %s' % self.who, self.what, self.when, self.where
+    return '%s for %s on %s in %s' % (self.who, self.what, self.when, self.where)
 
 class ItemCategory(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -234,4 +237,4 @@ class AssetInfo(db.Model):
     return '<AssetInfo %r>' % self.ece
 
   def __str__(self):
-    return self.ece
+    return '%s: %s' % (self.ece, self.item)
