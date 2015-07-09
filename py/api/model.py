@@ -30,7 +30,9 @@ class User(db.Model):
   perm = db.Column(db.Integer)
   start = db.Column(db.DateTime)
 
-  def __init__(self,uname,fname="",lname="",grp=0,perm=0,start=datetime.now()):
+  def __init__(self,uname, fname="", lname="",
+                    grp=0, perm=0,
+                    start=datetime.now()):
     self.uname = uname
     self.fname = fname
     self.lname = lname
@@ -45,11 +47,25 @@ class User(db.Model):
     return self.uname
 
   def __iter__(self):
-    yield ('Username',self.uname)
-    yield ('First Name',self.fname)
-    yield ('Last Name',self.lname)
-    yield ('Group',User.Groups.info[self.grp])
-    yield ('Member Since',self.start)
+    yield ('id',self.id)
+    yield ('uname',self.uname)
+    yield ('fname',self.fname)
+    yield ('lname',self.lname)
+    yield ('grp',self.grp)
+    yield ('perm',self.perm)
+    yield ('start',self.start)
+  
+  @staticmethod
+  def info():
+    return {
+      'id':'user id',
+      'uname':'user name',
+      'fname':'first name',
+      'lname':'last name',
+      'grp':'user group (1:student,2:faculty,3:operator,4:admin)',
+      'perm':'permissions',
+      'start':'start date'
+    }
 
 class Item(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -72,9 +88,19 @@ class Item(db.Model):
     return '%s %s (%s)' % (self.manufacturer, self.model, self.category)
 
   def __iter__(self):
-    yield ('Category', self.category.name)
-    yield ('Manufacturer', self.manufacturer.name)
-    yield ('Model', self.model)
+    yield ('id',self.id)
+    yield ('category', self.category.name)
+    yield ('manufacturer', self.manufacturer.name)
+    yield ('model', self.model)
+
+  @staticmethod
+  def info():
+    return {
+      'id': 'item id',
+      'category': 'category name',
+      'manufacturer': 'manufacturer name',
+      'model': 'model number (str)',
+    }
 
 class Location(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -91,8 +117,17 @@ class Location(db.Model):
   def __str__(self):
     return '%s %s' % (self.building, self.room)
   def __iter__(self):
-    yield ('Building', self.building.name)
-    yield ('Room', self.room)
+    yield ('id',self.id)
+    yield ('building', self.building.name)
+    yield ('room', self.room)
+  @staticmethod
+  def info():
+    return {
+      'id': 'location id',
+      'building': 'building name',
+      'room': 'room number (str)'
+
+    }
 
 class Asset(db.Model):
   class Status():
@@ -151,19 +186,39 @@ class Asset(db.Model):
     return '%s: %s' % (self.tag.ece, self.item)
 
   def __iter__( self ):
-    yield ('Tag', dict(self.tag))
-    yield ('Status', Asset.Status.info[self.status])
-    yield ('Item', str(self.item))
-    yield ('Purchase Date', self.purchased)
-    yield ('Image', self.img)
-    yield ('Item Owner', str(self.owner))
-    yield ('Item Holder', str(self.holder))
-    yield ('Value ($)', self.price)
-    yield ('Receipt Image', self.receipt)
-    yield ('IPv4 Address', self.ip)
-    yield ('Comments', self.comments)
-    yield ('Home Location', str(self.home))
-    yield ('Current Location', str(self.current))
+    yield ('id',self.id)
+    yield ('tag', dict(self.tag))
+    yield ('status', self.status)
+    yield ('item', dict(self.item))
+    yield ('purchased', self.purchased)
+    yield ('img', self.img)
+    yield ('owner', dict(self.owner))
+    yield ('holder', dict(self.holder))
+    yield ('price', self.price)
+    yield ('receipt', self.receipt)
+    yield ('ip', self.ip)
+    yield ('comments', self.comments)
+    yield ('home', dict(self.home))
+    yield ('current', dict(self.current))
+
+  @staticmethod
+  def info():
+    return {
+      'id': 'asset id',
+      'tag': 'asset tag',
+      'status': '1:available, 2:deployed, 3:loaned, 4:disposed',
+      'item': 'the item that represents the asset',
+      'purchased': 'date of purchase',
+      'img': 'url link to the image',
+      'owner': 'owner of the asset',
+      'holder': 'current holder of the asset',
+      'price': 'value of asset ($)',
+      'receipt': 'url link to image of receipt',
+      'ip': 'ip address',
+      'comments': 'any additional comments',
+      'home': 'home location of asset',
+      'current': 'current location of asset'
+    }
 
 class Inventory(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -187,6 +242,23 @@ class Inventory(db.Model):
 
   def __str__( self ):
     return '%s for %s on %s in %s' % (self.who, self.what, self.when, self.where)
+
+  def __iter__( self ):
+    yield ('id',self.id)
+    yield ('who',self.who)
+    yield ('what',self.what)
+    yield ('when',self.when)
+    yield ('where',self.where)
+
+  @staticmethod
+  def info():
+    return {
+      'id': 'inventory id',
+      'who': 'the user',
+      'what': 'the asset',
+      'when': 'the date',
+      'where': 'the location'
+    }
 
 class ItemCategory(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -238,3 +310,11 @@ class AssetInfo(db.Model):
 
   def __str__(self):
     return '%s: %s' % (self.ece, self.item)
+
+  def __iter__(self):
+    yield ('ece',self.ece)
+    yield ('vu',self.vu)
+    yield ('unit',self.unit)
+    yield ('svc',self.svc)
+    yield ('serial',self.serial)
+  
