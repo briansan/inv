@@ -1,5 +1,5 @@
 from flask import Flask, session, request, Blueprint
-import model, view, methods
+import model, view, methods, controller
 
 api = Blueprint('admin',__name__)
 
@@ -18,7 +18,7 @@ def login():
   if not logged_in():     # make sure not already logged in
     if request.method=='POST': # check method type
       uname = request.form['uname'] # get username
-      if methods.login(uname): # authenticate the user
+      if controller.login(uname): # authenticate the user
         session['uname'] = uname # success => welcome
         return view.welcome(uname)
       else: # failure => go away
@@ -35,7 +35,7 @@ def register():
   if not logged_in():     # make sure not already logged in
     if request.method=='POST':
       uname = request.form['uname']
-      if methods.register(uname):
+      if controller.register(uname):
         session['uname'] = uname
         return view.success('welcome %s!'%uname)
       else:
@@ -64,6 +64,8 @@ def create_app(fname):
   app.config.from_pyfile(fname)
   # connect the model to the app
   model.db.init_app(app)
+  with app.app_context():
+    model.db.create_all()
   # register blueprints
   app.register_blueprint(api)
   return app
