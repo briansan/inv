@@ -1,3 +1,10 @@
+"""
+  @file   inv/api/controller.py
+  @author Brian Kim
+  @brief  this module defines the functionality of 
+          the methods described by inv/api/methods.py
+"""
+
 from model import *
 
 def user_exists(uname):
