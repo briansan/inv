@@ -1,17 +1,9 @@
-from flask import Flask, session, request
+from flask import Flask, session, request, Blueprint
 import model, view, methods
 
-def create_app(fname):
-  # initialize and configure the app
-  app = Flask(__name__)
-  app.config.from_pyfile(fname)
-  # connect the model to the app
-  model.db.init_app(app)
-  return app
+api = Blueprint('admin',__name__)
 
-app = create_app('conf/debug.cfg')
-
-@app.route('/')
+@api.route('/')
 def root():
   if 'uname' in session:
     return view.all_methods()
@@ -21,7 +13,7 @@ def root():
 def logged_in():
   return session.get('uname')
   
-@app.route('/login',methods=['GET','POST'])
+@api.route('/login',methods=['GET','POST'])
 def login():
   if not logged_in():     # make sure not already logged in
     if request.method=='POST': # check method type
@@ -38,7 +30,7 @@ def login():
 
 # this method wont be necessary once 
 # ldap is properly implemented
-@app.route('/register',methods=['GET','POST'])
+@api.route('/register',methods=['GET','POST'])
 def register():
   if not logged_in():     # make sure not already logged in
     if request.method=='POST':
@@ -53,7 +45,7 @@ def register():
   else:
     return view.failure('you\'re already logged in...')
       
-@app.route('/logout',methods=['GET','POST'])
+@api.route('/logout',methods=['GET','POST'])
 def logout():
   if logged_in():
     session.pop('uname',None)
@@ -61,10 +53,20 @@ def logout():
   else:
     return view.failure('you didn\'t login...')
 
-@app.route('/users')
+@api.route('/users')
 def users():
   pass
   return ':)'
 
+def create_app(fname):
+  # initialize and configure the app
+  app = Flask(__name__)
+  app.config.from_pyfile(fname)
+  # connect the model to the app
+  model.db.init_app(app)
+  # register blueprints
+  app.register_blueprint(api)
+  return app
+
 if __name__=="__main__":
-  app.run(host='0.0.0.0')
+  create_app('conf/debug.cfg').run(host='0.0.0.0')
