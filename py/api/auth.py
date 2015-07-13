@@ -1,9 +1,62 @@
 """
-  @file   VULDAPAuth.py
+  @file   inv/api/auth.py
   @author Brian Kim
-  @brief  a script that authenticates a user using 
-          the Villanova LDAP server
+  @brief  a script that handles the authentication and authorization of a user
+          for inv
 """
+
+from methods import *
+
+# definition of default permissions
+DefaultStudentPermissions = UserReadSelf | UserUpdateSelf | ItemRead | LocationRead | AssetRead | InvRead | \
+                            LocBuildView | ItemCatView | ItemManView
+DefaultFacultyPermissions = DefaultStudentPermissions | UserReadWorld | InvCreate
+DefaultOperatorPermissions = DefaultFacultyPermissions | ItemCreate | ItemUpdate | \
+                             LocationCreate | LocationUpdate | AssetCreate | AssetUpdate
+DefaultAdminPermissions = DefaultOperatorPermissions | UserUpdateWorld | UserDelete | ItemDelete | \
+                          LocationDelete | AssetDelete | InvUpdate | InvDelete | \
+                          LocBuildEdit | ItemCatEdit | ItemManEdit
+
+from model import User
+DefaultPermissions = {
+  User.Groups.NoGroup: LogInOut,
+  User.Groups.Student: DefaultStudentPermissions,
+  User.Groups.Faculty: DefaultFacultyPermissions,
+  User.Groups.Operator: DefaultOperatorPermissions,
+  User.Groups.Admin: DefaultAdminPermissions
+}
+
+# definition of authorization object
+class Authorization():
+  """
+   use this class to pass in a permission integer value
+   and parse out the permissions of all the methods
+  """
+  def __init__(self,val):
+    """
+     initialize the authorization obj with
+     some value equal to the bit string
+     of values from above
+    """
+    self.val = val
+  def add(self,val):
+    """
+     adds a method permission to the value
+     varaible using a bitwise-or
+    """
+    self.val |= val
+  def chk(self,val):
+    """
+     checks the presence of a permission
+     by doing a bitwise-and and testing for non 0
+    """
+    return not (self.val & val == 0)
+  def rm(self,val):
+    """
+     removes a method permission from the value
+     by doing a bitwise-and with the permission's bit value
+    """
+    self.val &= ~val
 
 def auth_ldap(uid,passwd):
   """
