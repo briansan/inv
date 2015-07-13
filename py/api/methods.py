@@ -30,6 +30,12 @@ InvCreate   = 1 << 17
 InvRead     = 1 << 18
 InvUpdate   = 1 << 19
 InvDelete   = 1 << 20
+LocBuildView = 1 << 21
+LocBuildEdit = 1 << 22
+ItemCatView  = 1 << 23
+ItemCatEdit  = 1 << 24
+ItemManView  = 1 << 25
+ItemManEdit  = 1 << 26
 
 # dictionary of information about the methods
 def method_desc(name,desc,usage,supports,more=None):
@@ -139,54 +145,33 @@ InvUpdate: method_desc('Edit Inventory',
 InvDelete: method_desc('Remove Inventory',
                        'deletes an inventory record from inv',
                        'DELETE',
-                       '/remove/inv/{id}')
+                       '/remove/inv/{id}'),
+LocBuildView: method_desc('View Location Building',
+                          'read the list of buildings',
+                          'GET',  
+                          '/view/building?{query}'),
+LocBuildEdit: method_desc('Edit Location Building',
+                          'add, modify, or remove a building',
+                          'POST', 
+                          '/add/building OR /edit/building/{id} OR /rm/building/{id}',
+                          LocationBuilding.info()),
+ItemCatView: method_desc('View Item Category',
+                          'read the list of item categories',
+                          'GET',  
+                          '/view/category?{query}'),
+ItemCatEdit: method_desc('Edit Item Category',
+                          'add, modify, or remove an item category',
+                          'POST', 
+                          '/add/category OR /edit/category/{id} OR /rm/category/{id}',
+                          ItemCategory.info()),
+ItemManView: method_desc('View Item Manufacturer',
+                          'read the list of item manufacturers',
+                          'GET',  
+                          '/view/manufacturer?{query}'),
+ItemManEdit: method_desc('Edit Item Manufacturer',
+                         'add, modify, or remove an item manufacturer',
+                         'POST',
+                         '/add/manufacturer OR /edit/manufacturer/{id} OR /rm/manufacturer/{id}',
+                         ItemManufacturer.info()),
 }
-
-# definition of default permissions
-DefaultStudentPermissions = UserReadSelf | UserUpdateSelf | ItemRead | LocationRead | AssetRead | InvRead
-DefaultFacultyPermissions = DefaultStudentPermissions | UserReadWorld | InvCreate 
-DefaultOperatorPermissions = DefaultFacultyPermissions | ItemCreate | ItemUpdate |  \
-                             LocationCreate | LocationUpdate |  \
-                             AssetCreate | AssetUpdate
-DefaultAdminPermissions = DefaultOperatorPermissions | UserUpdateWorld | UserDelete | ItemDelete |  \
-                          LocationDelete | AssetDelete | InvUpdate | InvDelete
-DefaultPermissions = {
-  User.Groups.NoGroup: LogInOut,
-  User.Groups.Student: DefaultStudentPermissions,
-  User.Groups.Faculty: DefaultFacultyPermissions,
-  User.Groups.Operator: DefaultOperatorPermissions,
-  User.Groups.Admin: DefaultAdminPermissions,
-}
-
-# definition of authorization object
-class Authorization():
-  """
-   use this class to pass in a permission integer value
-   and parse out the permissions of all the methods
-  """
-  def __init__(self,val):
-    """
-     initialize the authorization obj with
-     some value equal to the bit string
-     of values from above
-    """
-    self.val = val
-  def add(self,val):
-    """
-     adds a method permission to the value
-     variable using a bitwise-or
-    """
-    self.val |= val
-  def chk(self,val):
-    """
-     checks the presence of a permission
-     by doing a bitwise-and and testing for non 0
-    """
-    return not (self.val & val == 0)
-  def rmv(self,val):
-    """
-     removes a method permission from the value
-     by doing a bitwise-and with the permission's bit value
-    """
-    self.val &= ~val
 
