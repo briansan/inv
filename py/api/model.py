@@ -266,9 +266,18 @@ class ItemCategory(db.Model):
   def __init__(self,name):
     self.name = name
   def __repr__(self):
-    return '<ItemCategory %s' % self
+    return '<ItemCategory %s>' % self
   def __str__(self):
     return self.name
+  def __iter__(self):
+    yield ('id',self.id)
+    yield ('name',self.name)
+  @staticmethod
+  def info():
+    return {
+      'id':'category id',
+      'name':'category name'
+    }
 
 class ItemManufacturer(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -276,9 +285,18 @@ class ItemManufacturer(db.Model):
   def __init__(self,name):
     self.name = name
   def __repr__(self):
-    return '<ItemManufacturer %s' % self
+    return '<ItemManufacturer %s>' % self
   def __str__(self):
     return self.name
+  def __iter__(self):
+    yield ('id',self.id)
+    yield ('name',self.name)
+  @staticmethod
+  def info():
+    return {
+      'id':'manufacturer id',
+      'name':'manufacturer name'
+    }
 
 class LocationBuilding(db.Model):
   id = db.Column(db.Integer, primary_key=True)
@@ -286,9 +304,18 @@ class LocationBuilding(db.Model):
   def __init__(self,name):
     self.name = name
   def __repr__(self):
-    return '<LocationBuilding %s' % self
+    return '<LocationBuilding %s>' % self
   def __str__(self):
     return self.name
+  def __iter__(self):
+    yield ('id',self.id)
+    yield ('name',self.name)
+  @staticmethod
+  def info():
+    return {
+      'id':'building id',
+      'name':'building name'
+    }
 
 class AssetInfo(db.Model):
   id = db.Column(db.Integer, primary_key=True)
