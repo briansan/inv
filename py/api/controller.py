@@ -30,6 +30,7 @@ def login():
       y = auth.auth_inv(uname,pw) # authenticate
       if not (type(y) is str): # string means failure
         session['uname'] = dict(y) # success => welcome
+        session['uname']['start'] = int(session['uname']['start'].strftime('%s'))
         return view.welcome(y.fname + ' ' + y.lname)
       else: # failure => go away
         return view.failure(y)
@@ -65,6 +66,16 @@ def parse_location():
     raise Exception(k.args[0])
   return y
 
+def parse_item():
+  y = {}
+  try:
+    y['category'] = request.form['category']
+    y['manufacturer'] = request.form['manufacturer']
+    y['model'] = request.form['model']
+  except KeyError as k:
+    raise Exception(k.args[0])
+  return y
+
 """
   create methods
 """
@@ -73,6 +84,8 @@ def add(entity):
     try:
       return add_methods[entity]()
     except KeyError as k:
+      import traceback
+      print traceback.format_exc()
       return view.failure('invalid entity '+k.message)
   else:
     return view.request_login()
@@ -85,15 +98,22 @@ def add_location():
     except Exception as k:
       return view.failure('missing field: '+k.message)
     # add the location
-    # model.db.session.add(location)
-    # model.db.session.commit()
-
-    return view.success(location)
+    x = methods.create_location(location)
+    return view.success(dict(x))
   else:
     return view.keep_away()
 
 def add_item():
-  return view.success('add item')
+  if check_auth(methods.ItemCreate):
+    try:
+      item = parse_item()
+    except Exception as k:
+      return view.failure('missing field: '+k.message)
+    # add the item
+    x = methods.create_item(item)
+    return view.success(dict(x))
+  else:
+    return view.keep_away()
 
 def add_asset():
   return view.success('add asset')
@@ -134,13 +154,38 @@ def vw(entity):
     return view.request_login()
 
 def view_user():
-  return view.success('view user')
+  return view.success(session['uname'])
 
 def view_location():
-  return view.success('view location')
+  if check_auth(methods.LocationRead):
+    y = None
+    if len(request.args) == 0:
+      y = methods.read_location_all()
+    else:
+      building = request.args.get('building')
+      y = methods.read_location_by_building(building)
+    return view.success(y)
+  else:
+    return view.keep_away()
 
 def view_item():
-  return view.success('view item')
+  if check_auth(methods.ItemRead):
+    y = None
+    if len(request.args) == 0:
+      y = methods.read_item_all()
+    else:
+      category = request.args.get('category')
+      if category:
+        y = methods.read_item_by_category(category)
+      manufacturer = request.args.get('manufacturer')
+      if manufacturer:
+        y = methods.read_item_by_manufacturer(manufacturer)
+      model = request.args.get('model')
+      if model:
+        y = methods.read_item_by_model(model)
+    return view.success(y)
+  else:
+    return view.keep_away()
 
 def view_asset():
   return view.success('view asset')
@@ -153,7 +198,6 @@ def view_building():
 
 def view_category():
   return view.success('view category')
-
 def view_manufacturer():
   return view.success('view manufacturer')
 
