@@ -28,3 +28,9 @@ def welcome(uname):
 
 def goaway(uname):
   return failure('you don\'t even go here %s...'%uname)
+
+def keep_away():
+  return failure('insufficient permissions')
+
+def missing_field(field):
+  return failure('missing field: '+field)
