@@ -3,50 +3,42 @@ import model, view, methods, controller
 from crossdomain import crossdomain
 
 api = Blueprint('admin',__name__)
+origin='http://vecr.ece.villanova.edu'
 
 @api.route('/')
-@crossdomain(origin='http://vecr.ece.villanova.edu')
+@crossdomain(origin=origin)
 def root():
-  if 'uname' in session:
-    return view.all_methods()
-  else:
-    return view.request_login()
+  return controller.root()
 
-def logged_in():
-  return session.get('uname')
-  
 @api.route('/login',methods=['GET','POST'])
-@crossdomain(origin='http://vecr.ece.villanova.edu')
+@crossdomain(origin=origin)
 def login():
-  if not logged_in():     # make sure not already logged in
-    if request.method=='POST': # check method type
-      uname = request.form['uname'] # get username
-      passwd = request.form['passwd'] # get username
-      y = controller.login(uname,passwd)
-      if not (type(y) is str): # authenticate the user
-        session['uname'] = dict(y) # success => welcome
-        return view.welcome(y.fname +' '+y.lname)
-      else: # failure => go away
-        return view.failure(y)
-    else: # GET => display login menu
-      return view.login()
-  else:
-    return view.failure('you\'re already logged in...')
+  return controller.login()
       
 @api.route('/logout',methods=['GET','POST'])
-@crossdomain(origin='http://vecr.ece.villanova.edu')
+@crossdomain(origin=origin)
 def logout():
-  if logged_in():
-    session.pop('uname',None)
-    return view.success('bye bye!')
-  else:
-    return view.failure('you didn\'t login...')
+  return controller.logout()
 
-@api.route('/users')
-@crossdomain(origin='http://vecr.ece.villanova.edu')
-def users():
-  pass
-  return ':)'
+@api.route('/add/<entity>', methods=['POST'])
+@crossdomain(origin=origin)
+def add(entity):
+  return controller.add(entity)
+
+@api.route('/view/<entity>')
+@crossdomain(origin=origin)
+def vw(entity):
+  return controller.vw(entity)
+
+@api.route('/edit/<entity>/<id>', methods=['POST'])
+@crossdomain(origin=origin)
+def edit(entity):
+  return controller.edit(entity)
+
+@api.route('/rm/<entity>/<id>', methods=['DELETE'])
+@crossdomain(origin=origin)
+def rm(entity):
+  return controller.rm(entity)
 
 def create_app(fname):
   # initialize and configure the app
