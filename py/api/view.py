@@ -34,3 +34,9 @@ def keep_away():
 
 def missing_field(field):
   return failure('missing field: '+field)
+ 
+def already_exists(entity):
+  return failure(entity+' already exists')
+
+def dne(entity):
+  return failure('this ' + entity + ' does not exists')
