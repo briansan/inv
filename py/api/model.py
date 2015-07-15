@@ -192,14 +192,14 @@ class Asset(db.Model):
     yield ('item', dict(self.item))
     yield ('purchased', self.purchased)
     yield ('img', self.img)
-    yield ('owner', dict(self.owner))
-    yield ('holder', dict(self.holder))
+    yield ('owner', dict(self.owner) if self.owner else None)
+    yield ('holder', dict(self.holder) if self.holder else None)
     yield ('price', self.price)
     yield ('receipt', self.receipt)
     yield ('ip', self.ip)
     yield ('comments', self.comments)
-    yield ('home', dict(self.home))
-    yield ('current', dict(self.current))
+    yield ('home', dict(self.home) if self.home else None)
+    yield ('current', dict(self.current) if self.current else None)
 
   @staticmethod
   def info():
