@@ -54,7 +54,7 @@ class InvTest(TestCase):
 
   def test_item(self):
     from model import Item
-    item = Item.query.filter(Item.manufacturer.has(name='Dell')).first()
+    item = Item.query.filter(Item.manufacturer.has(name='Dell'),Item.category.has(name='Computer')).first()
     assert item in db.session
     assert item.manufacturer in db.session
     assert item.category in db.session
@@ -68,7 +68,7 @@ class InvTest(TestCase):
 
   def test_asset(self):
     from model import AssetInfo, Asset
-    asset = Asset.query.filter(Asset.tag.has(ece='ee02547')).first()
+    asset = Asset.query.filter(Asset.tag.has(ece='ee02547'),Asset.ip.is_('153.104.47.23')).first()
     assert asset in db.session
     assert str(asset) == 'ee02547: Dell Optiplex 360 (Computer)'
 
