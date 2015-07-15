@@ -32,13 +32,13 @@ def vw(entity):
 
 @api.route('/edit/<entity>/<id>', methods=['POST'])
 @crossdomain(origin=origin)
-def edit(entity):
-  return controller.edit(entity)
+def edit(entity,id):
+  return controller.edit(entity,id)
 
 @api.route('/rm/<entity>/<id>', methods=['DELETE'])
 @crossdomain(origin=origin)
-def rm(entity):
-  return controller.rm(entity)
+def rm(entity,id):
+  return controller.rm(entity,id)
 
 def create_app(fname):
   # initialize and configure the app
