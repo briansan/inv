@@ -164,13 +164,16 @@ def read_location_all():
   x = Location.query.filter_by().all()
   return list_obj2dict(x)
 
+def read_location(id):
+  return Location.query.filter_by(id=id).first()
+
 def update_location(id,x):
   """
    @param id int the id of the building
    @param x dict key/value pairs of the updated values
    @return loc Location or None
   """
-  loc = Location.query.filter_by(id=id).first()
+  loc = read_location(id)
   if not loc: return None
   # building name
   new_build = x.get('building')
@@ -329,13 +332,16 @@ def read_item_all():
   x = Item.query.filter_by().all()
   return list_obj2dict(x)
 
+def read_item(id):
+  return Item.query.filter_by(id=id).first()
+
 def update_item(id,x):
   """
    @param id int the id of the item
    @param x dict key/value pairs of the updated values
    @return i Item or None
   """
-  i = Item.query.filter_by(id=id).first()
+  i = read_item(id)
   if not i: return None
   # item category
   new_cat = x.get('category')
@@ -359,7 +365,7 @@ def delete_item(id):
    @param id int the id of the item to delete
    @return bool True for success, False for failure
   """
-  i = Item.query.filter_by(id=id).first()
+  i = read_item(id)
   if not i: return False
   db.session.delete(i)
   save()
@@ -414,13 +420,16 @@ def create_asset(x):
 def read_asset_all():
   return list_obj2dict(Asset.query.filter_by().all())
 
+def read_asset(id):
+  return Asset.query.filter_by(id=id).first()
+
 def update_asset(id,x):
   """
    @param id int the id of the asset to update
    @param x dict key/value pairs of the updated values
    @return a Asset or None
   """
-  a = Asset.query.filter_by(id=id).first()
+  a = read_asset(id)
   if not a: return None
   a.tag.ece = x['tag_ece']
   a.tag.vu = x['tag_vu']
@@ -446,12 +455,60 @@ def delete_asset(id):
   """
    @param id int the id of the asset to delete
   """
-  a = Asset.query.filter_by(id=id).first()
+  a = read_asset(id)
   if not a: return False
   db.session.delete(a.tag)
   db.session.delete(a)
   save()
   return True
+
+"""
+ inventory methods
+"""
+def create_inv(x):
+  who = read_user(x['who'])
+  what = read_asset(x['what'])
+  when = datetime.fromtimestamp(x['when'])
+  where = read_location(x['where'])
+  inv = Inventory(who,what,when,where)
+  db.session.add(inv)
+  save()
+  return inv
+
+def read_inv(id):
+  return Inventory.query.filter_by(id=id).first()
+
+def read_inv_all():
+  return Inventory.query.filter_by().all()
+
+def read_inv_by_user(id):
+  return Inventory.query.filter(Inventory.who.has(id=id)).all()
+
+def read_inv_by_asset(id):
+  return Inventory.query.filter(Inventory.what.has(id=id)).all()
+
+def read_inv_by_location(id):
+  return Inventory.query.filter(Inventory.where.has(id=id)).all()
+
+def read_inv_by_date(date):
+  date = datetime.fromtimestamp(date).date()
+  return Inventory.query.filter(Inventory.when.date() == date).all()
+
+def update_inv(id,x):
+  inv = read_inv(id)
+  if not inv: return None
+  inv.who = User.query.filter_by(id=x['who'])
+  inv.what = Asset.query.filter_by(id=x['what'])
+  inv.when = datetime.fromtimestamp(x['when'])
+  inv.where = Location.query.filter_by(id=x['where'])
+  save()
+  return inv
+
+def delete_inv(id):
+  inv = read_inv(id)
+  if not inv: return False
+  db.session.delete(inv)
+  save()
 
 # dictionary of information about the methods
 def method_desc(name,desc,usage,supports,more=None):
