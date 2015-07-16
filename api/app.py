@@ -33,7 +33,7 @@ def vw_all(entity):
 @api.route('/view/<entity>/<id>')
 @crossdomain(origin=origin)
 def vw(entity,id):
-  return controller.vw(entity,id)
+  return controller.vw(entity,int(id))
 
 @api.route('/view/user')
 @crossdomain(origin=origin)
