@@ -43,39 +43,69 @@ class InvTest(TestCase):
     db.session.commit()
 
   def tearDown(self):
+    self.client.get('/logout')
     db.session.remove()
     db.drop_all()
 
-  def test_user(self):
+  def add_user(self):
+    
+  def get_user(self):
     from model import User
-    user = User.query.filter_by(uname='bob').first()
-    assert user in db.session
+    return User.query.filter_by(uname='bob').first()
+
+  def get_item(self):
+    from model import Item
+    return Item.query.filter(Item.manufacturer.has(name='Dell'),Item.category.has(name='Computer')).first()
+
+  def get_location(self):
+    from model import Location
+    return Location.query.filter_by(room='008').first()
+
+  def get_asset(self):
+    from model import AssetInfo, Asset
+    return Asset.query.filter(Asset.tag.has(ece='ee02547'),Asset.ip.is_('153.104.47.23')).first()
+    
+  def get_inv(self):
+    from model import Inventory
+    return Inventory.query.filter(Inventory.who.has(uname='bob')).first()
+
+  def get_user_api(self):
+    return self.client.get('/view/user')
+
+  def get_login(self):
+    from getpass import getpass
+    uname = raw_input('Username: ')
+    passwd = getpass('Password: ')
+    return self.client.post('/login', data=dict(
+      uname=uname,passwd=passwd
+    ), follow_redirects=True)
+
+  def test_api(self):
+    r = self.get_login()
+    assert 'welcome' in r.json['msg']
+
+  def test_user(self):
+    user = self.get_user()
     assert str(user) == 'bob'
 
   def test_item(self):
-    from model import Item
-    item = Item.query.filter(Item.manufacturer.has(name='Dell'),Item.category.has(name='Computer')).first()
-    assert item in db.session
+    item = self.get_item()
     assert item.manufacturer in db.session
     assert item.category in db.session
     assert str(item) == 'Dell Optiplex 360 (Computer)'
 
   def test_location(self):
-    from model import Location
-    loc = Location.query.filter_by(room='008').first()
-    assert loc in db.session
+    loc = self.get_location()
+    assert loc.building in db.session
     assert str(loc) == 'CEER 008'
 
   def test_asset(self):
-    from model import AssetInfo, Asset
-    asset = Asset.query.filter(Asset.tag.has(ece='ee02547'),Asset.ip.is_('153.104.47.23')).first()
+    asset = self.get_asset()
     assert asset in db.session
     assert str(asset) == 'ee02547: Dell Optiplex 360 (Computer)'
 
   def test_inv(self):
-    from model import Inventory
-    inv = Inventory.query.filter(Inventory.who.has(uname='bob')).first()
-    assert inv in db.session
+    inv = self.get_inv()
     assert 'bob for ee02547: Dell Optiplex 360 (Computer)' in str(inv)
   
 if __name__ == '__main__':
