@@ -479,20 +479,20 @@ def read_inv(id):
   return Inventory.query.filter_by(id=id).first()
 
 def read_inv_all():
-  return Inventory.query.filter_by().all()
+  return list_obj2dict(Inventory.query.filter_by().all())
 
 def read_inv_by_user(id):
-  return Inventory.query.filter(Inventory.who.has(id=id)).all()
+  return list_obj2dict(Inventory.query.filter(Inventory.who.has(id=id)).all())
 
 def read_inv_by_asset(id):
-  return Inventory.query.filter(Inventory.what.has(id=id)).all()
+  return list_obj2dict(Inventory.query.filter(Inventory.what.has(id=id)).all())
 
 def read_inv_by_location(id):
-  return Inventory.query.filter(Inventory.where.has(id=id)).all()
+  return list_obj2dict(Inventory.query.filter(Inventory.where.has(id=id)).all())
 
 def read_inv_by_date(date):
   date = datetime.fromtimestamp(date).date()
-  return Inventory.query.filter(Inventory.when.date() == date).all()
+  return list_obj2dict(Inventory.query.filter(Inventory.when.date() == date).all())
 
 def update_inv(id,x):
   inv = read_inv(id)
