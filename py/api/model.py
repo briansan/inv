@@ -53,7 +53,7 @@ class User(db.Model):
     yield ('lname',self.lname)
     yield ('grp',self.grp)
     yield ('perm',self.perm)
-    yield ('start',self.start)
+    yield ('start',int(self.start.strftime("%s")))
   
   @staticmethod
   def info():
