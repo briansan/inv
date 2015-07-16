@@ -90,7 +90,6 @@ def auth_inv(uname,passwd):
     # search for user in db
     u = User.query.filter_by(uname=uname).first()
     if not u: # user does not exist...
-      from methods import DefaultPermissions
       # get the name
       fname = y[1]['givenname'][0]
       lname = y[1]['sn'][0]
