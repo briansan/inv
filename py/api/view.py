@@ -1,14 +1,6 @@
+from flask import Response
 import json
 import methods
-
-def request_login():
-  return 'please log in first'
-
-def method_desc(name,desc,supports):
-  return {'name':name,'desc':desc,'supports':supports}
-
-def all_methods():
-  return json.dumps(methods.info,indent=4,separators=(',',': '))
 
 def login():
   return '''<form action="" method="post">
@@ -17,14 +9,23 @@ def login():
               <input type=submit>
          </form>'''
 
+def json_response(d):
+  return Response(response=d, status=200, mimetype="application/json")
+
 def success(msg):
-  return json.dumps({'success':True,'msg':msg})
+  return json_response(json.dumps({'success':True,'msg':msg}))
 
 def failure(msg):
-  return json.dumps({'success':False,'msg':msg})
+  return json_response(json.dumps({'success':False,'msg':msg}))
 
 def welcome(uname):
   return success('welcome %s!'%uname)
+
+def all_methods():
+  return success(methods.info)
+
+def request_login():
+  return failure('please log in first')
 
 def goaway(uname):
   return failure('you don\'t even go here %s...'%uname)
