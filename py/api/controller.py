@@ -30,7 +30,6 @@ def login():
       y = auth.auth_inv(uname,pw) # authenticate
       if not (type(y) is str): # string means failure
         session['uname'] = dict(y) # success => welcome
-        session['uname']['start'] = int(session['uname']['start'].strftime('%s'))
         return view.welcome(y.fname + ' ' + y.lname)
       else: # failure => go away
         return view.failure(y)
@@ -101,6 +100,17 @@ def parse_asset():
     raise Exception(k.args[0])
   return y
 
+def parse_inv():
+  y = {}
+  try:
+    y['who'] = int(request.form['who'])
+    y['what'] = int(request.form['who'])
+    y['when'] = int(request.form['who'])
+    y['where'] = int(request.form['who'])
+  except KeyError as k:
+    raise Exception(k.args[0])
+  return y
+
 """
   create methods
 """
@@ -153,7 +163,16 @@ def add_asset():
     return view.keep_away()
 
 def add_inv():
-  return view.success('add inv')
+  if check_auth(methods.InvCreate):
+    try:
+      inv = parse_inv()
+    except Exception as k:
+      return view.missing_field(k.message)
+    # add the inv
+    x = methods.create_inv(inv)
+    return view.success(dict(x)) if x else view.already_exists('inventory')
+  else:
+    return view.keep_away()
 
 def add_building():
   if check_auth(methods.LocBuildEdit):
@@ -205,10 +224,10 @@ add_methods = {
   read methods
 """
 
-def vw(entity):
+def vw(entity,id=0):
   if logged_in():
     try:
-      return vw_methods[entity]()
+      return vw_methods[entity](id)
     except KeyError as k:
       return view.failure('invalid entity '+k.message)
   else:
@@ -242,51 +261,82 @@ def filter(x):
     if good: y.append(el)
   return y
 
-def view_user():
-  return view.success(session['uname'])
+def view_self():
+  if check_auth(methods.UserReadSelf):
+    return view.success(session['uname'])
+  else:
+    return view.keep_away()
 
-def view_location():
+def view_user(id=0):
+  if check_auth(methods.UserReadWorld):
+    if id is 0:
+      x = methods.read_user_all()
+      y = filter(x) if len(request.args) > 0 else x
+    else:
+      y = dict(methods.read_user(id))
+    return view.success(y)
+  else:
+    return view.keep_away()
+  
+def view_location(id=0):
   if check_auth(methods.LocationRead):
-    x = methods.read_location_all()
-    y = filter(x) if len(request.args) > 0 else x
+    if id is 0:
+      x = methods.read_location_all()
+      y = filter(x) if len(request.args) > 0 else x
+    else:
+      y = dict(methods.read_location(id))
     return view.success(y)
   else:
     return view.keep_away()
 
-def view_item():
+def view_item(id=0):
   if check_auth(methods.ItemRead):
-    x = methods.read_item_all()
-    y = filter(x) if len(request.args) > 0 else x
+    if id is 0:
+      x = methods.read_item_all()
+      y = filter(x) if len(request.args) > 0 else x
+    else:
+      y = dict(methods.read_item(id))
     return view.success(y)
   else:
     return view.keep_away()
 
-def view_asset():
+def view_asset(id=0):
   if check_auth(methods.AssetRead):
-    x = methods.read_asset_all()
-    y = filter(x) if len(request.args) > 0 else x
+    if id is 0:
+      x = methods.read_asset_all()
+      y = filter(x) if len(request.args) > 0 else x
+    else:
+      y = dict(methods.read_asset(id))
     return view.success(y)
   else:
     return view.keep_away()
 
-def view_inv():
-  return view.success('view inv')
+def view_inv(id=0):
+  if check_auth(methods.InvRead):
+    if id is 0:
+      x = methods.read_inv_all()
+      y = filter(x) if len(request.args) > 0 else x
+    else:
+      y = dict(methods.read_inv(id))
+    return view.success(y)
+  else:
+    return view.keep_away()
 
-def view_building():
+def view_building(id=0):
   if check_auth(methods.LocBuildView):
     y = methods.read_building_all()
     return view.success(y)
   else:
     return view.keep_away()
 
-def view_category():
+def view_category(id=0):
   if check_auth(methods.ItemCatView):
     y = methods.read_category_all()
     return view.success(y)
   else:
     return view.keep_away()
 
-def view_manufacturer():
+def view_manufacturer(id=0):
   if check_auth(methods.ItemManView):
     y = methods.read_manufacturer_all()
     return view.success(y)
@@ -354,12 +404,21 @@ def edit_asset(id):
   else: return view.keep_away()
 
 def edit_inv(id):
-  return view.success('edit inv')
+  if check_auth(methods.InvUpdate):
+    try:
+      x = parse_inv()
+    except Exception as k:
+      return view.missing_field(k.message)
+    y = methods.update_inv(id,x)
+    # check the results
+    if y: return view.success(dict(y))
+    else: return view.dne('inventory')
+  else: return view.keep_away()
 
 def edit_building(id):
   if check_auth(methods.LocBuildEdit):
     try:
-      x = request.args['name']
+      x = request.form['name']
     except KeyError as k:
       return view.missing_field(k.args[0])
     y = methods.update_building(id,x)
@@ -370,7 +429,7 @@ def edit_building(id):
 def edit_category(id):
   if check_auth(methods.ItemCatEdit):
     try:
-      x = request.args['name']
+      x = request.form['name']
     except KeyError as k:
       return view.missing_field(k.args[0])
     y = methods.update_category(id,x)
@@ -381,7 +440,7 @@ def edit_category(id):
 def edit_manufacturer(id):
   if check_auth(methods.ItemManEdit):
     try:
-      x = request.args['name']
+      x = request.form['name']
     except KeyError as k:
       return view.missing_field(k.args[0])
     y = methods.update_manufacturer(id,x)
@@ -390,7 +449,7 @@ def edit_manufacturer(id):
   else:return view.keep_away()
 
 edit_methods = {
-  'user': edit_user,
+  'user': edit_user_self,
   'location': edit_location,
   'item': edit_item,
   'asset': edit_asset,
@@ -454,7 +513,7 @@ def rm_asset(id):
     man = model.Asset.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
-    return view.success('manufacturer removed')
+    return view.success('asset removed')
   else:
     return view.keep_away()
 
@@ -463,7 +522,7 @@ def rm_inv(id):
     man = model.Inventory.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
-    return view.success('manufacturer removed')
+    return view.success('inventory removed')
   else:
     return view.keep_away()
 
