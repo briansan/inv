@@ -3,7 +3,7 @@ import model, view, methods, controller
 from crossdomain import crossdomain
 
 api = Blueprint('admin',__name__)
-origin='http://vecr.ece.villanova.edu'
+origin='http://bread.ece.villanova.edu'
 
 @api.route('/')
 @crossdomain(origin=origin)
@@ -27,15 +27,40 @@ def add(entity):
 
 @api.route('/view/<entity>')
 @crossdomain(origin=origin)
-def vw(entity):
-  return controller.vw(entity)
+def vw_all(entity):
+  return vw(entity,0)
+
+@api.route('/view/<entity>/<id>')
+@crossdomain(origin=origin)
+def vw(entity,id):
+  return controller.vw(entity,id)
+
+@api.route('/view/user')
+@crossdomain(origin=origin)
+def vw_self():
+  return controller.view_user()
+
+@api.route('/view/user/<id>')
+@crossdomain(origin=origin)
+def vw_user(id):
+  return controller.view_user_all(id)
+
+@api.route('/view/user/group')
+@crossdomain(origin=origin)
+def vw_user_groups():
+  return view.success(model.User.Groups.info)
+
+@api.route('/view/asset/status')
+@crossdomain(origin=origin)
+def vw_asset_statuses():
+  return view.success(model.Asset.Status.info)
 
 @api.route('/edit/<entity>/<id>', methods=['POST'])
 @crossdomain(origin=origin)
 def edit(entity,id):
   return controller.edit(entity,id)
 
-@api.route('/rm/<entity>/<id>', methods=['DELETE'])
+@api.route('/rm/<entity>/<id>')
 @crossdomain(origin=origin)
 def rm(entity,id):
   return controller.rm(entity,id)
