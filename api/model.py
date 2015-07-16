@@ -231,7 +231,7 @@ class Inventory(db.Model):
   what = db.relationship('Asset', backref=db.backref('invs', lazy='dynamic'))
   where = db.relationship('Location', backref=db.backref('invs', lazy='dynamic'))
 
-  def __init__(self,who,what,where,when=datetime.now()):
+  def __init__(self,who,what,when=datetime.now(),where=None):
     self.who = who
     self.what = what
     self.when = when
@@ -245,10 +245,10 @@ class Inventory(db.Model):
 
   def __iter__( self ):
     yield ('id',self.id)
-    yield ('who',self.who)
-    yield ('what',self.what)
-    yield ('when',self.when)
-    yield ('where',self.where)
+    yield ('who',dict(self.who))
+    yield ('what',dict(self.what))
+    yield ('when',int(self.when.strftime("%s")))
+    yield ('where',dict(self.where))
 
   @staticmethod
   def info():
