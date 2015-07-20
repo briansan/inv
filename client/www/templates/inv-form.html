@@ -1,0 +1,36 @@
+<ion-view view-title="Add Inventory" class="add-item-page">
+  <ion-nav-buttons side="left">
+    <button class="button button-clear button-assertive" ng-click="cancel()">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-balanced" ng-click="done()">
+      <i class="icon ion-checkmark-round"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content scroll="false">
+
+    <div class="list card">
+        <button class="button button-full button-assertive">
+          Select an Asset
+        </button>
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Location
+        </div>
+        <select>
+          <option>CEER 008</option>
+          <option>CEER 212</option>
+          <option>CEER 307</option>
+        </select>
+      </label>
+    </div>
+
+  <button class="button button-full button-royal" ng-click="logout()">
+    Logout
+  </button>
+
+  </ion-content>
+
+</ion-view>

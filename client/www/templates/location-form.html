@@ -1,0 +1,31 @@
+<ion-view view-title="Add Location" class="add-item-page">
+  <ion-nav-buttons side="left">
+    <button class="button button-clear button-assertive" ng-click="cancel()">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-balanced" ng-click="done()">
+      <i class="icon ion-checkmark-round"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content scroll="false">
+
+    <div class="list card">
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Building
+        </div>
+        <select>
+          <option>CEER</option>
+          <option>Tolentine</option>
+          <option>Add a Building</option>
+        </select>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Room">
+      </label>
+    </div>
+
+  </ion-content>
+</ion-view>

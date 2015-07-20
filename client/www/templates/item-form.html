@@ -1,0 +1,43 @@
+<ion-view view-title="Add Item" class="add-item-page">
+  <ion-nav-buttons side="left">
+    <button class="button button-clear button-assertive" ng-click="cancel()">
+      <i class="icon ion-close-round"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-nav-buttons side="right">
+    <button class="button button-clear button-balanced" ng-click="done()">
+      <i class="icon ion-checkmark-round"></i>
+    </button>
+  </ion-nav-buttons>
+  <ion-content scroll="false">
+
+    <div class="list card">
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Category
+        </div>
+        <select>
+          <option>Computer</option>
+          <option>Monitor</option>
+          <option>Oscilloscope</option>
+          <option>Add a Category</option>
+        </select>
+      </label>
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Manufacturer
+        </div>
+        <select>
+          <option>Dell</option>
+          <option>Gateway</option>
+          <option>Agilient</option>
+          <option>Add a Manufacturer</option>
+        </select>
+      </label>
+      <label class="item item-input">
+        <input type="text" placeholder="Model">
+      </label>
+    </div>
+
+  </ion-content>
+</ion-view>
