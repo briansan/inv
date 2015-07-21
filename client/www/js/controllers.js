@@ -1,82 +1,105 @@
 angular.module('inv.controllers', ['ionic', 'inv.services'])
 
 /*
-Controller for our tab bar
+ Root Controller 
 */
-.controller('AddCtrl', function($scope, $ionicModal, User) {
+.controller('RootCtrl', function($scope, $ionicModal, $timeout, $state, $window, User) {
+  //=============
+  // login logic
+  //=============
+
   // init login data
   $scope.loginData = {};
 
-  // create login modal used for later
+  // create login modal view
   $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
+    scope: $scope,
+    // no closing allow :)
+    backdropClickToClose: false,
+    hardwareBackButtonClose: false
   }).then(function(modal) {
+    // set the modal property
     $scope.modal = modal;
   });
 
-  // triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
-
-  // open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
-
   // perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    if (User.auth($scope.loginData.username, $scope.loginData.password)) {
-      console.log('login success')
-    } else {
-      console.log('login fail')
+  $scope.doLogin = function(i) {
+    // pass the credentials into the user factory
+    User.auth(i.username,i.password)
+    .then(function(response) { 
+      // display the response
+      $scope.response = response.data.msg
+      $scope.success = response.data.success
+      // close the modal dialog if success
+      if (response.data.success) {
+        $timeout( function() {
+          $scope.modal.hide()
+        }, 1000);
+      }
     }
-  }
+  )}
 
+  // function to trigger the login view if not logged in
   $scope.$on('$ionicView.enter', function(e) {
     // checking authentication
-    User.getSession(function(data) {
+    User.getSession().success(function(data) {
       // success is false if no session
       if (!data.success) {
         // open a modal controller
-        $ionicModal.fromTemplateUrl('templates/login.html', {
-          scope: $scope
-        }).then(function(modal) {
-          modal.show()
-        })
+        $scope.modal.show()
       }
     })
   });
+
+  $scope.add = function() {
+    $state.go('add.inv')
+  }
+  $scope.logout = function() {
+    User.destroySession()
+    $window.location.reload(true)
+  }
+})
+
+/*
+Controller for our tab bar
+*/
+.controller('AddCtrl', function($scope, $ionicModal, $timeout, User, $ionicHistory) {
+
 })
 
 /*
 Controller for the Add Inventory page
 */
-.controller('AddInvCtrl', function($scope, User) {
-  var logout = function() {
-    User.destroySession()
-    console.log('logout')
+.controller('AddInvCtrl', function($scope, $state) {
+  $scope.cancel = function() {
+    $state.go('root');
   }
 })
 
 /*
 Controller for the Add Asset page
 */
-.controller('AddAssetCtrl', function($scope) {
-
+.controller('AddAssetCtrl', function($scope, $state) {
+  $scope.cancel = function() {
+    $state.go('root');
+  }
 })
 
 /*
 Controller for the Add Item page
 */
-.controller('AddItemCtrl', function($scope) {
-
+.controller('AddItemCtrl', function($scope, $state) {
+  $scope.cancel = function() {
+    $state.go('root');
+  }
 })
 
 
 /*
 Controller for the Add Location page
 */
-.controller('AddLocationCtrl', function($scope) {
-
+.controller('AddLocationCtrl', function($scope, $state) {
+  $scope.cancel = function() {
+    $state.go('root');
+  }
 })
