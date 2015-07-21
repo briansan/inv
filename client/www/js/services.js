@@ -1,3 +1,11 @@
+var json2form = function(json) {
+  var y = [];
+  for (var x in json) {
+    y.push(encodeURIComponent(x) + '=' + encodeURIComponent(json[x]));
+  }
+  return y.join('&');
+}
+
 angular.module('inv.services', ['ngResource'])
 
 .factory('User', function($http, SERVER) {
@@ -29,41 +37,33 @@ angular.module('inv.services', ['ngResource'])
 
   // authentication method
   o.auth = function(uname,passwd) {
-    var y = false;
     // try to login through server
-    $http.post(login, {uname:uname, passwd:passwd}).success(function(data) {
+    return $http.post(login, json2form({uname:uname, passwd:passwd})).success(function(data) {
       // if successful, set the user data
       if (data.success) { 
         y = o.storeSession(); 
       }
     });
-    return y;
   }
 
   // stores user data into session obj
   o.storeSession = function() {
     // get the user data
-    var x = o.getSession(), y = false;
-    if (x) {
+    o.getSession().success(function(data){
+      var x = data.msg;
       o.id = x.id;
       o.fname = x.fname;
       o.lname = x.lname;
       o.grp = x.grp;
       o.perm = x.perm;
       o.start = x.start;
-    }
-    return true;
+    });
   }
 
   // get session
-  o.getSession = function(success) {
-    var y = null;
+  o.getSession = function() {
     // make the request
-    $http.get(get).success(function(data) {
-      // if logged in, should return user data
-      if (data.success) success(data);
-    });
-    return y;
+    return $http.get(SERVER.url).success(function(){});
   }
 
   // logging out
