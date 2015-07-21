@@ -3,7 +3,7 @@ import model, view, methods, controller
 from crossdomain import crossdomain
 
 api = Blueprint('admin',__name__)
-origin='http://bread.ece.villanova.edu'
+origin='http://153.104.47.49:8100'
 
 @api.route('/')
 @crossdomain(origin=origin)
@@ -25,6 +25,16 @@ def logout():
 def add(entity):
   return controller.add(entity)
 
+@api.route('/count/<entity>/<by>')
+@crossdomain(origin=origin)
+def count_all(entity):
+  return controller.count(entity,by)
+
+@api.route('/count/<entity>/<by>/<id>')
+@crossdomain(origin=origin)
+def count(entity,by,id):
+  return controller.count(entity,by,id)
+
 @api.route('/view/<entity>')
 @crossdomain(origin=origin)
 def vw_all(entity):
@@ -38,12 +48,12 @@ def vw(entity,id):
 @api.route('/view/user')
 @crossdomain(origin=origin)
 def vw_self():
-  return controller.view_user()
+  return controller.view_self()
 
 @api.route('/view/user/<id>')
 @crossdomain(origin=origin)
 def vw_user(id):
-  return controller.view_user_all(id)
+  return controller.view_user(id)
 
 @api.route('/view/user/group')
 @crossdomain(origin=origin)
