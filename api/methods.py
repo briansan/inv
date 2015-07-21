@@ -140,6 +140,12 @@ def delete_building(id):
   save()
   return True
 
+def count_all_location(by):
+  return 0
+   
+def count_location(by,id):
+  return 0
+  
 def create_location(x):
   """
   @param x dict key/value pairs of the location to add
