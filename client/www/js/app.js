@@ -32,6 +32,12 @@ angular.module('inv', ['ionic', 'inv.controllers'])
   // Each state's controller can be found in controllers.js.
   $stateProvider
 
+  // root controller
+  .state('root', {
+    url: '/',
+    templateUrl: 'templates/root.html',
+    controller: 'RootCtrl'
+  })
 
   // Set up an abstract state for the tabs directive:
   .state('add', {
@@ -84,7 +90,7 @@ angular.module('inv', ['ionic', 'inv.controllers'])
       }
     })
   // If none of the above states are matched, use this as the fallback:
-  $urlRouterProvider.otherwise('/add/inv');
+  $urlRouterProvider.otherwise('/');
 
 })
 
@@ -92,5 +98,13 @@ angular.module('inv', ['ionic', 'inv.controllers'])
 .constant('SERVER', {
   // inv API server
   url: 'http://vecr.ece.villanova.edu:8000'
-
-});
+})
+.constant('AUTH_EVENTS', {
+  loginSuccess: 'auth-login-success',
+  loginFailed: 'auth-login-failed',
+  logoutSuccess: 'auth-logout-success',
+  sessionTimeout: 'auth-session-timeout',
+  notAuthenticated: 'auth-not-authenticated',
+  notAuthorized: 'auth-not-authorized'
+})
+;
