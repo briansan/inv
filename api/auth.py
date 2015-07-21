@@ -63,7 +63,7 @@ def auth_ldap(uid,passwd):
    using ldap to authenticate the user
   """
   import ldap
-  if len(passwd) is 0:
+  if not passwd or len(passwd) is 0:
     return 'Bad Password'
 
   conn = ldap.initialize('ldaps://ldaps.villanova.edu')
