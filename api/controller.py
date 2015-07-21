@@ -25,8 +25,9 @@ def login():
   if not logged_in():
     # get the user information if post requested
     if request.method=='POST':
-      uname = request.form['uname']
-      pw = request.form['passwd']
+      uname = request.form.get('uname')
+      pw = request.form.get('passwd')
+      print uname, pw
       y = auth.auth_inv(uname,pw) # authenticate
       if not (type(y) is str): # string means failure
         session['uname'] = dict(y) # success => welcome
@@ -49,7 +50,10 @@ def logout():
   authorization methods
 """
 def check_auth(method):
-  p = session['uname']['perm']
+  try:
+    p = session['uname']['perm']
+  except:
+    return False
   a = auth.Authorization(p)
   return a.chk(method)
 
@@ -111,6 +115,61 @@ def parse_inv():
     raise Exception(k.args[0])
   return y
 
+"""
+  count methods
+"""
+def count(entity,by,id=None):
+  if logged_in():
+    try: 
+      return count_methods[entity](by,id)
+    except KeyError as k:
+      import traceback
+      print traceback.format_exc()
+      return view.dne(k.message)
+  else:
+    return view.request_login()
+
+entities = ['location','item','asset','inv','building','category','manufacturer']
+
+def count_location( by, id ):
+  if check_auth(method.LocationRead):
+    if by in entities:
+      if id is None:
+        return methods.count_all_location(by)
+      else:
+        return methods.count_location(by,id)
+    else:
+      return view.dne(by)
+  else:
+    return view.keep_away()
+
+def count_item(by, id):
+  pass
+
+def count_asset(by, id):
+  pass
+
+def count_inv(by, id):
+  pass
+
+def count_building(by, id):
+  pass
+
+def count_category(by, id):
+  pass
+
+def count_manufacturer(by, id):
+  pass
+
+count_methods = {
+  'location': count_location,
+  'item': count_item,
+  'asset': count_asset,
+  'inv': count_inv,
+  'building': count_building,
+  'category': count_category,
+  'manufacturer': count_manufacturer
+}
 """
   create methods
 """
@@ -267,9 +326,9 @@ def view_self():
   else:
     return view.keep_away()
 
-def view_user(id=0):
+def view_user(id=None):
   if check_auth(methods.UserReadWorld):
-    if id is 0:
+    if id is None:
       x = methods.read_user_all()
       y = filter(x) if len(request.args) > 0 else x
     else:
