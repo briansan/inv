@@ -79,42 +79,52 @@ def auth_ldap(uid,passwd):
       return 'Wrong Password'
   return info
 
-def auth_inv(uname,passwd):
+def auth_inv(uname_or_token,passwd_or_method):
   """
    inv authentication 
   """
   from model import User
 
-  # try ldap
-  y = auth_ldap(uname,passwd)
-  # success
-  if type(y) is tuple:
-    # search for user in db
-    u = User.query.filter_by(uname=uname).first()
-    if not u: # user does not exist...
-      # get the name
-      fname = y[1]['givenname'][0]
-      lname = y[1]['sn'][0]
-      # get the group type
-      ou = y[1]['ou'] # ou = organizational unit
-      grp = User.Groups.NoGroup
-      if 'Students' in ou:
-        grp = User.Groups.Student
-      elif 'Employees' in ou:
-        grp = User.Groups.Employee
-      # set permissions
-      perm = DefaultPermissions[grp]
-      # create the user
-      u = User(uname,fname,lname,grp,perm)
-      # add user to db
-      from model import db
-      db.session.add(u)
-      db.session.commit()
+  # try token
+  u = User.verify_auth_token(uname_or_token)
+  if u:
+    return u
+
+  else:
+    # try ldap
+    y = auth_ldap(uname_or_token,passwd_or_method)
+    # success
+    if type(y) is tuple:
+      # search for user in db
+      u = User.query.filter_by(uname=uname_or_token).first()
+      if not u: # user does not exist...
+        # get the name
+        fname = y[1]['givenname'][0]
+        lname = y[1]['sn'][0]
+        # get the group type
+        ou = y[1]['ou'] # ou = organizational unit
+        grp = User.Groups.NoGroup
+        if 'Students' in ou:
+          grp = User.Groups.Student
+        elif 'Employees' in ou:
+          grp = User.Groups.Employee
+        # set permissions
+        perm = DefaultPermissions[grp]
+        # create the user
+        u = User(uname_or_token,fname,lname,grp,perm)
+        # add user to db
+        from model import db
+        db.session.add(u)
+        db.session.commit()
+
+  if u:
+    from flask import g
+    g.user = u
     return u
       
   # failure
-  elif type(y) is str: 
-    return y
+  if type(y) is str: 
+    return False
 
   # other?
   else:
