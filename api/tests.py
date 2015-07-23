@@ -28,7 +28,8 @@ class InvTest(TestCase):
     location = Location(building,'008')
     tag = AssetInfo('ee02547','13349')
     asset = Asset(tag,0,item,owner=u1,current=location,ip='153.104.47.23')
-    inv = Inventory(u1,asset,location)
+    import datetime
+    inv = Inventory(u1,asset,datetime.datetime.now(),location)
 
     # add to database
     db.session.add(u1)
@@ -43,12 +44,9 @@ class InvTest(TestCase):
     db.session.commit()
 
   def tearDown(self):
-    self.client.get('/logout')
     db.session.remove()
     db.drop_all()
 
-  def add_user(self):
-    
   def get_user(self):
     from model import User
     return User.query.filter_by(uname='bob').first()
@@ -76,13 +74,13 @@ class InvTest(TestCase):
     from getpass import getpass
     uname = raw_input('Username: ')
     passwd = getpass('Password: ')
-    return self.client.post('/login', data=dict(
-      uname=uname,passwd=passwd
-    ), follow_redirects=True)
+    import base64
+    auth = base64.encodestring(uname+':'+passwd)
+    return self.client.get('/api/v1/', headers={'Authorization':'Basic %s' % auth}, follow_redirects=True)
 
   def test_api(self):
     r = self.get_login()
-    assert 'welcome' in r.json['msg']
+    assert 'token' in r.json['msg']
 
   def test_user(self):
     user = self.get_user()
