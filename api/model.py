@@ -5,6 +5,7 @@
 """
 from datetime import datetime
 from flask.ext.sqlalchemy import SQLAlchemy
+from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSignature, SignatureExpired)
 
 db = SQLAlchemy()
 
@@ -55,6 +56,27 @@ class User(db.Model):
     yield ('perm',self.perm)
     yield ('start',int(self.start.strftime("%s")))
   
+  def generate_auth_token(self, expiration = 600):
+    from flask import current_app
+    app = current_app
+    print app.config['SECRET_KEY']
+    s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+    return s.dumps({'id':self.id})
+
+  @staticmethod
+  def verify_auth_token(token):
+    from flask import current_app
+    app = current_app
+    s = Serializer(app.config['SECRET_KEY'])
+    try:
+      data = s.loads(token)
+    except SignatureExpired:
+      return None # valid token, but expired
+    except BadSignature:
+      return None # invalid token
+    user = User.query.get(data['id'])
+    return user
+
   @staticmethod
   def info():
     return {
