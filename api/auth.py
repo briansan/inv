@@ -88,6 +88,8 @@ def auth_inv(uname_or_token,passwd_or_method):
   # try token
   u = User.verify_auth_token(uname_or_token)
   if u:
+    from flask import g
+    g.user = u
     return u
 
   else:
