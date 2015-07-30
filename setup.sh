@@ -10,17 +10,18 @@ fi
 echo "inv: updating Ubuntu"
 apt-get update &>/dev/null
 echo "inv: installing pkgs"
-apt-get install apache2 libapache2-mod-wsgi mysql-server python-dev python-pip -y &>/dev/null
+read -s -p "Enter a password: " pw
+echo -e "$pw\n$pw" | apt-get install apache2 libapache2-mod-wsgi mysql-server python-dev python-pip -y &>/dev/null
 echo "inv: installing python pkgs"
 pip install -r requirements.txt &>/dev/null
 
 # setup mysql
 echo "inv: initializing database"
-mysql -u root -p -e "create database inv"; 
+echo -e "$pw\n" | mysql -u root -p -e "create database inv"; 
 
 # setup dir
 echo "inv: setting up inv directory"
-cp -r server /var/www/inv
+ln -s `pwd`/server /var/www/inv
 
 # setup ssl
 echo "inv: setting up ssl"
