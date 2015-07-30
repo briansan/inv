@@ -99,7 +99,6 @@ def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
   for line in res.splitlines():
     for key in keys:
       if key in line:
-        print line
         kv = line.split(':')
         # preventing index out of range errors
         if len(kv) > 1:
@@ -134,7 +133,7 @@ def auth_inv(uname_or_token,passwd_or_method):
       u = User.query.filter_by(uname=uname_or_token).first()
       if not u: # user does not exist...
         # get the name
-        fname = y['givenname']
+        fname = y['givenname'][0] if type(y['givenname']) == list else y['givenname'] 
         lname = y['sn']
         # get the group type
         ou = y['ou'] # ou = organizational unit
