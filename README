@@ -1,0 +1,43 @@
+
+                  //\/\/ inv \//\//
+
+         just another inventory management system
+
+   - Background
+
+     In the spring of 2015, I was hired by the Vilanova
+     University Department of Electrical and Computer 
+     Engineering to work at their Electronic Support
+     office. There I saw a need for an inventorying system
+     so that we could have a better idea of what assets
+     we owned and where they were. I talked to my boss
+     about it and he had an Android app that kind of got
+     the job done but I assured him that I could do better.
+     Enter, inv.
+
+   - Introduction
+    
+     inv is really just another inventory management software,
+     or you could call it asset tracking. Either way, you're
+     keeping tabs on the things that you own.
+  
+     The core inv objects are: User, Item, Location, Asset, 
+     and Inventory. Assets are instances of an Item that are
+     owned by a certain User, and have a home Location.
+     An Inventory is a record that confirms that an Asset is
+     at some current Location held by some User at some 
+     date and time.
+
+   - Current Status
+    
+     While the backend component of this software is complete 
+     enough to utilize the basic functionality of this system,
+     there are a few more features that still must be implemented.
+
+     inv is in need of a frontend client which I am currently 
+     using the Android platform to implement. There is also a Python
+     script that one could use to interface with the backend server.
+
+     Ultimately, I hope to make this whole system deployable 
+     through an automated setup script.
+
