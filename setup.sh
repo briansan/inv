@@ -17,8 +17,12 @@ mysql -u root -p -e "create database inv";
 # setup dir
 cp -r server /var/www/inv
 
-# setup apache
+# setup ssl
 a2enmod ssl
+mkdir /etc/apache2/ssl
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
+
+# setup apache
 cp conf/inv.conf /etc/apache2/sites-available
 a2ensite inv
 service apache2 reload
