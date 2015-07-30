@@ -309,8 +309,8 @@ def delete_manufacturer(id):
 
 def item_exists(x):
   category = Item.category.has(name=x['category'])
-  manufacturer = Item.category.has(name=x['manufacturer'])
-  model = Item.category.is_(x['model'])
+  manufacturer = Item.manufacturer.has(name=x['manufacturer'])
+  model = Item.model.is_(x['model'])
   return Item.query.filter(category,manufacturer,model).first()
 
 def create_item(x):
@@ -382,7 +382,7 @@ def delete_item(id):
 """
 
 def asset_exists(x):
-  return Asset.query.filter(Asset.tag.has(ece=x['tag_ece'])).first()
+  return Asset.query.filter(Asset.tag_ece.is_(x['tag_ece'])).first()
 
 def create_asset(x):
   """
@@ -395,7 +395,7 @@ def create_asset(x):
     vu = x['tag_vu']
     unit = x['tag_unit']
     svc = x['tag_svc']
-    serial = x['tag_serial']
+    serial = x['serial']
     status = x['status']
     item_id = x['item'] #
     purchased_since1970 = x['purchased']
@@ -410,14 +410,13 @@ def create_asset(x):
     home_id = x['home'] #
     current_id = x['current'] #
     # convert id's into objects
-    tag = AssetInfo(ece,vu,unit,svc,serial)
     item = Item.query.filter_by(id=item_id).first()
     owner = User.query.filter_by(id=owner_id).first()
     holder = User.query.filter_by(id=holder_id).first()
     home = Location.query.filter_by(id=home_id).first()
     current = Location.query.filter_by(id=current_id).first()
     # create the asset
-    y = Asset(tag,status,item,purchased,img,owner,holder,price,receipt,ip,comments,home,current)
+    y = Asset(ece,status,item,purchased,img,owner,holder,home,current,comments,price,receipt,ip,vu,unit,svc,serial)
     # insert into db
     db.session.add(y)
     save()
@@ -437,11 +436,11 @@ def update_asset(id,x):
   """
   a = read_asset(id)
   if not a: return None
-  a.tag.ece = x['tag_ece']
-  a.tag.vu = x['tag_vu']
-  a.tag.unit = x['tag_unit']
-  a.tag.svc = x['tag_svc']
-  a.tag.serial = x['tag_serial']
+  a.tag_ece = x['tag_ece']
+  a.tag_vu = x['tag_vu']
+  a.tag_unit = x['tag_unit']
+  a.tag_svc = x['tag_svc']
+  a.serial = x['serial']
   a.status = x['status']
   a.item = Item.query.filter_by(id=x['item']).first()
   a.purchased = date.fromtimestamp(x['purchased']) if x['purchased'] else None
@@ -463,7 +462,6 @@ def delete_asset(id):
   """
   a = read_asset(id)
   if not a: return False
-  db.session.delete(a.tag)
   db.session.delete(a)
   save()
   return True
