@@ -128,7 +128,7 @@ class Item(db.Model):
 class Location(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   building_id = db.Column(db.Integer, db.ForeignKey('location_building.id'))
-  room = db.Column(db.String)
+  room = db.Column(db.String(8))
 
   building = db.relationship('LocationBuilding', backref=db.backref('locations', lazy='dynamic'))
 
