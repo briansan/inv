@@ -83,6 +83,8 @@ def auth_ldap(uid,passwd):
       return 'Wrong Password'
   return info
   """
+  print uid
+
   return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou'] )
 
 
@@ -98,8 +100,20 @@ def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
   for line in res.splitlines():
     for key in keys:
       if key in line:
+        print line
         kv = line.split(':')
-        y[kv[0]] = kv[1]
+        # preventing index out of range errors
+        if len(kv) > 1:
+          # already existing values should be put into a list
+          if y.get(kv[0]):
+            # if it's already a list then we can skip the next line
+            if not (type(y.get(kv[0])) == list):
+              y[kv[0]] = [ y[kv[0]] ]
+            # add it to the list
+            y[kv[0]].append(kv[1])
+          else:
+            y[kv[0]] = kv[1]
+  print y
   return y
 
 
@@ -113,7 +127,7 @@ def auth_inv(uname_or_token,passwd_or_method):
   # try token
   u = User.verify_auth_token(uname_or_token)
 
-  else:
+  if not u:
     # try ldap
     y = auth_ldap(uname_or_token,passwd_or_method)
     # success
@@ -139,19 +153,15 @@ def auth_inv(uname_or_token,passwd_or_method):
         from model import db
         db.session.add(u)
         db.session.commit()
-    # failure
-    else:
-      return False
 
   if u:
     from flask import g
     g.user = u
     return u
-      
-
-  # other?
+  # failure
   else:
-    raise Exception('The impossible has happened')
+    return False
+
 
 def auth_io(inv=False):
   """
