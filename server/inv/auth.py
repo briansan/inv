@@ -102,15 +102,17 @@ def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
         kv = line.split(':')
         # preventing index out of range errors
         if len(kv) > 1:
+          key = kv[0]
+          val = kv[1].strip(' ')
           # already existing values should be put into a list
-          if y.get(kv[0]):
+          if y.get(key):
             # if it's already a list then we can skip the next line
-            if not (type(y.get(kv[0])) == list):
-              y[kv[0]] = [ y[kv[0]] ]
+            if not (type(y.get(key)) == list):
+              y[key] = [ y[key] ]
             # add it to the list
-            y[kv[0]].append(kv[1])
+            y[key].append(val)
           else:
-            y[kv[0]] = kv[1]
+            y[key] = val
   return y
 
 
