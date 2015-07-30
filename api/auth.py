@@ -83,7 +83,6 @@ def auth_ldap(uid,passwd):
       return 'Wrong Password'
   return info
   """
-  print uid
 
   return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou'] )
 
@@ -113,7 +112,6 @@ def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
             y[kv[0]].append(kv[1])
           else:
             y[kv[0]] = kv[1]
-  print y
   return y
 
 
