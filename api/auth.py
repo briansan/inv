@@ -62,6 +62,10 @@ def auth_ldap(uid,passwd):
   """
    using ldap to authenticate the user
   """
+  """
+  OLD 
+  - pip installing the ldap is a pain in the butt
+  - connecting to the ldap server requires passing an ip filter
   import ldap
   if not passwd or len(passwd) is 0:
     return 'Bad Password'
@@ -78,6 +82,27 @@ def auth_ldap(uid,passwd):
     except:
       return 'Wrong Password'
   return info
+  """
+  return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou'] )
+
+
+def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
+  # get ldap info
+  import base64, getpass, requests
+  filt = {'filter':'uid=%s'%uid} # url encode the data
+  url = 'https://vecr.ece.villanova.edu/cgi/auth/ldapsearch/'
+  r = requests.post(url,auth=(uname,passwd),data=filt)
+  res = r.text
+  # parse through response
+  y = {}
+  for line in res.splitlines():
+    for key in keys:
+      if key in line:
+        kv = line.split(':')
+        y[kv[0]] = kv[1]
+  return y
+
+
 
 def auth_inv(uname_or_token,passwd_or_method):
   """
@@ -87,24 +112,20 @@ def auth_inv(uname_or_token,passwd_or_method):
 
   # try token
   u = User.verify_auth_token(uname_or_token)
-  if u:
-    from flask import g
-    g.user = u
-    return u
 
   else:
     # try ldap
     y = auth_ldap(uname_or_token,passwd_or_method)
     # success
-    if type(y) is tuple:
+    if 'givenname' in y:
       # search for user in db
       u = User.query.filter_by(uname=uname_or_token).first()
       if not u: # user does not exist...
         # get the name
-        fname = y[1]['givenname'][0]
-        lname = y[1]['sn'][0]
+        fname = y['givenname']
+        lname = y['sn']
         # get the group type
-        ou = y[1]['ou'] # ou = organizational unit
+        ou = y['ou'] # ou = organizational unit
         grp = User.Groups.NoGroup
         if 'Students' in ou:
           grp = User.Groups.Student
@@ -118,15 +139,15 @@ def auth_inv(uname_or_token,passwd_or_method):
         from model import db
         db.session.add(u)
         db.session.commit()
+    # failure
+    else:
+      return False
 
   if u:
     from flask import g
     g.user = u
     return u
       
-  # failure
-  if type(y) is str: 
-    return False
 
   # other?
   else:
