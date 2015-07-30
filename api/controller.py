@@ -5,8 +5,8 @@
           the methods described by inv/api/methods.py
 """
 
-from flask import request, session, g
-import auth, methods, model, view
+from flask import request, session, g, jsonify
+import auth, methods, model, view, util
 
 """
   authentication methods
@@ -16,7 +16,10 @@ def logged_in():
   return session.get('uname')
 
 def root():
-  token = g.user.generate_auth_token()
+  expire = None
+  if util.is_create():
+    expire = request.form.get('expire')
+  token = g.user.generate_auth_token(expire)
   return jsonify({'token':token.decode('ascii')})
 
 """
@@ -397,19 +400,33 @@ def parse_asset():
     y['tag_vu'] = request.form.get('tag_vu')
     y['tag_unit'] = request.form.get('tag_unit')
     y['tag_svc'] = request.form.get('tag_svc')
-    y['tag_serial'] = request.form.get('tag_serial')
+    y['serial'] = request.form.get('serial')
     y['status'] = int(request.form['status']) #
     y['item'] = int(request.form['item']) #
-    y['purchased'] = int(request.form.get('purchased'))
+
+    y['purchased'] = request.form.get('purchased')
+    y['purchased'] = int(y['purchased']) if y['purchased'] else None
+
     y['img'] = request.form.get('img')
-    y['owner'] = int(request.form.get('owner'))
-    y['holder'] = int(request.form.get('holder'))
-    y['price'] = float(request.form.get('price'))
+
+    y['owner'] = request.form.get('owner')
+    y['owner'] = int(y['purchased']) if y['purchased'] else 0
+
+    y['holder'] = request.form.get('holder')
+    y['holder'] = int(y['holder']) if y['holder'] else 0
+
+    y['price'] = request.form.get('price')
+    y['price'] = float(y['price']) if y['price'] else None
+
     y['receipt'] = request.form.get('receipt')
     y['ip'] = request.form.get('ip')
     y['comments'] = request.form.get('comments')
-    y['home'] = int(request.form.get('home'))
-    y['current'] = int(request.form.get('current'))
+
+    y['home'] = request.form.get('home')
+    y['home'] = int(y['home']) if y['home'] else 0
+    
+    y['current'] = request.form.get('current')
+    y['current'] = int(y['current']) if y['current'] else 0
   except KeyError as k:
     raise Exception(k.args[0])
   return y
@@ -464,13 +481,24 @@ def rm_inv(id):
   else:
     return view.keep_away()
 
+def parse_inv():
+  y = {}
+  try:
+    y['who'] = int(request.form['who'])
+    y['what'] = int(request.form['what'])
+    y['when'] = int(request.form['when'])
+    y['where'] = int(request.form['where'])
+  except KeyError as k:
+    raise Exception(k.args[0])
+  return y
+
 """
   user methods
 """
 
 def view_self():
   if check_auth(methods.UserReadSelf):
-    return view.success(session['uname'])
+    return view.success(dict(g.user))
   else:
     return view.keep_away()
 
