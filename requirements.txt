@@ -1,5 +1,4 @@
 flask
 flask-SQLAlchemy
-flask-testing
-python-ldap
-
+flask-sslify
+requests
