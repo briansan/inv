@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # require root
 if [ "$(id -u)" != "0" ]; then
@@ -8,11 +8,11 @@ fi
 
 # install necessary 3rd party pkg
 echo "inv: updating Ubuntu"
-apt-get update &> /dev/null
+apt-get update &>/dev/null
 echo "inv: installing pkgs"
-apt-get install apache2 libapache2-mod-wsgi mysql-server python-dev python-pip -y &> /dev/null
+apt-get install apache2 libapache2-mod-wsgi mysql-server python-dev python-pip -y &>/dev/null
 echo "inv: installing python pkgs"
-pip install -r requirements.txt
+pip install -r requirements.txt &>/dev/null
 
 # setup mysql
 echo "inv: initializing database"
@@ -24,12 +24,12 @@ cp -r server /var/www/inv
 
 # setup ssl
 echo "inv: setting up ssl"
-a2enmod ssl &> /dev/null
+a2enmod ssl &>/dev/null
 mkdir /etc/apache2/ssl 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
 
 # setup apache
 echo "inv: setting up apache"
 cp conf/inv.conf /etc/apache2/sites-available
-a2ensite inv &> /dev/null
+a2ensite inv &>/dev/null
 service apache2 reload
