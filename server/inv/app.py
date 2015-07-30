@@ -5,6 +5,7 @@
 """
 
 from flask import Flask, session, request, Blueprint, jsonify, g
+from flask_sslify import SSLify
 
 import controller, model, view
 from auth import auth_ldap
@@ -262,6 +263,8 @@ def create_app(conf):
   model.db.init_app(app)
   with app.app_context():
     model.db.create_all()
+  # secure it
+  SSLify(app)
   # register blueprints
   app.register_blueprint(api, url_prefix='/api/v1')
   return app
