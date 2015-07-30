@@ -11,16 +11,31 @@ from auth import auth_ldap
 from util import *
 
 api = Blueprint('api',__name__)
-origin = '*'
 
-@api.route('/')
-@crossdomain()
+@api.route('/', methods=['GET','POST'])
 @requires_auth
 def root():
   return controller.root()
 
+@api.route('/user', methods=['GET'])
+@requires_auth
+def user():
+  if is_read():
+    y = controller.view_self
+  else:
+    y = view.invalid_method
+  return y()
+
+@api.route('/user/<id>', methods=['GET'])
+@requires_auth
+def user_id(id):
+  if is_read():
+    y = controller.view_user
+  else:
+    y = view.invalid_method
+  return y(id)
+  
 @api.route('/item', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def item():
   if is_create():
@@ -32,7 +47,6 @@ def item():
   return y()
 
 @api.route('/item/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def item_id(id):
   if is_read():
@@ -46,7 +60,6 @@ def item_id(id):
   return y(id)
 
 @api.route('/item/category', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def category():
   if is_create():
@@ -58,7 +71,6 @@ def category():
   return y()
 
 @api.route('/item/category/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def category_id(id):
   if is_read():
@@ -72,7 +84,6 @@ def category_id(id):
   return y(id)
 
 @api.route('/item/manufacturer', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def manufacturer():
   if is_create():
@@ -84,7 +95,6 @@ def manufacturer():
   return y()
 
 @api.route('/item/manufacturer/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def manufacturer_id(id):
   if is_read():
@@ -98,7 +108,6 @@ def manufacturer_id(id):
   return y(id)
 
 @api.route('/location', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def location():
   if is_create():
@@ -110,7 +119,6 @@ def location():
   return y()
 
 @api.route('/location/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def location_id(id):
   if is_read():
@@ -124,7 +132,6 @@ def location_id(id):
   return y(id)
 
 @api.route('/location/building', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def building():
   if is_create():
@@ -136,7 +143,6 @@ def building():
   return y()
 
 @api.route('/location/building/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def building_id(id):
   if is_read():
@@ -150,7 +156,6 @@ def building_id(id):
   return y
 
 @api.route('/asset', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def asset():
   if is_create():
@@ -162,7 +167,6 @@ def asset():
   return y
 
 @api.route('/asset/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def asset_id(id):
   if is_read():
@@ -176,7 +180,6 @@ def asset_id(id):
   return y
 
 @api.route('/asset/<id>/img', methods=['GET','POST','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def asset_img():
   if is_create():
@@ -192,7 +195,6 @@ def asset_img():
   return y
 
 @api.route('/asset/<id>/img/thumbnail', methods=['GET'])
-@crossdomain()
 @requires_auth
 def asset_img_thumbnail():
   if is_read():
@@ -202,7 +204,6 @@ def asset_img_thumbnail():
   return y
   
 @api.route('/asset/<id>/receipt', methods=['GET','POST','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def asset_receipt():
   if is_create():
@@ -218,7 +219,6 @@ def asset_receipt():
   return y
 
 @api.route('/asset/<id>/img/thumbnail', methods=['GET'])
-@crossdomain()
 @requires_auth
 def asset_receipt_thumbnail():
   if is_read():
@@ -228,7 +228,6 @@ def asset_receipt_thumbnail():
   return y()
   
 @api.route('/inv', methods=['GET','POST'])
-@crossdomain()
 @requires_auth
 def inv():
   if is_create():
@@ -240,7 +239,6 @@ def inv():
   return y
 
 @api.route('/inv/<id>', methods=['GET','PUT','DELETE'])
-@crossdomain()
 @requires_auth
 def inv_id(id):
   if is_read():
