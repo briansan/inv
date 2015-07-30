@@ -2,18 +2,11 @@ from flask import Response
 import json
 import methods
 
-def login():
-  return '''<form action="" method="post">
-              <p>Username: <input type=text name=uname></p>
-              <p>Password: <input type=password name=passwd></p>
-              <input type=submit>
-         </form>'''
-
 def json_response(d,code=200):
   return Response(response=d, status=code, mimetype="application/json")
 
 def success(msg):
-  return json_response(json.dumps({'success':True,'msg':msg}))
+  return json_response(json.dumps(msg))
 
 def failure(msg,code=400):
   return json_response(json.dumps({'success':False,'msg':msg}), code)
