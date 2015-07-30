@@ -56,12 +56,13 @@ class User(db.Model):
     yield ('perm',self.perm)
     yield ('start',int(self.start.strftime("%s")))
   
-  def generate_auth_token(self, expiration = 600):
+  def generate_auth_token(self, expiration=None):
+    if expiration is None: expiration = 3600
     from flask import current_app
     app = current_app
-    print app.config['SECRET_KEY']
-    s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
-    return s.dumps({'id':self.id})
+    s = Serializer(app.config['SECRET_KEY'], expires_in=int(expiration))
+    y = s.dumps({'id':self.id})
+    return y
 
   @staticmethod
   def verify_auth_token(token):
@@ -93,7 +94,7 @@ class Item(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   category_id = db.Column(db.Integer, db.ForeignKey('item_category.id'))
   manufacturer_id = db.Column(db.Integer, db.ForeignKey('item_manufacturer.id'))
-  model = db.Column(db.String(32), unique=True)
+  model = db.Column(db.String(32))
 
   category = db.relationship('ItemCategory', backref=db.backref('items', lazy='dynamic'))
   manufacturer = db.relationship('ItemManufacturer', backref=db.backref('items', lazy='dynamic'))
@@ -165,7 +166,11 @@ class Asset(db.Model):
             4:'Disposed'}
 
   id = db.Column(db.Integer, primary_key=True)
-  tag_id = db.Column(db.Integer, db.ForeignKey('asset_info.id'), unique=True)
+  tag_ece = db.Column(db.String(16), unique=True)
+  tag_vu = db.Column(db.String(16), unique=True)
+  tag_unit = db.Column(db.String(16))
+  tag_svc = db.Column(db.String(16))
+  serial = db.Column(db.String(16))
   status = db.Column(db.Integer)
   item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
   purchased = db.Column(db.DateTime)
@@ -179,15 +184,18 @@ class Asset(db.Model):
   home_id = db.Column(db.Integer, db.ForeignKey('location.id'))
   current_id = db.Column(db.Integer, db.ForeignKey('location.id'))
 
-  tag = db.relationship('AssetInfo', backref=db.backref('asset', lazy='dynamic'))
   item = db.relationship('Item', backref=db.backref('assets', lazy='dynamic'))
   current = db.relationship('Location', backref=db.backref('cassets', lazy='dynamic'), foreign_keys=[current_id])
   home = db.relationship('Location', backref=db.backref('hassets', lazy='dynamic'), foreign_keys=[home_id])
   owner = db.relationship('User', backref=db.backref('oassets', lazy='dynamic'), foreign_keys=[owner_id])
   holder = db.relationship('User', backref=db.backref('hassets', lazy='dynamic'), foreign_keys=[holder_id])
 
-  def __init__( self, tag, status, item, purchased=datetime.now(), img="", owner=None, holder=None,home=None, current=None, comments="", price=0.0, receipt="", ip=""):
-    self.tag = tag
+  def __init__( self, tag_ece, status, item, purchased=datetime.now(), img="", owner=None, holder=None,home=None, current=None, comments="", price=0.0, receipt="", ip="",tag_vu="",tag_unit="",tag_svc="",serial=""):
+    self.tag_ece = tag_ece
+    self.tag_vu = tag_vu
+    self.tag_unit = tag_unit
+    self.tag_svc = tag_svc
+    self.serial = serial
     self.status = status
     self.item = item
     self.purchased = purchased
@@ -205,23 +213,27 @@ class Asset(db.Model):
     return '<Asset %s>' % self
 
   def __str__( self ):
-    return '%s: %s' % (self.tag.ece, self.item)
+    return '%s: %s' % (self.tag_ece, self.item)
 
   def __iter__( self ):
     yield ('id',self.id)
-    yield ('tag', dict(self.tag))
+    yield ('tag_ece', self.tag_ece)
+    yield ('tag_vu', self.tag_vu)
+    yield ('tag_unit', self.tag_unit)
+    yield ('tag_svc', self.tag_svc)
+    yield ('serial', self.serial)
     yield ('status', self.status)
-    yield ('item', dict(self.item))
+    yield ('item', self.item.id if self.item else None)
     yield ('purchased', self.purchased)
     yield ('img', self.img)
-    yield ('owner', dict(self.owner) if self.owner else None)
-    yield ('holder', dict(self.holder) if self.holder else None)
+    yield ('owner', self.owner.id if self.owner else None)
+    yield ('holder', self.holder.id if self.holder else None)
     yield ('price', self.price)
     yield ('receipt', self.receipt)
     yield ('ip', self.ip)
     yield ('comments', self.comments)
-    yield ('home', dict(self.home) if self.home else None)
-    yield ('current', dict(self.current) if self.current else None)
+    yield ('home', self.home.id if self.home else None)
+    yield ('current', self.current.id if self.current else None)
 
   @staticmethod
   def info():
@@ -267,10 +279,10 @@ class Inventory(db.Model):
 
   def __iter__( self ):
     yield ('id',self.id)
-    yield ('who',dict(self.who))
-    yield ('what',dict(self.what))
+    yield ('who',self.who.id)
+    yield ('what',self.what.id)
     yield ('when',int(self.when.strftime("%s")))
-    yield ('where',dict(self.where))
+    yield ('where',self.where.id)
 
   @staticmethod
   def info():
@@ -339,31 +351,3 @@ class LocationBuilding(db.Model):
       'name':'building name'
     }
 
-class AssetInfo(db.Model):
-  id = db.Column(db.Integer, primary_key=True)
-  ece = db.Column(db.String(8), unique=True)
-  vu = db.Column(db.String(8), unique=True)
-  unit = db.Column(db.String(8), unique=True)
-  svc = db.Column(db.String(8), unique=True)
-  serial = db.Column(db.String(8), unique=True)
-
-  def __init__(self,ece,vu='',unit='',svc='',serial=''):
-    self.ece = ece
-    self.vu = vu
-    self.unit = unit
-    self.svc = svc
-    self.serial = serial
-
-  def __repr__(self):
-    return '<AssetInfo %r>' % self.ece
-
-  def __str__(self):
-    return '%s: %s' % (self.ece, self.item)
-
-  def __iter__(self):
-    yield ('ece',self.ece)
-    yield ('vu',self.vu)
-    yield ('unit',self.unit)
-    yield ('svc',self.svc)
-    yield ('serial',self.serial)
-  
