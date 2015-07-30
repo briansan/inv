@@ -9,9 +9,13 @@ fi
 # install necessary 3rd party pkg
 echo "inv: updating Ubuntu"
 apt-get update &>/dev/null
+
 echo "inv: installing pkgs"
-read -s -p "Enter a password: " pw
+# read -s -p "Enter a password: " pw
+pw=mysqlpasswd
+echo -e "\n"
 echo -e "$pw\n$pw" | apt-get install apache2 libapache2-mod-wsgi mysql-server python-dev python-pip -y &>/dev/null
+
 echo "inv: installing python pkgs"
 pip install -r requirements.txt &>/dev/null
 
