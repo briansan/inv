@@ -400,11 +400,9 @@ def create_asset(x):
     item_id = x['item'] #
     purchased_since1970 = x['purchased']
     purchased = datetime.fromtimestamp(purchased_since1970) if purchased_since1970 else None
-    img = x['img']
     owner_id = x['owner'] #
     holder_id = x['holder'] #
     price = x['price']
-    receipt = x['receipt']
     ip = x['ip']
     comments = x['comments']
     home_id = x['home'] #
@@ -416,7 +414,7 @@ def create_asset(x):
     home = Location.query.filter_by(id=home_id).first()
     current = Location.query.filter_by(id=current_id).first()
     # create the asset
-    y = Asset(ece,status,item,purchased,img,owner,holder,home,current,comments,price,receipt,ip,vu,unit,svc,serial)
+    y = Asset(ece,status,item,purchased,owner,holder,home,current,comments,price,ip,vu,unit,svc,serial)
     # insert into db
     db.session.add(y)
     save()
@@ -426,7 +424,7 @@ def read_asset_all():
   return list_obj2dict(Asset.query.filter_by().all())
 
 def read_asset(id):
-  return Asset.query.filter_by(id=id).first()
+  return Asset.query.filter_by(tag_ece=id).first()
 
 def update_asset(id,x):
   """
@@ -444,11 +442,9 @@ def update_asset(id,x):
   a.status = x['status']
   a.item = Item.query.filter_by(id=x['item']).first()
   a.purchased = date.fromtimestamp(x['purchased']) if x['purchased'] else None
-  a.img = x['img']
   a.owner = User.query.filter_by(id=x['owner'])
   a.holder = User.query.filter_by(id=x['holder'])
   a.price = x['price']
-  a.receipt = x['receipt']
   a.ip = x['ip']
   a.comments = x['comments']
   a.home = User.query.filter_by(id=x['home'])

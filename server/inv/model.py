@@ -165,8 +165,7 @@ class Asset(db.Model):
             3:'Loaned',
             4:'Disposed'}
 
-  id = db.Column(db.Integer, primary_key=True)
-  tag_ece = db.Column(db.String(16), unique=True)
+  tag_ece = db.Column(db.String(16), unique=True, primary_key=True)
   tag_vu = db.Column(db.String(16), unique=True)
   tag_unit = db.Column(db.String(16))
   tag_svc = db.Column(db.String(16))
@@ -174,11 +173,9 @@ class Asset(db.Model):
   status = db.Column(db.Integer)
   item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
   purchased = db.Column(db.DateTime)
-  img = db.Column(db.String(64))
   owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   holder_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   price = db.Column(db.Float)
-  receipt = db.Column(db.String(64))
   ip = db.Column(db.String(32))
   comments = db.Column(db.String(128))
   home_id = db.Column(db.Integer, db.ForeignKey('location.id'))
@@ -190,7 +187,7 @@ class Asset(db.Model):
   owner = db.relationship('User', backref=db.backref('oassets', lazy='dynamic'), foreign_keys=[owner_id])
   holder = db.relationship('User', backref=db.backref('hassets', lazy='dynamic'), foreign_keys=[holder_id])
 
-  def __init__( self, tag_ece, status, item, purchased=datetime.now(), img="", owner=None, holder=None,home=None, current=None, comments="", price=0.0, receipt="", ip="",tag_vu="",tag_unit="",tag_svc="",serial=""):
+  def __init__( self, tag_ece, status, item, purchased=datetime.now(), owner=None, holder=None,home=None, current=None, comments="", price=0.0, ip="",tag_vu="",tag_unit="",tag_svc="",serial=""):
     self.tag_ece = tag_ece
     self.tag_vu = tag_vu
     self.tag_unit = tag_unit
@@ -199,11 +196,9 @@ class Asset(db.Model):
     self.status = status
     self.item = item
     self.purchased = purchased
-    self.img = img
     self.owner = owner
     self.holder = holder
     self.price = price
-    self.receipt = receipt
     self.ip = ip
     self.comments = comments
     self.home = home
@@ -216,7 +211,6 @@ class Asset(db.Model):
     return '%s: %s' % (self.tag_ece, self.item)
 
   def __iter__( self ):
-    yield ('id',self.id)
     yield ('tag_ece', self.tag_ece)
     yield ('tag_vu', self.tag_vu)
     yield ('tag_unit', self.tag_unit)
@@ -225,11 +219,9 @@ class Asset(db.Model):
     yield ('status', self.status)
     yield ('item', self.item.id if self.item else None)
     yield ('purchased', self.purchased)
-    yield ('img', self.img)
     yield ('owner', self.owner.id if self.owner else None)
     yield ('holder', self.holder.id if self.holder else None)
     yield ('price', self.price)
-    yield ('receipt', self.receipt)
     yield ('ip', self.ip)
     yield ('comments', self.comments)
     yield ('home', self.home.id if self.home else None)
@@ -238,16 +230,13 @@ class Asset(db.Model):
   @staticmethod
   def info():
     return {
-      'id': 'asset id',
       'tag': 'asset tag',
       'status': '1:available, 2:deployed, 3:loaned, 4:disposed',
       'item': 'the item that represents the asset',
       'purchased': 'date of purchase',
-      'img': 'url link to the image',
       'owner': 'owner of the asset',
       'holder': 'current holder of the asset',
       'price': 'value of asset ($)',
-      'receipt': 'url link to image of receipt',
       'ip': 'ip address',
       'comments': 'any additional comments',
       'home': 'home location of asset',
@@ -257,7 +246,7 @@ class Asset(db.Model):
 class Inventory(db.Model):
   id = db.Column(db.Integer, primary_key=True)
   who_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-  what_id = db.Column(db.Integer, db.ForeignKey('asset.id'))
+  what_id = db.Column(db.String(16), db.ForeignKey('asset.tag_ece'))
   when = db.Column(db.DateTime)
   where_id = db.Column(db.Integer, db.ForeignKey('location.id'))
 
