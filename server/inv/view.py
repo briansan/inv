@@ -1,4 +1,4 @@
-from flask import Response
+from flask import Response, send_file
 import json
 import methods
 
@@ -37,3 +37,6 @@ def dne(entity):
 
 def invalid_method(x=None):
   return failure('invalid method', 405)
+
+def send_img(fname):
+  return send_file(fname,mimetype='image/png')
