@@ -5,8 +5,12 @@
           the methods described by inv/api/methods.py
 """
 
-from flask import request, session, g, jsonify
+from flask import request, session, g, jsonify, current_app, abort
+from werkzeug import secure_filename
+from PIL import Image
+
 import auth, methods, model, view, util
+import base64, os
 
 """
   authentication methods
@@ -32,62 +36,6 @@ def check_auth(method):
     return False
   a = auth.Authorization(p)
   return a.chk(method)
-
-"""
-  count methods
-"""
-def count(entity,by,id=None):
-  if logged_in():
-    try: 
-      return count_methods[entity](by,id)
-    except KeyError as k:
-      import traceback
-      print traceback.format_exc()
-      return view.dne(k.message)
-  else:
-    return view.request_login()
-
-entities = ['location','item','asset','inv','building','category','manufacturer']
-
-def count_location( by, id ):
-  if check_auth(method.LocationRead):
-    if by in entities:
-      if id is None:
-        return methods.count_all_location(by)
-      else:
-        return methods.count_location(by,id)
-    else:
-      return view.dne(by)
-  else:
-    return view.keep_away()
-
-def count_item(by, id):
-  pass
-
-def count_asset(by, id):
-  pass
-
-def count_inv(by, id):
-  pass
-
-def count_building(by, id):
-  pass
-
-def count_category(by, id):
-  pass
-
-def count_manufacturer(by, id):
-  pass
-
-count_methods = {
-  'location': count_location,
-  'item': count_item,
-  'asset': count_asset,
-  'inv': count_inv,
-  'building': count_building,
-  'category': count_category,
-  'manufacturer': count_manufacturer
-}
 
 """
   location methods
@@ -344,6 +292,101 @@ def rm_manufacturer(id):
     return view.keep_away()
 
 """
+  asset img
+"""
+ALLOWED_EXTENSIONS = set(['png','jpeg','jpg'])
+
+def allowed_file(fname):
+  return '.' in fname and fname.rsplit('.',1)[1] in ALLOWED_EXTENSIONS
+
+def get_asset_img(id):
+  if check_auth(methods.AssetRead):
+    fname = util.img_path(id.upper())
+    return view.send_img(fname)
+  else:
+    return view.keep_away()
+
+def get_asset_thumbnail(id):
+  if check_auth(methods.AssetRead):
+    fname = util.thumbnail_path(id.upper())
+    return view.send_img(fname)
+  else:
+    return view.keep_away()
+
+def get_asset_receipt(id):
+  if check_auth(methods.AssetRead):
+    fname = util.receipt_path(id.upper())
+    return view.send_img(fname)
+  else:
+    return view.keep_away()
+
+def set_asset_img(id): 
+  if check_auth(methods.AssetUpdate):
+    asset = methods.read_asset(id.upper())
+    if asset is None:
+      return view.dne('asset')
+    # asset exists so set the img
+    fs = request.files['file']
+    if fs and allowed_file(fs.filename):
+      try:
+        # save it to the tmp directory
+        filename = secure_filename(fs.filename)
+        tmp = '/tmp/'+filename
+        fs.save(tmp)
+        # process it using pil
+        img = Image.open(tmp)
+        # do some size processing
+        norm = 1024
+        w,h = img.size
+        v = h > w
+        ar = float(h)/w if v else float(w)/h
+        size = (ar*norm,norm) if v else (norm,ar*norm)
+        # resize to norm
+        img.thumbnail(size,Image.ANTIALIAS)
+        img.save(util.img_path(asset.tag_ece),'png')
+        # process for thumbnail
+        sm = 64
+        size = (ar*sm,sm) if v else (sm,ar*sm)
+        img.thumbnail(size,Image.ANTIALIAS)
+        img.save(util.thumbnail_path(asset.tag_ece),'png')
+        return view.success(dict(asset))
+      except:
+        abort(500)
+    else:
+      return view.missing_field('img')
+  else: return view.keep_away()
+
+def set_asset_receipt(id):
+  if check_auth(methods.AssetUpdate):
+    asset = methods.read_asset(id.upper())
+    if asset is None:
+      return view.dne('asset '+id)
+    # asset exists so set the receipt img
+    fs = request.files['file']
+    if fs and allowed_file(fs.filename):
+      try:
+        # save it to the tmp directory
+        filename = secure_filename(fs.filename)
+        tmp = '/tmp/'+filename
+        fs.save(tmp)
+        # process it
+        img = Image.open(tmp)
+        # do some size processing
+        norm = 1024
+        w,h = img.size
+        v = h>w
+        ar = float(h)/w if v else float(w)/h
+        size = (ar*norm,norm) if v else (norm,ar*norm)
+        # resize to norm
+        img.thumbnail(size,Image.ANTIALIAS)
+        img.save(util.receipt_path(asset.tag_ece),'png')
+        return view.success(dict(asset))
+      except:
+        abort(500)
+    else: return view.missing_field('receipt')
+  else: view.keep_away()
+
+"""
   asset methods
 """
 
@@ -365,7 +408,7 @@ def view_asset(id=0):
       x = methods.read_asset_all()
       y = filter(x) if len(request.args) > 0 else x
     else:
-      y = methods.read_asset(id)
+      y = methods.read_asset(id.upper())
       if not y: return view.dne('asset')
       y = dict(y)
     return view.success(y)
