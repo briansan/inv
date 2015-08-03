@@ -11,21 +11,16 @@ echo "inv: updating Ubuntu"
 apt-get update &>/dev/null
 
 echo "inv: installing pkgs"
-# read -s -p "Enter a password: " pw
-pw=mysqlpasswd
-echo -e "\n"
-echo -e "$pw\n$pw" | apt-get install apache2 libapache2-mod-wsgi mysql-server python-dev python-pip -y &>/dev/null
+echo -e "$pw\n$pw" | apt-get install apache2 libapache2-mod-wsgi python-dev python-pip -y &>/dev/null
 
 echo "inv: installing python pkgs"
 pip install -r requirements.txt &>/dev/null
 
-# setup mysql
-echo "inv: initializing database"
-echo -e "$pw\n" | mysql -u root -p -e "create database inv"; 
-
 # setup dir
 echo "inv: setting up inv directory"
-ln -s `pwd`/server /var/www/inv
+cp -r `pwd`/server /var/inv
+chown www-data /var/inv
+chgrp www-data /var/inv
 
 # setup ssl
 echo "inv: setting up ssl"
@@ -33,8 +28,17 @@ a2enmod ssl &>/dev/null
 mkdir /etc/apache2/ssl 
 openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/apache2/ssl/apache.key -out /etc/apache2/ssl/apache.crt
 
-# setup apache
-echo "inv: setting up apache"
+# setup conf
+echo "inv: setting up apache conf"
 cp conf/inv.conf /etc/apache2/sites-available
+echo "<Directory /var/inv/>
+  Options Indexes FollowSymLinks
+  AllowOverride None
+  Require all granted
+</Directory>" >> /etc/apache2/apache2.conf
+      
+
+# setup apache
+echo "inv: initializing apache"
 a2ensite inv &>/dev/null
 service apache2 reload
