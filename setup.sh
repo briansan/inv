@@ -19,8 +19,8 @@ pip install -r requirements.txt &>/dev/null
 # setup dir
 echo "inv: setting up inv directory"
 cp -r `pwd`/server /var/inv
-chown www-data /var/inv
-chgrp www-data /var/inv
+chown -R www-data /var/inv
+chgrp -R www-data /var/inv
 
 # setup ssl
 echo "inv: setting up ssl"
