@@ -8,6 +8,7 @@ from auth import auth_inv
 from datetime import timedelta
 from functools import update_wrapper, wraps
 from flask import current_app, make_response, request, Response
+import base64
 
 """
  convenience methods to determine the http method used
@@ -24,6 +25,24 @@ def is_update():
   
 def is_delete():
   return request.method == 'DELETE'
+
+"""
+ img methods
+"""
+def tag2name(x):
+  return base64.encodestring(x).strip('/=+')
+
+def img_path(asset_tag):
+  fname = tag2name(asset_tag)
+  return '/var/inv/img/'+fname+'.png'
+
+def thumbnail_path(asset_tag):
+  fname = tag2name(asset_tag)
+  return '/var/inv/img/'+fname+'.thumbnail.png'
+
+def receipt_path(asset_tag):
+  fname = tag2name(asset_tag)
+  return '/var/inv/receipt/'+fname+'.png'
 
 """
  authentication decorator
