@@ -2,4 +2,4 @@ flask
 flask-SQLAlchemy
 flask-sslify
 requests
-pymysql
+pillow
