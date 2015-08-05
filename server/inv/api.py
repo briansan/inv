@@ -21,19 +21,24 @@ def root():
 @api.route('/user', methods=['GET'])
 @requires_auth
 def user():
+  return controller.view_user_all()
+
+@api.route('/user/me', methods=['GET','PUT'])
+@requires_auth
+def self():
   if is_read():
     y = controller.view_self
-  else:
-    y = view.invalid_method
+  elif is_update():
+    y = controller.edit_self
   return y()
 
-@api.route('/user/<id>', methods=['GET'])
+@api.route('/user/<id>', methods=['GET','PUT'])
 @requires_auth
 def user_id(id):
   if is_read():
     y = controller.view_user
-  else:
-    y = view.invalid_method
+  elif is_update():
+    y = controller.edit_user
   return y(id)
   
 @api.route('/item', methods=['GET','POST'])
@@ -43,8 +48,6 @@ def item():
     y = controller.add_item
   elif is_read():
     y = controller.view_item
-  else:
-    y = view.invalid_method
   return y()
 
 @api.route('/item/<id>', methods=['GET','PUT','DELETE'])
