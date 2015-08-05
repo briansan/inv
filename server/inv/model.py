@@ -30,16 +30,23 @@ class User(db.Model):
   grp = db.Column(db.Integer)
   perm = db.Column(db.Integer)
   start = db.Column(db.DateTime)
+  annon = db.Column(db.Boolean)
+  email = db.Column(db.String(32))
+  phone = db.Column(db.String(16))
 
   def __init__(self,uname, fname="", lname="",
                     grp=0, perm=0,
-                    start=datetime.now()):
+                    email="",phone="", 
+                    annon=False,start=datetime.now()):
     self.uname = uname
     self.fname = fname
     self.lname = lname
     self.grp = grp
     self.perm = perm
     self.start = start
+    self.annon = annon
+    self.phone = phone
+    self.email = email
 
   def __repr__(self):
     return '<User %r>' % self.uname
@@ -54,6 +61,9 @@ class User(db.Model):
     yield ('lname',self.lname)
     yield ('grp',self.grp)
     yield ('perm',self.perm)
+    yield ('annon',self.annon)
+    yield ('email',self.email)
+    yield ('phone',self.phone)
     yield ('start',int(self.start.strftime("%s")))
   
   def generate_auth_token(self, expiration=None):
@@ -172,12 +182,15 @@ class Asset(db.Model):
   serial = db.Column(db.String(16))
   status = db.Column(db.Integer)
   item_id = db.Column(db.Integer, db.ForeignKey('item.id'))
-  purchased = db.Column(db.DateTime)
-  owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-  holder_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
   price = db.Column(db.Float)
   ip = db.Column(db.String(32))
   comments = db.Column(db.String(128))
+
+  purchased = db.Column(db.DateTime)
+  inventoried = db.Column(db.DateTime)
+  owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  holder_id = db.Column(db.Integer, db.ForeignKey('user.id'))
   home_id = db.Column(db.Integer, db.ForeignKey('location.id'))
   current_id = db.Column(db.Integer, db.ForeignKey('location.id'))
 
@@ -187,7 +200,10 @@ class Asset(db.Model):
   owner = db.relationship('User', backref=db.backref('oassets', lazy='dynamic'), foreign_keys=[owner_id])
   holder = db.relationship('User', backref=db.backref('hassets', lazy='dynamic'), foreign_keys=[holder_id])
 
-  def __init__( self, tag_ece, status, item, purchased=datetime.now(), owner=None, holder=None,home=None, current=None, comments="", price=0.0, ip="",tag_vu="",tag_unit="",tag_svc="",serial=""):
+  def __init__( self, tag_ece, status, item, comments="", price=0.0, ip="", 
+                      purchased=datetime.now(), owner=None, home=None, 
+                      tag_vu="",tag_unit="",tag_svc="",serial="", 
+                      inventoried=None, holder=None, current=None ):
     self.tag_ece = tag_ece
     self.tag_vu = tag_vu
     self.tag_unit = tag_unit
@@ -195,13 +211,16 @@ class Asset(db.Model):
     self.serial = serial
     self.status = status
     self.item = item
-    self.purchased = purchased
-    self.owner = owner
-    self.holder = holder
     self.price = price
     self.ip = ip
     self.comments = comments
+    # creation data
+    self.purchased = purchased
+    self.owner = owner
     self.home = home
+    # current data
+    self.inventoried = inventoried
+    self.holder = holder
     self.current = current
 
   def __repr__( self ):
@@ -218,28 +237,34 @@ class Asset(db.Model):
     yield ('serial', self.serial)
     yield ('status', self.status)
     yield ('item', self.item.id if self.item else None)
-    yield ('purchased', self.purchased)
-    yield ('owner', self.owner.id if self.owner else None)
-    yield ('holder', self.holder.id if self.holder else None)
     yield ('price', self.price)
     yield ('ip', self.ip)
     yield ('comments', self.comments)
+
+    yield ('purchased', int(self.purchased.strftime("%s")) if self.purchased else None)
+    yield ('owner', self.owner.id if self.owner else None)
     yield ('home', self.home.id if self.home else None)
+
     yield ('current', self.current.id if self.current else None)
+    yield ('holder', self.holder.id if self.holder else None)
+    yield ('inventoried', int(self.inventoried.strftime("%s")) if self.inventoried else None)
 
   @staticmethod
   def info():
     return {
-      'tag': 'asset tag',
+      'tag_ece': 'ece asset tag',
       'status': '1:available, 2:deployed, 3:loaned, 4:disposed',
       'item': 'the item that represents the asset',
-      'purchased': 'date of purchase',
-      'owner': 'owner of the asset',
-      'holder': 'current holder of the asset',
       'price': 'value of asset ($)',
       'ip': 'ip address',
       'comments': 'any additional comments',
+
+      'purchased': 'date of purchase',
+      'owner': 'owner of the asset',
       'home': 'home location of asset',
+
+      'inventoried': 'last date and time of inventory',
+      'holder': 'current holder of the asset',
       'current': 'current location of asset'
     }
 
@@ -269,7 +294,7 @@ class Inventory(db.Model):
   def __iter__( self ):
     yield ('id',self.id)
     yield ('who',self.who.id)
-    yield ('what',self.what.id)
+    yield ('what',self.what.tag_ece)
     yield ('when',int(self.when.strftime("%s")))
     yield ('where',self.where.id)
 
