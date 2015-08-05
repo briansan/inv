@@ -572,8 +572,10 @@ def view_user(id=1):
     return view.keep_away()
 
 def check_annon(user):
-  if user.annon and g.user.grp < 2:
-    return User('Annoymous','Missing','No',0,0,"","")
+  if not (type(user) is dict):
+    user = dict(user)
+  if user['annon'] and g.user.grp < 2:
+    return User('Annoymous','Missing','No',0,0,"","",True)
   else:
     return user
 
