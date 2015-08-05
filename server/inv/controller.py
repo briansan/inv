@@ -51,7 +51,7 @@ def parse_location():
   return y
 
 def add_location():
-  if check_auth(methods.LocationCreate):
+  if check_auth(auth.SubentityModify):
     # get the fields
     try:
       location = parse_location()
@@ -64,7 +64,7 @@ def add_location():
     return view.keep_away()
 
 def view_location(id=0):
-  if check_auth(methods.LocationRead):
+  if check_auth(auth.SubentityView):
     if id is 0:
       x = methods.read_location_all()
       y = filter(x) if len(request.args) > 0 else x
@@ -77,7 +77,7 @@ def view_location(id=0):
     return view.keep_away()
 
 def edit_location(id):
-  if check_auth(methods.LocationUpdate):
+  if check_auth(auth.SubentityModify):
     try:
       x = parse_location()
     except Exception as k:
@@ -88,7 +88,7 @@ def edit_location(id):
   else: return view.keep_away()
 
 def rm_location(id):
-  if check_auth(methods.LocationDelete):
+  if check_auth(auth.SubentityModify):
     man = model.Location.query.filter_by(id=id).first()
     if man:
       model.db.session.delete(man)
@@ -104,7 +104,7 @@ def rm_location(id):
 """
 
 def add_building():
-  if check_auth(methods.LocBuildEdit):
+  if check_auth(auth.LabelModify):
     try:
       man = request.form['name']
     except KeyError as k:
@@ -116,14 +116,14 @@ def add_building():
     return view.keep_away()
 
 def view_building(id=0):
-  if check_auth(methods.LocBuildView):
+  if check_auth(auth.LabelView):
     y = methods.read_building_all()
     return view.success(y)
   else:
     return view.keep_away()
 
 def edit_building(id):
-  if check_auth(methods.LocBuildEdit):
+  if check_auth(auth.LabelModify):
     try:
       x = request.form['name']
     except KeyError as k:
@@ -134,7 +134,7 @@ def edit_building(id):
   else:return view.keep_away()
 
 def rm_building(id):
-  if check_auth(methods.LocBuildEdit):
+  if check_auth(auth.LabelModify):
     man = model.LocationBuilding.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
@@ -157,7 +157,7 @@ def parse_item():
   return y
 
 def add_item():
-  if check_auth(methods.ItemCreate):
+  if check_auth(auth.SubentityModify):
     try:
       item = parse_item()
     except Exception as k:
@@ -169,7 +169,7 @@ def add_item():
     return view.keep_away()
 
 def view_item(id=0):
-  if check_auth(methods.ItemRead):
+  if check_auth(auth.SubentityView):
     if id is 0:
       x = methods.read_item_all()
       y = filter(x) if len(request.args) > 0 else x
@@ -182,7 +182,7 @@ def view_item(id=0):
     return view.keep_away()
 
 def edit_item(id):
-  if check_auth(methods.ItemUpdate):
+  if check_auth(auth.SubentityModify):
     try:
       x = parse_item()
     except Exception as k:
@@ -193,7 +193,7 @@ def edit_item(id):
   else: return view.keep_away()
 
 def rm_item(id):
-  if check_auth(methods.ItemDelete):
+  if check_auth(auth.SubentityModify):
     man = model.Item.query.filter_by(id=id).first()
     if man:
       model.db.session.delete(man)
@@ -210,7 +210,7 @@ def rm_item(id):
 """
 
 def add_category():
-  if check_auth(methods.ItemCatEdit):
+  if check_auth(auth.LabelModify):
     try:
       man = request.form['name']
     except KeyError as k:
@@ -222,14 +222,14 @@ def add_category():
     return view.keep_away()
 
 def view_category(id=0):
-  if check_auth(methods.ItemCatView):
+  if check_auth(auth.LabelView):
     y = methods.read_category_all()
     return view.success(y)
   else:
     return view.keep_away()
 
 def edit_category(id):
-  if check_auth(methods.ItemCatEdit):
+  if check_auth(auth.LabelModify):
     try:
       x = request.form['name']
     except KeyError as k:
@@ -240,7 +240,7 @@ def edit_category(id):
   else:return view.keep_away()
 
 def rm_category(id):
-  if check_auth(methods.ItemCatEdit):
+  if check_auth(auth.LabelModify):
     man = model.ItemCategory.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
@@ -253,7 +253,7 @@ def rm_category(id):
 """
 
 def add_manufacturer():
-  if check_auth(methods.ItemManEdit):
+  if check_auth(auth.LabelModify):
     try:
       man = request.form['name']
     except KeyError as k:
@@ -265,14 +265,14 @@ def add_manufacturer():
     return view.keep_away()
 
 def view_manufacturer(id=0):
-  if check_auth(methods.ItemManView):
+  if check_auth(auth.LabelView):
     y = methods.read_manufacturer_all()
     return view.success(y)
   else:
     return view.keep_away()
 
 def edit_manufacturer(id):
-  if check_auth(methods.ItemManEdit):
+  if check_auth(auth.LabelModify):
     try:
       x = request.form['name']
     except KeyError as k:
@@ -283,7 +283,7 @@ def edit_manufacturer(id):
   else:return view.keep_away()
 
 def rm_manufacturer(id):
-  if check_auth(methods.ItemManEdit):
+  if check_auth(auth.LabelModify):
     man = model.ItemManufacturer.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
@@ -300,28 +300,28 @@ def allowed_file(fname):
   return '.' in fname and fname.rsplit('.',1)[1] in ALLOWED_EXTENSIONS
 
 def get_asset_img(id):
-  if check_auth(methods.AssetRead):
+  if check_auth(auth.EntityModfiy):
     fname = util.img_path(id.upper())
     return view.send_img(fname)
   else:
     return view.keep_away()
 
 def get_asset_thumbnail(id):
-  if check_auth(methods.AssetRead):
+  if check_auth(auth.EntityView):
     fname = util.thumbnail_path(id.upper())
     return view.send_img(fname)
   else:
     return view.keep_away()
 
 def get_asset_receipt(id):
-  if check_auth(methods.AssetRead):
+  if check_auth(auth.EntityView):
     fname = util.receipt_path(id.upper())
     return view.send_img(fname)
   else:
     return view.keep_away()
 
 def set_asset_img(id): 
-  if check_auth(methods.AssetUpdate):
+  if check_auth(auth.EntityModify):
     asset = methods.read_asset(id.upper())
     if asset is None:
       return view.dne('asset')
@@ -357,7 +357,7 @@ def set_asset_img(id):
   else: return view.keep_away()
 
 def set_asset_receipt(id):
-  if check_auth(methods.AssetUpdate):
+  if check_auth(auth.EntityModify):
     asset = methods.read_asset(id.upper())
     if asset is None:
       return view.dne('asset '+id)
@@ -391,7 +391,7 @@ def set_asset_receipt(id):
 """
 
 def add_asset():
-  if check_auth(methods.AssetCreate):
+  if check_auth(auth.EntityModify):
     try:
       asset = parse_asset()
     except Exception as k:
@@ -403,7 +403,7 @@ def add_asset():
     return view.keep_away()
 
 def view_asset(id=0):
-  if check_auth(methods.AssetRead):
+  if check_auth(auth.EntityView):
     if id is 0:
       x = methods.read_asset_all()
       y = filter(x) if len(request.args) > 0 else x
@@ -416,7 +416,10 @@ def view_asset(id=0):
     return view.keep_away()
 
 def edit_asset(id):
-  if check_auth(methods.AssetUpdate):
+  x = view_asset(id)
+  own_item = check_auth(auth.EntityModify) and x['id'] == g.user.id
+  operator = check_auth(auth.EntityModifyWorld)
+  if own_item or operator:
     try:
       x = parse_asset()
     except Exception as k:
@@ -427,13 +430,30 @@ def edit_asset(id):
   else: return view.keep_away()
 
 def rm_asset(id):
-  if check_auth(methods.AssetDelete):
+  if check_auth(auth.EntityModify):
     man = model.Asset.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
     return view.success('asset removed')
   else:
     return view.keep_away()
+
+def update_asset(inv):
+  who = inv.who
+  what = inv.what
+  when = inv.when
+  where = inv.where
+  
+  print when
+
+  what.holder = who
+  what.inventoried = when
+  what.current = where
+
+  print dict(what)
+
+  methods.save()
+  print 'updated asset', dict(what)
 
 def parse_asset():
   y = {}
@@ -444,32 +464,24 @@ def parse_asset():
     y['tag_unit'] = request.form.get('tag_unit')
     y['tag_svc'] = request.form.get('tag_svc')
     y['serial'] = request.form.get('serial')
+
     y['status'] = int(request.form['status']) #
     y['item'] = int(request.form['item']) #
+
+    y['price'] = request.form.get('price')
+    y['price'] = float(y['price']) if y['price'] else None
+    y['ip'] = request.form.get('ip')
+    y['comments'] = request.form.get('comments')
 
     y['purchased'] = request.form.get('purchased')
     y['purchased'] = int(y['purchased']) if y['purchased'] else None
 
-    y['img'] = request.form.get('img')
-
     y['owner'] = request.form.get('owner')
-    y['owner'] = int(y['purchased']) if y['purchased'] else 0
-
-    y['holder'] = request.form.get('holder')
-    y['holder'] = int(y['holder']) if y['holder'] else 0
-
-    y['price'] = request.form.get('price')
-    y['price'] = float(y['price']) if y['price'] else None
-
-    y['receipt'] = request.form.get('receipt')
-    y['ip'] = request.form.get('ip')
-    y['comments'] = request.form.get('comments')
+    y['owner'] = int(y['owner']) if y['owner'] else 0
 
     y['home'] = request.form.get('home')
     y['home'] = int(y['home']) if y['home'] else 0
     
-    y['current'] = request.form.get('current')
-    y['current'] = int(y['current']) if y['current'] else 0
   except KeyError as k:
     raise Exception(k.args[0])
   return y
@@ -479,19 +491,21 @@ def parse_asset():
 """
 
 def add_inv():
-  if check_auth(methods.InvCreate):
+  if check_auth(auth.EntityModify):
     try:
       inv = parse_inv()
     except Exception as k:
       return view.missing_field(k.message)
     # add the inv
     x = methods.create_inv(inv)
+    if x:
+      update_asset(x)
     return view.success(dict(x)) if x else view.already_exists('inventory')
   else:
     return view.keep_away()
 
 def view_inv(id=0):
-  if check_auth(methods.InvRead):
+  if check_auth(auth.EntityView):
     if id is 0:
       x = methods.read_inv_all()
       y = filter(x) if len(request.args) > 0 else x
@@ -504,7 +518,10 @@ def view_inv(id=0):
     return view.keep_away()
 
 def edit_inv(id):
-  if check_auth(methods.InvUpdate):
+  x = view_inv(id)
+  own_item = check_auth(auth.EntityModify) and x['id'] == g.user.id
+  operator = check_auth(auth.EntityModifyWorld)
+  if own_item or operator:
     try:
       x = parse_inv()
     except Exception as k:
@@ -516,7 +533,7 @@ def edit_inv(id):
   else: return view.keep_away()
 
 def rm_inv(id):
-  if check_auth(methods.InvDelete):
+  if check_auth(auth.EntityModify):
     man = model.Inventory.query.filter_by(id=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
@@ -528,7 +545,7 @@ def parse_inv():
   y = {}
   try:
     y['who'] = int(request.form['who'])
-    y['what'] = int(request.form['what'])
+    y['what'] = request.form['what']
     y['when'] = int(request.form['when'])
     y['where'] = int(request.form['where'])
   except KeyError as k:
@@ -540,27 +557,69 @@ def parse_inv():
 """
 
 def view_self():
-  if check_auth(methods.UserReadSelf):
+  if check_auth(auth.SubentityView):
     return view.success(dict(g.user))
   else:
     return view.keep_away()
 
-def view_user(id=None):
-  if check_auth(methods.UserReadWorld):
-    if id is None:
-      x = methods.read_user_all()
-      y = filter(x) if len(request.args) > 0 else x
-    else:
-      y = dict(methods.read_user(id))
+def view_user(id=1):
+  if check_auth(auth.SubentityView):
+    x = methods.read_user(id)
+    x = check_annon(x)
+    y = dict(x)
+    return view.success(y)
+  else:
+    return view.keep_away()
+
+def check_annon(user):
+  if user.annon and g.user.grp < 2:
+    return User('Annoymous','Missing','No',0,0,"","")
+  else:
+    return user
+
+def view_user_all():
+  if check_auth(auth.SubentityView):
+    y = methods.read_user_all()
+    y = [check_annon(x) for x in y]
     return view.success(y)
   else:
     return view.keep_away()
   
-def edit_user_self(id):
-  return view.success('edit user')
+def edit_self():
+  if g.user:
+    fname = request.form.get('fname')
+    lname = request.form.get('lname')
+    phone = request.form.get('phone')
+    email = request.form.get('email')
+    annon = request.form.get('annon')
+    annon = bool(annon) if annon else None
+    g.user.fname = fname if fname else g.user.fname
+    g.user.lname = lname if lname else g.user.lname
+    g.user.phone = phone if phone else g.user.phone
+    g.user.email = email if email else g.user.email
+    g.user.annon = annon if annon else g.user.annon
+    methods.save()
+  return view.success(dict(g.user))
+
+def edit_user(id):
+  if check_auth(auth.UserModifyWorld):
+    user = model.User.query.filter_by(id=id).first()
+    if user:
+      grp = request.form.get('grp')
+      grp = int(grp) if grp else grp
+      user.grp = grp if grp else user.grp
+      perm = request.form.get('perm')
+      perm = int(perm) if perm else perm
+      user.perm = perm if perm else user.perm
+      methods.save()
+      return view.success(dict(user))
+    else:
+      return view.dne('user')
+  else:
+    return view.keep_away()
 
 def rm_user(id):
-  if check_auth(methods.UserDelete):
+  if check_auth(auth.UserModifyWorld):
     man = model.User.query.filter_by(id=id).first()
     if man:
       model.db.session.delete(man)
