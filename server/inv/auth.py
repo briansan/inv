@@ -5,21 +5,29 @@
           for inv
 """
 
-from methods import *
+#
+# definition methods as bits
+# Label: Category, Manufacturer, Building
+# Subentity: User, Location, Item
+# Entity: Asset, Inventory
+LabelView         = 1 << 0
+SubentityView     = 1 << 1
+EntityView        = 1 << 2
+EntityModify      = 1 << 3
+EntityModifyWorld = 1 << 4
+SubentityModify   = 1 << 5
+LabelModify       = 1 << 6
+UserModifyWorld   = 1 << 7
 
 # definition of default permissions
-DefaultStudentPermissions = UserReadSelf | UserUpdateSelf | ItemRead | LocationRead | AssetRead | InvRead | \
-                            LocBuildView | ItemCatView | ItemManView
-DefaultFacultyPermissions = DefaultStudentPermissions | UserReadWorld | InvCreate
-DefaultOperatorPermissions = DefaultFacultyPermissions | ItemCreate | ItemUpdate | \
-                             LocationCreate | LocationUpdate | AssetCreate | AssetUpdate
-DefaultAdminPermissions = DefaultOperatorPermissions | UserUpdateWorld | UserDelete | ItemDelete | \
-                          LocationDelete | AssetDelete | InvUpdate | InvDelete | \
-                          LocBuildEdit | ItemCatEdit | ItemManEdit
+DefaultStudentPermissions = LabelView | SubentityView | EntityView
+DefaultFacultyPermissions = DefaultStudentPermissions | EntityModify
+DefaultOperatorPermissions = DefaultFacultyPermissions | EntityModifyWorld | SubentityModify | LabelModify
+DefaultAdminPermissions = DefaultOperatorPermissions | UserModifyWorld
 
 from model import User
 DefaultPermissions = {
-  User.Groups.NoGroup: LogInOut,
+  User.Groups.NoGroup: LabelView | SubentityView,
   User.Groups.Student: DefaultStudentPermissions,
   User.Groups.Faculty: DefaultFacultyPermissions,
   User.Groups.Operator: DefaultOperatorPermissions,
@@ -84,7 +92,7 @@ def auth_ldap(uid,passwd):
   return info
   """
 
-  return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou'] )
+  return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou','mail','employeecampusphone','mobile'] )
 
 
 def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
@@ -144,10 +152,27 @@ def auth_inv(uname_or_token,passwd_or_method):
           grp = User.Groups.Student
         elif 'Employees' in ou:
           grp = User.Groups.Employee
+
+        admins = ['bkim11','cbannan','psingh']
+        operators = ['rkarrant','hcook']
+        # check admins
+        uid = uname_or_token
+        if uid in admins:
+          grp = User.Groups.Admin
+        # check operators
+        if uid in operators:
+          grp = User.Groups.Operator
+
         # set permissions
         perm = DefaultPermissions[grp]
+
+        # get email
+        email = y.get('mail')
+        phone = y.get('employeecampusphone')
+        if phone is None:
+          phone = y.get('mobile')
         # create the user
-        u = User(uname_or_token,fname,lname,grp,perm)
+        u = User(uname_or_token,fname,lname,grp,perm,email,phone)
         # add user to db
         from model import db
         db.session.add(u)
