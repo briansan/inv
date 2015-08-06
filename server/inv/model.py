@@ -69,7 +69,7 @@ class User(db.Model):
     from flask import current_app
     app = current_app
     s = Serializer(app.config['SECRET_KEY'], expires_in=int(expiration))
-    y = s.dumps({'uid':self.id})
+    y = s.dumps({'uid':self.uid})
     return y
 
   @staticmethod
