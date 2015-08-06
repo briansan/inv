@@ -240,11 +240,11 @@ class Asset(db.Model):
 
     yield ('purchased', int(self.purchased.strftime("%s")) if self.purchased else None)
     yield ('owner', self.owner.uid if self.owner else None)
-    yield ('home', self.home.uid if self.home else None)
+    yield ('home', self.home.id if self.home else None)
 
-    yield ('current', self.current.id if self.current else None)
-    yield ('holder', self.holder.id if self.holder else None)
     yield ('inventoried', int(self.inventoried.strftime("%s")) if self.inventoried else None)
+    yield ('holder', self.holder.uid if self.holder else None)
+    yield ('current', self.current.id if self.current else None)
 
   @staticmethod
   def info():
