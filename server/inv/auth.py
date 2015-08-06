@@ -95,12 +95,12 @@ def auth_ldap(uid,passwd):
   return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou','mail','employeecampusphone','mobile'] )
 
 
-def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
+def get_ldap_info( uid, passwd, who="bkim11", keys=["dn"] ):
   # get ldap info
   import base64, getpass, requests
-  filt = {'filter':'uid=%s'%uid} # url encode the data
+  filt = {'filter':'uid=%s'%who} # url encode the data
   url = 'https://vecr.ece.villanova.edu/cgi/auth/ldapsearch/'
-  r = requests.post(url,auth=(uname,passwd),data=filt)
+  r = requests.post(url,auth=(uid,passwd),data=filt)
   res = r.text
   # parse through response
   y = {}
@@ -125,22 +125,22 @@ def get_ldap_info( uname, passwd, uid="bkim11", keys=["dn"] ):
 
 
 
-def auth_inv(uname_or_token,passwd_or_method):
+def auth_inv(uid_or_token,passwd_or_method):
   """
    inv authentication 
   """
   from model import User
 
   # try token
-  u = User.verify_auth_token(uname_or_token)
+  u = User.verify_auth_token(uid_or_token)
 
   if not u:
     # try ldap
-    y = auth_ldap(uname_or_token,passwd_or_method)
+    y = auth_ldap(uid_or_token,passwd_or_method)
     # success
     if 'givenname' in y:
       # search for user in db
-      u = User.query.filter_by(uname=uname_or_token).first()
+      u = User.query.filter_by(uid=uid_or_token).first()
       if not u: # user does not exist...
         # get the name
         fname = y['givenname'][0] if type(y['givenname']) == list else y['givenname'] 
@@ -156,7 +156,7 @@ def auth_inv(uname_or_token,passwd_or_method):
         admins = ['bkim11','cbannan','psingh']
         operators = ['rkarrant','hcook']
         # check admins
-        uid = uname_or_token
+        uid = uid_or_token
         if uid in admins:
           grp = User.Groups.Admin
         # check operators
@@ -172,7 +172,7 @@ def auth_inv(uname_or_token,passwd_or_method):
         if phone is None:
           phone = y.get('mobile')
         # create the user
-        u = User(uname_or_token,fname,lname,grp,perm,email,phone)
+        u = User(uid_or_token,fname,lname,grp,perm,email,phone)
         # add user to db
         from model import db
         db.session.add(u)
