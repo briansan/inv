@@ -558,6 +558,7 @@ def view_self():
 def view_user(uid="bkim11"):
   if check_auth(auth.SubentityView):
     x = methods.read_user(uid)
+    if x is None: return view.dne('user '+uid)
     x = check_annon(x)
     y = dict(x)
     return view.success(y)
