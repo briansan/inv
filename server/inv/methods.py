@@ -22,17 +22,17 @@ def list_obj2dict(x):
  User methods
 """
 
-def read_user(id):
+def read_user(uid):
   """
    @param id int the id of the user
   """
-  return User.query.filter_by(id=id).first()
+  return User.query.filter_by(uid=uid).first()
 
 def read_user_all():
   return list_obj2dict(User.query.filter_by().all())
 
-def delete_user(id):
-  u = User.query.filter_by(id=id).first()
+def delete_user(uid):
+  u = User.query.filter_by(uid=uid).first()
   if not u: return False
   db.session.delete(u)
   save()
@@ -361,7 +361,7 @@ def create_asset(x):
 
     # convert id's into objects
     item = Item.query.filter_by(id=item_id).first()
-    owner = User.query.filter_by(id=owner_id).first()
+    owner = User.query.filter_by(uid=owner_id).first()
     home = Location.query.filter_by(id=home_id).first()
     # create the asset
     y = Asset(ece,status,item,comments,price,ip,purchased,owner,home,vu,unit,svc,serial)
@@ -397,9 +397,9 @@ def update_asset(id,x):
   if x.get('purchased'): 
     a.purchased = date.fromtimestamp(x['purchased']) 
   if x.get('owner'):
-    a.owner = User.query.filter_by(id=x['owner'])
+    a.owner = User.query.filter_by(uid=x['owner'])
   if x.get('home'):
-    a.home = Location.query.filter_by(id=x['home'])
+    a.home = Location.query.filter_by(uid=x['home'])
   
   save()
   return a
@@ -434,7 +434,7 @@ def read_inv_all():
   return list_obj2dict(Inventory.query.filter_by().all())
 
 def read_inv_by_user(id):
-  return list_obj2dict(Inventory.query.filter(Inventory.who.has(id=id)).all())
+  return list_obj2dict(Inventory.query.filter(Inventory.who.has(uid=uid)).all())
 
 def read_inv_by_asset(id):
   return list_obj2dict(Inventory.query.filter(Inventory.what.has(id=id)).all())
@@ -449,7 +449,7 @@ def read_inv_by_date(date):
 def update_inv(id,x):
   inv = read_inv(id)
   if not inv: return None
-  inv.who = User.query.filter_by(id=x['who'])
+  inv.who = User.query.filter_by(uid=x['who'])
   inv.what = Asset.query.filter_by(id=x['what'])
   inv.when = datetime.fromtimestamp(x['when'])
   inv.where = Location.query.filter_by(id=x['where'])
