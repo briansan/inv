@@ -49,7 +49,7 @@ class InvTest(TestCase):
 
   def get_user(self):
     from model import User
-    return User.query.filter_by(uname='bob').first()
+    return User.query.filter_by(uid='bob').first()
 
   def get_item(self):
     from model import Item
@@ -65,7 +65,7 @@ class InvTest(TestCase):
     
   def get_inv(self):
     from model import Inventory
-    return Inventory.query.filter(Inventory.who.has(uname='bob')).first()
+    return Inventory.query.filter(Inventory.who.has(uid='bob')).first()
 
   def get_user_api(self):
     return self.client.get('/view/user')
