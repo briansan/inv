@@ -22,8 +22,7 @@ class User(db.Model):
             3:'Operator',
             4:'Admin'}
 
-  id = db.Column(db.Integer, primary_key=True)
-  uname = db.Column(db.String(32), unique=True)
+  uid = db.Column(db.String(16), unique=True, primary_key=True)
   passwd = db.Column(db.String(32))
   fname = db.Column(db.String(32))
   lname = db.Column(db.String(32))
@@ -34,11 +33,11 @@ class User(db.Model):
   email = db.Column(db.String(32))
   phone = db.Column(db.String(16))
 
-  def __init__(self,uname, fname="", lname="",
+  def __init__(self,uid, fname="", lname="",
                     grp=0, perm=0,
                     email="",phone="", 
                     annon=False,start=datetime.now()):
-    self.uname = uname
+    self.uid = uid
     self.fname = fname
     self.lname = lname
     self.grp = grp
@@ -49,14 +48,13 @@ class User(db.Model):
     self.email = email
 
   def __repr__(self):
-    return '<User %r>' % self.uname
+    return '<User %r>' % self
 
   def __str__(self):
-    return self.uname
+    return self.uid
 
   def __iter__(self):
-    yield ('id',self.id)
-    yield ('uname',self.uname)
+    yield ('uid',self.uid)
     yield ('fname',self.fname)
     yield ('lname',self.lname)
     yield ('grp',self.grp)
@@ -71,7 +69,7 @@ class User(db.Model):
     from flask import current_app
     app = current_app
     s = Serializer(app.config['SECRET_KEY'], expires_in=int(expiration))
-    y = s.dumps({'id':self.id})
+    y = s.dumps({'uid':self.id})
     return y
 
   @staticmethod
@@ -85,14 +83,13 @@ class User(db.Model):
       return None # valid token, but expired
     except BadSignature:
       return None # invalid token
-    user = User.query.get(data['id'])
+    user = User.query.get(data['uid'])
     return user
 
   @staticmethod
   def info():
     return {
-      'id':'user id',
-      'uname':'user name',
+      'uid':'user id',
       'fname':'first name',
       'lname':'last name',
       'grp':'user group (1:student,2:faculty,3:operator,4:admin)',
@@ -189,8 +186,8 @@ class Asset(db.Model):
 
   purchased = db.Column(db.DateTime)
   inventoried = db.Column(db.DateTime)
-  owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-  holder_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  owner_id = db.Column(db.String(16), db.ForeignKey('user.uid'))
+  holder_id = db.Column(db.String(16), db.ForeignKey('user.uid'))
   home_id = db.Column(db.Integer, db.ForeignKey('location.id'))
   current_id = db.Column(db.Integer, db.ForeignKey('location.id'))
 
@@ -242,8 +239,8 @@ class Asset(db.Model):
     yield ('comments', self.comments)
 
     yield ('purchased', int(self.purchased.strftime("%s")) if self.purchased else None)
-    yield ('owner', self.owner.id if self.owner else None)
-    yield ('home', self.home.id if self.home else None)
+    yield ('owner', self.owner.uid if self.owner else None)
+    yield ('home', self.home.uid if self.home else None)
 
     yield ('current', self.current.id if self.current else None)
     yield ('holder', self.holder.id if self.holder else None)
@@ -270,7 +267,7 @@ class Asset(db.Model):
 
 class Inventory(db.Model):
   id = db.Column(db.Integer, primary_key=True)
-  who_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+  who_id = db.Column(db.String(16), db.ForeignKey('user.uid'))
   what_id = db.Column(db.String(16), db.ForeignKey('asset.tag_ece'))
   when = db.Column(db.DateTime)
   where_id = db.Column(db.Integer, db.ForeignKey('location.id'))
@@ -293,7 +290,7 @@ class Inventory(db.Model):
 
   def __iter__( self ):
     yield ('id',self.id)
-    yield ('who',self.who.id)
+    yield ('who',self.who.uid)
     yield ('what',self.what.tag_ece)
     yield ('when',int(self.when.strftime("%s")))
     yield ('where',self.where.id)
