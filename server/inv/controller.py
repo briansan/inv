@@ -16,9 +16,6 @@ import base64, os
   authentication methods
 """
 
-def logged_in():
-  return session.get('uname')
-
 def root():
   expire = None
   if util.is_create():
@@ -444,13 +441,9 @@ def update_asset(inv):
   when = inv.when
   where = inv.where
   
-  print when
-
   what.holder = who
   what.inventoried = when
   what.current = where
-
-  print dict(what)
 
   methods.save()
   print 'updated asset', dict(what)
@@ -477,7 +470,7 @@ def parse_asset():
     y['purchased'] = int(y['purchased']) if y['purchased'] else None
 
     y['owner'] = request.form.get('owner')
-    y['owner'] = int(y['owner']) if y['owner'] else 0
+    y['owner'] = str(y['owner']).lower() if y['owner'] else "bkim11" 
 
     y['home'] = request.form.get('home')
     y['home'] = int(y['home']) if y['home'] else 0
@@ -519,7 +512,7 @@ def view_inv(id=0):
 
 def edit_inv(id):
   x = view_inv(id)
-  own_item = check_auth(auth.EntityModify) and x['id'] == g.user.id
+  own_item = check_auth(auth.EntityModify) and x['who'] == g.user.uid
   operator = check_auth(auth.EntityModifyWorld)
   if own_item or operator:
     try:
@@ -544,7 +537,7 @@ def rm_inv(id):
 def parse_inv():
   y = {}
   try:
-    y['who'] = int(request.form['who'])
+    y['who'] = str(request.form['who']).lower()
     y['what'] = request.form['what']
     y['when'] = int(request.form['when'])
     y['where'] = int(request.form['where'])
@@ -562,9 +555,9 @@ def view_self():
   else:
     return view.keep_away()
 
-def view_user(id=1):
+def view_user(uid="bkim11"):
   if check_auth(auth.SubentityView):
-    x = methods.read_user(id)
+    x = methods.read_user(uid)
     x = check_annon(x)
     y = dict(x)
     return view.success(y)
@@ -605,7 +598,7 @@ def edit_self():
 
 def edit_user(id):
   if check_auth(auth.UserModifyWorld):
-    user = model.User.query.filter_by(id=id).first()
+    user = model.User.query.filter_by(uid=uid).first()
     if user:
       grp = request.form.get('grp')
       grp = int(grp) if grp else grp
@@ -622,7 +615,7 @@ def edit_user(id):
 
 def rm_user(id):
   if check_auth(auth.UserModifyWorld):
-    man = model.User.query.filter_by(id=id).first()
+    man = model.User.query.filter_by(uid=uid).first()
     if man:
       model.db.session.delete(man)
       model.db.session.commit()
