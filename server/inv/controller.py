@@ -298,22 +298,31 @@ def allowed_file(fname):
 
 def get_asset_img(id):
   if check_auth(auth.EntityView):
-    fname = util.img_path(id.upper())
-    return view.send_img(fname)
+    try:
+      fname = util.img_path(id.upper())
+      return view.send_img(fname)
+    except:
+      return view.dne('image for '+id)
   else:
     return view.keep_away()
 
 def get_asset_thumbnail(id):
   if check_auth(auth.EntityView):
-    fname = util.thumbnail_path(id.upper())
-    return view.send_img(fname)
+    try:
+      fname = util.thumbnail_path(id.upper())
+      return view.send_img(fname)
+    except:
+      return view.dne('image thumbnail for '+id)
   else:
     return view.keep_away()
 
 def get_asset_receipt(id):
   if check_auth(auth.EntityView):
-    fname = util.receipt_path(id.upper())
-    return view.send_img(fname)
+    try:
+      fname = util.receipt_path(id.upper())
+      return view.send_img(fname)
+    except:
+      return view.dne('receipt image for '+id)
   else:
     return view.keep_away()
 
@@ -395,6 +404,12 @@ def add_asset():
       return view.missing_field(k.message)
     # add the asset
     x = methods.create_asset(asset)
+    # add an initial inv
+    if x:
+      inv = model.Inventory(g.user,x,where=x.home,how=x.status)
+      request.form = dict(inv)
+      add_inv()
+      
     return view.success(dict(x)) if x else view.already_exists('asset')
   else:
     return view.keep_away()
@@ -436,18 +451,13 @@ def rm_asset(id):
     return view.keep_away()
 
 def update_asset(inv):
-  who = inv.who
-  what = inv.what
-  when = inv.when
-  where = inv.where
-  
-  what.holder = who
-  what.inventoried = when
-  what.current = where
-  what.status = how
+  asset = inv.what
+  asset.holder = inv.who
+  asset.inventoried = inv.when
+  asset.current = inv.where
+  asset.status = inv.how
 
   methods.save()
-  print 'updated asset', dict(what)
 
 def parse_asset():
   y = {}
