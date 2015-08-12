@@ -397,9 +397,9 @@ def update_asset(id,x):
   if x.get('purchased'): 
     a.purchased = date.fromtimestamp(x['purchased']) 
   if x.get('owner'):
-    a.owner = User.query.filter_by(uid=x['owner'])
+    a.owner = User.query.filter_by(uid=x['owner']).first()
   if x.get('home'):
-    a.home = Location.query.filter_by(uid=x['home'])
+    a.home = Location.query.filter_by(id=x['home']).first()
   
   save()
   return a
