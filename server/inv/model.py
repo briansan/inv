@@ -282,7 +282,7 @@ class Inventory(db.Model):
     self.what = what
     self.when = when
     self.where = where
-    self.how = status
+    self.how = how
 
   def __repr__( self ):
     return '<Inventory %s>' % self
@@ -296,7 +296,7 @@ class Inventory(db.Model):
     yield ('what',self.what.tag_ece)
     yield ('when',int(self.when.strftime("%s")))
     yield ('where',self.where.id)
-    yield ('how',self.status)
+    yield ('how',self.how)
 
   @staticmethod
   def info():
