@@ -444,6 +444,7 @@ def update_asset(inv):
   what.holder = who
   what.inventoried = when
   what.current = where
+  what.status = how
 
   methods.save()
   print 'updated asset', dict(what)
@@ -541,6 +542,7 @@ def parse_inv():
     y['what'] = request.form['what']
     y['when'] = int(request.form['when'])
     y['where'] = int(request.form['where'])
+    y['how'] = int(request.form['how'])
   except KeyError as k:
     raise Exception(k.args[0])
   return y

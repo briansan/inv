@@ -422,7 +422,8 @@ def create_inv(x):
   what = read_asset(x['what'])
   when = datetime.fromtimestamp(x['when'])
   where = read_location(x['where'])
-  inv = Inventory(who,what,when,where)
+  how = x['how']
+  inv = Inventory(who,what,when,where,how)
   db.session.add(inv)
   save()
   return inv
@@ -453,6 +454,7 @@ def update_inv(id,x):
   inv.what = Asset.query.filter_by(id=x['what'])
   inv.when = datetime.fromtimestamp(x['when'])
   inv.where = Location.query.filter_by(id=x['where'])
+  inv.how = x['how']
   save()
   return inv
 

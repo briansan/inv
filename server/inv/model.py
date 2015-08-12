@@ -271,22 +271,24 @@ class Inventory(db.Model):
   what_id = db.Column(db.String(16), db.ForeignKey('asset.tag_ece'))
   when = db.Column(db.DateTime)
   where_id = db.Column(db.Integer, db.ForeignKey('location.id'))
+  how = db.Column(db.Integer)
 
   who = db.relationship('User', backref=db.backref('invs', lazy='dynamic'))
   what = db.relationship('Asset', backref=db.backref('invs', lazy='dynamic'))
   where = db.relationship('Location', backref=db.backref('invs', lazy='dynamic'))
 
-  def __init__(self,who,what,when=datetime.now(),where=None):
+  def __init__(self,who,what,when=datetime.now(),where=None,how=Asset.Status.Available):
     self.who = who
     self.what = what
     self.when = when
     self.where = where
+    self.how = status
 
   def __repr__( self ):
     return '<Inventory %s>' % self
 
   def __str__( self ):
-    return '%s for %s on %s in %s' % (self.who, self.what, self.when, self.where)
+    return '%s for %s on %s in %s as %s' % (self.who, self.what, self.when, self.where, Asset.Status.info[self.how])
 
   def __iter__( self ):
     yield ('id',self.id)
@@ -294,6 +296,7 @@ class Inventory(db.Model):
     yield ('what',self.what.tag_ece)
     yield ('when',int(self.when.strftime("%s")))
     yield ('where',self.where.id)
+    yield ('how',self.status)
 
   @staticmethod
   def info():
@@ -303,6 +306,7 @@ class Inventory(db.Model):
       'what': 'the asset',
       'when': 'the date',
       'where': 'the location'
+      'how': 'the status'
     }
 
 class ItemCategory(db.Model):
