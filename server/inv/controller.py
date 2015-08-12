@@ -297,7 +297,7 @@ def allowed_file(fname):
   return '.' in fname and fname.rsplit('.',1)[1] in ALLOWED_EXTENSIONS
 
 def get_asset_img(id):
-  if check_auth(auth.EntityModfiy):
+  if check_auth(auth.EntityView):
     fname = util.img_path(id.upper())
     return view.send_img(fname)
   else:
