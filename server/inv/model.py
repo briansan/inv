@@ -305,7 +305,7 @@ class Inventory(db.Model):
       'who': 'the user',
       'what': 'the asset',
       'when': 'the date',
-      'where': 'the location'
+      'where': 'the location',
       'how': 'the status'
     }
 
