@@ -413,8 +413,8 @@ def view_asset(id=0):
     return view.keep_away()
 
 def edit_asset(id):
-  x = view_asset(id)
-  own_item = check_auth(auth.EntityModify) and x['id'] == g.user.id
+  x = methods.read_asset(id.upper())
+  own_item = check_auth(auth.EntityModify) and x.owner == g.user.uid
   operator = check_auth(auth.EntityModifyWorld)
   if own_item or operator:
     try:
@@ -511,8 +511,8 @@ def view_inv(id=0):
     return view.keep_away()
 
 def edit_inv(id):
-  x = view_inv(id)
-  own_item = check_auth(auth.EntityModify) and x['who'] == g.user.uid
+  x = methods.read_inv(id)
+  own_item = check_auth(auth.EntityModify) and x.who == g.user.uid
   operator = check_auth(auth.EntityModifyWorld)
   if own_item or operator:
     try:
@@ -599,7 +599,7 @@ def edit_self():
 
 def edit_user(id):
   if check_auth(auth.UserModifyWorld):
-    user = model.User.query.filter_by(uid=uid).first()
+    user = model.User.query.filter_by(uid=id).first()
     if user:
       grp = request.form.get('grp')
       grp = int(grp) if grp else grp
