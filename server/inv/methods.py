@@ -395,7 +395,7 @@ def update_asset(id,x):
   if x.get('ip'): a.ip = x['ip']
   if x.get('comments'): a.comments = x['comments']
   if x.get('purchased'): 
-    a.purchased = date.fromtimestamp(x['purchased']) 
+    a.purchased = datetime.fromtimestamp(x['purchased']) 
   if x.get('owner'):
     a.owner = User.query.filter_by(uid=x['owner']).first()
   if x.get('home'):
