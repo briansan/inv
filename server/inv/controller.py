@@ -404,12 +404,11 @@ def add_asset():
       return view.missing_field(k.message)
     # add the asset
     x = methods.create_asset(asset)
-    # add an initial inv
-    if x:
+    # add an initial inv (if requested)
+    if bool(request.form.get('doinv')) and x:
       inv = model.Inventory(g.user,x,where=x.home,how=x.status)
-      request.form = dict(inv)
-      add_inv()
-      
+      methods.create_inv(dict(inv))
+      update_asset(inv)
     return view.success(dict(x)) if x else view.already_exists('asset')
   else:
     return view.keep_away()
