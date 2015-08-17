@@ -173,7 +173,7 @@ class Asset(db.Model):
             4:'Disposed'}
 
   tag_ece = db.Column(db.String(16), unique=True, primary_key=True)
-  tag_vu = db.Column(db.String(16), unique=True)
+  tag_vu = db.Column(db.String(16))
   tag_unit = db.Column(db.String(16))
   tag_svc = db.Column(db.String(16))
   serial = db.Column(db.String(16))
