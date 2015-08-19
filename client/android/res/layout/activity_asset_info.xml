@@ -1,0 +1,635 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.villanova.ece.inv.fragment.AssetInfoActivity">
+        <LinearLayout
+            android:id="@+id/top_bar"
+
+            android:background="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/tl"
+
+                android:text="tl"
+                android:textSize="25dp"
+                android:textColor="#FFFFFF"
+
+                android:background="#000000"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp">
+            </Button>
+
+            <Button
+                android:id="@+id/tm"
+
+                android:text="tm"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp"
+
+                android:background="#000000"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/tr"
+
+                android:text="tr"
+                android:textSize="25dp"
+                android:textColor="#FFFFFF"
+
+                android:background="#000000"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp">
+            </Button>
+        </LinearLayout>
+
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="25dp">
+
+            <!-- ece tag -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="ECE Tag:"
+                android:id="@+id/ece_label"
+                android:layout_marginBottom="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true" />
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ece_switcher"
+                android:layout_alignBaseline="@+id/ece_label"
+                android:layout_toEndOf="@+id/ece_label"
+                android:layout_toRightOf="@+id/ece_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ece_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="(Required)"
+                    android:id="@+id/ece_et"/>
+
+
+            </ViewSwitcher>
+
+            <!-- status -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Status:"
+                android:layout_marginBottom="10dp"
+                android:id="@+id/status_label"
+                android:layout_below="@+id/ece_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/status_switcher"
+                android:layout_alignBaseline="@+id/status_label"
+                android:layout_toEndOf="@+id/status_label"
+                android:layout_toRightOf="@+id/status_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/status_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="status"
+                    android:id="@+id/status_spinner"/>
+            </ViewSwitcher>
+
+            <!-- item -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Item:"
+                android:id="@+id/item_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/status_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/item_switcher"
+                android:layout_alignBaseline="@+id/item_label"
+                android:layout_toEndOf="@+id/item_label"
+                android:layout_toRightOf="@+id/item_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/item_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="item"
+                    android:id="@+id/item_spinner"/>
+            </ViewSwitcher>
+
+            <!-- owner -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Owner:"
+                android:id="@+id/owner_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/item_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/owner_switcher"
+                android:layout_alignBaseline="@+id/owner_label"
+                android:layout_toEndOf="@+id/owner_label"
+                android:layout_toRightOf="@+id/owner_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/owner_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="item"
+                    android:id="@+id/owner_spinner"/>
+            </ViewSwitcher>
+
+            <!-- home -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Home Location:"
+                android:id="@+id/home_label"
+                android:layout_marginBottom="50dp"
+                android:layout_below="@+id/owner_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/home_switcher"
+                android:layout_alignBaseline="@+id/home_label"
+                android:layout_toEndOf="@+id/home_label"
+                android:layout_toRightOf="@+id/home_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/home_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="item"
+                    android:id="@+id/home_spinner"/>
+            </ViewSwitcher>
+
+            <!-- do inventory -->
+            <RelativeLayout
+                android:layout_below="@+id/home_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/doinv_wrapper"
+                android:visibility="invisible"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Do Inventory:"
+                    android:id="@+id/doinv_label"/>
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/doinv_cb"
+                    android:layout_toRightOf="@+id/doinv_label"
+                    android:layout_toEndOf="@+id/doinv_label"/>
+            </RelativeLayout>
+
+            <!-- last inventory -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Last Inventory:"
+                android:id="@+id/lastinv_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/home_label"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/lastinv_label"
+                android:layout_toEndOf="@+id/lastinv_label"
+                android:layout_toRightOf="@+id/lastinv_label"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:id="@+id/lastinv_tv"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <!-- holder -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Done by:"
+                android:id="@+id/holder_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/lastinv_label"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/holder_label"
+                android:layout_toEndOf="@+id/holder_label"
+                android:layout_toRightOf="@+id/holder_label"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:id="@+id/holder_tv"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+            <!-- current -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Current Location:"
+                android:id="@+id/current_label"
+                android:layout_marginBottom="50dp"
+                android:layout_below="@+id/holder_label"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/current_label"
+                android:layout_toEndOf="@+id/current_label"
+                android:layout_toRightOf="@+id/current_label"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:id="@+id/current_tv"
+                android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+
+                <!-- price -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Price:"
+                    android:id="@+id/price_label"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@+id/current_label"/>
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/price_switcher"
+                    android:layout_alignBaseline="@+id/price_label"
+                    android:layout_toEndOf="@+id/price_label"
+                    android:layout_toRightOf="@+id/price_label">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/price_tv"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:gravity="right"
+                        android:textAlignment="gravity"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="($)"
+                        android:inputType="numberDecimal"
+                        android:id="@+id/price_et"/>
+
+
+                </ViewSwitcher>
+
+                <!-- purchase date -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Purchase Date:"
+                    android:id="@+id/purchase_label"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@+id/price_label"/>
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/purchase_switcher"
+                    android:layout_alignBaseline="@+id/purchase_label"
+                    android:layout_toEndOf="@+id/purchase_label"
+                    android:layout_toRightOf="@+id/purchase_label">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/purchase_tv"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:gravity="right"
+                        android:textAlignment="gravity"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="(YYYY/mm/dd)"
+                        android:inputType="date"
+                        android:id="@+id/purchase_et"/>
+
+                </ViewSwitcher>
+
+
+                <!-- ip address -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="IP Address:"
+                    android:id="@+id/ip_label"
+                    android:layout_marginBottom="10dp"
+                    android:layout_below="@+id/purchase_label"/>
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/ip_switcher"
+                    android:layout_alignBaseline="@+id/ip_label"
+                    android:layout_toEndOf="@+id/ip_label"
+                    android:layout_toRightOf="@+id/ip_label">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/ip_tv"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:gravity="right"
+                        android:textAlignment="gravity"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="(Optional)"
+                        android:id="@+id/ip_et"/>
+
+
+                </ViewSwitcher>
+
+                <!-- comments -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:text="Comments:"
+                    android:id="@+id/comment_label"
+                    android:layout_marginBottom="50dp"
+                    android:layout_below="@+id/ip_label"/>
+                <ViewSwitcher
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/comment_switcher"
+                    android:layout_alignBaseline="@+id/comment_label"
+                    android:layout_toEndOf="@+id/comment_label"
+                    android:layout_toRightOf="@+id/comment_label">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/comment_tv"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:gravity="right"
+                        android:textAlignment="gravity"/>
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="(Optional)"
+                        android:id="@+id/comment_et"/>
+
+
+                </ViewSwitcher>
+
+            <!-- vu tag -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="VU Tag:"
+                android:id="@+id/vu_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/comment_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/vu_switcher"
+                android:layout_alignBaseline="@+id/vu_label"
+                android:layout_toEndOf="@+id/vu_label"
+                android:layout_toRightOf="@+id/vu_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/vu_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="(Optional)"
+                    android:id="@+id/vu_et"/>
+
+
+            </ViewSwitcher>
+
+            <!-- unit tag -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Unit Tag:"
+                android:id="@+id/unit_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/vu_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/unit_switcher"
+                android:layout_alignBaseline="@+id/unit_label"
+                android:layout_toEndOf="@+id/unit_label"
+                android:layout_toRightOf="@+id/unit_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/unit_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="(Optional)"
+                    android:id="@+id/unit_et"/>
+
+
+            </ViewSwitcher>
+
+            <!-- svc tag -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Service Tag:"
+                android:id="@+id/svc_label"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/unit_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/svc_switcher"
+                android:layout_alignBaseline="@+id/svc_label"
+                android:layout_toEndOf="@+id/svc_label"
+                android:layout_toRightOf="@+id/svc_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/svc_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="(Optional)"
+                    android:id="@+id/svc_et"/>
+
+
+            </ViewSwitcher>
+
+            <!-- serial -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Serial Number:"
+                android:id="@+id/serial_label"
+                android:layout_marginBottom="50dp"
+                android:layout_below="@+id/svc_label"/>
+            <ViewSwitcher
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/serial_switcher"
+                android:layout_alignBaseline="@+id/serial_label"
+                android:layout_toEndOf="@+id/serial_label"
+                android:layout_toRightOf="@+id/serial_label">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/serial_tv"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:gravity="right"
+                    android:textAlignment="gravity"/>
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="(Optional)"
+                    android:id="@+id/serial_et"/>
+
+            </ViewSwitcher>
+
+
+
+            </RelativeLayout>
+        </ScrollView>
+
+
+        <LinearLayout
+            android:id="@+id/bottom_bar"
+
+            android:background="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/bl"
+
+                android:text="bl"
+                android:textSize="25dp"
+                android:textColor="#FFFFFF"
+
+                android:background="#000000"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp">
+            </Button>
+
+            <Button
+                android:id="@+id/bm"
+
+                android:text="bm"
+                android:textAlignment="center"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp"
+
+                android:background="#000000"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_gravity="center"/>
+
+            <Button
+                android:id="@+id/br"
+
+
+                android:text="br"
+                android:textSize="25dp"
+                android:textColor="#FFFFFF"
+
+                android:background="#000000"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_margin="10dp">
+            </Button>
+        </LinearLayout>
+
+
+</RelativeLayout>

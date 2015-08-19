@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.villanova.ece.inv2" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity android:name=".activity.ListActivity" />
+        <activity android:name=".activity.ItemInfoActivity" />
+        <activity android:name=".activity.LocationInfoActivity" />
+        <activity android:name=".activity.UserInfoActivity" />
+        <activity android:name=".activity.AssetInfoActivity" />
+        <activity android:name=".activity.InvInfoActivity" />
+        <activity android:name=".activity.SettingsActivity" />
+        <activity android:name=".manager.AuthManager$AuthActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+</manifest>

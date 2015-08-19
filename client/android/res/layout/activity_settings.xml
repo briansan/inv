@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="edu.villanova.ece.inv2.SettingsActivity">
+    <LinearLayout
+        android:id="@+id/top_bar"
+
+        android:background="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tl"
+
+            android:text="tl"
+            android:textSize="25dp"
+            android:textColor="#FFFFFF"
+
+            android:background="#000000"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp">
+        </Button>
+
+        <Button
+            android:id="@+id/tm"
+
+            android:text="tm"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+
+            android:background="#000000"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/tr"
+
+            android:text="tr"
+            android:textSize="25dp"
+            android:textColor="#FFFFFF"
+
+            android:background="#000000"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp">
+        </Button>
+    </LinearLayout>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
+        android:layout_marginBottom="50dp">
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="25dp"
+            android:layout_marginBottom="125dp">
+
+            <!-- default list -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Default List:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/defaultlist_label"/>
+            <Spinner
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/defaultlist_label"
+                android:layout_toRightOf="@+id/defaultlist_label"
+                android:id="@+id/defaultlist_spinner"/>
+
+            <!-- keepalive -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/defaultlist_label"
+                android:text="Stay logged in for (minutes):"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/keepalive_label"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/keepalive_label"
+                android:layout_toEndOf="@+id/keepalive_label"
+                android:layout_toRightOf="@+id/keepalive_label"
+                android:hint="Minutes"
+                android:id="@+id/keepalive_et"/>
+
+            <!-- login info -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_below="@+id/keepalive_label"
+                android:text="Logged in as:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/logininfo_label"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/logininfo_label"
+                android:layout_toEndOf="@+id/logininfo_label"
+                android:layout_toRightOf="@+id/logininfo_label"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:text="Username"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/logininfo_tv"/>
+
+            <!-- login time remaining -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginRight="25dp"
+                android:layout_below="@+id/logininfo_label"
+                android:text="For:"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/logintime_label"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/logintime_label"
+                android:layout_toEndOf="@+id/logintime_label"
+                android:layout_toRightOf="@+id/logintime_label"
+                android:gravity="right"
+                android:textAlignment="gravity"
+                android:text="Time"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:id="@+id/logintime_tv"/>
+
+            <!-- refresh button -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/logintime_label"
+                android:text="Refresh Login"
+                android:id="@+id/login_b"/>
+
+            <!-- profile button -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/login_b"
+                android:text="View Profile"
+                android:id="@+id/profile_b"/>
+
+            <!-- logout -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:layout_below="@+id/profile_b"
+                android:text="Logout"
+                android:id="@+id/logout_b"/>
+
+            <!-- item category -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/logout_b"
+                android:text="Item Categories"
+                android:id="@+id/ic_b"/>
+
+            <!-- item  manufacturer -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/ic_b"
+                android:text="Item Manufacturers"
+                android:id="@+id/im_b"/>
+
+            <!-- location buildings -->
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="50dp"
+                android:layout_below="@+id/im_b"
+                android:text="Location Buildings"
+                android:id="@+id/lb_b"/>
+
+            <!--
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/lb_b"
+                android:text="About"
+                android:id="@+id/about_b"/>
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_below="@+id/about_b"
+                android:text="Support"
+                android:id="@+id/support_b"/>
+            -->
+        </RelativeLayout>
+    </ScrollView>
+
+
+    <LinearLayout
+        android:id="@+id/bottom_bar"
+        android:visibility="gone"
+        android:alpha="0"
+        android:background="#000000"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/bl"
+
+            android:text="bl"
+            android:textSize="25dp"
+            android:textColor="#FFFFFF"
+
+            android:background="#000000"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp">
+        </Button>
+
+        <Button
+            android:id="@+id/bm"
+
+            android:text="bm"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="25sp"
+
+            android:background="#000000"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center"/>
+
+        <Button
+            android:id="@+id/br"
+
+
+            android:text="br"
+            android:textSize="25dp"
+            android:textColor="#FFFFFF"
+
+            android:background="#000000"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_margin="10dp">
+        </Button>
+    </LinearLayout>
+</RelativeLayout>
