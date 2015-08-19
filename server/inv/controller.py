@@ -10,7 +10,7 @@ from werkzeug import secure_filename
 from PIL import Image
 
 import auth, methods, model, view, util
-import base64, os
+import base64, datetime, os
 
 """
   authentication methods
@@ -405,10 +405,10 @@ def add_asset():
     # add the asset
     x = methods.create_asset(asset)
     # add an initial inv (if requested)
-    if bool(request.form.get('doinv')) and x:
-      inv = model.Inventory(g.user,x,where=x.home,how=x.status)
-      methods.create_inv(dict(inv))
-      update_asset(inv)
+    if (request.form.get('doinv') in ["true","True"]) and x:
+      inv = {'who':x.owner_id,'what':x.tag_ece,'when':int(datetime.datetime.now().strftime("%s")),'where':x.home_id,'how':x.status}
+      y = methods.create_inv(inv)
+      update_asset(y)
     return view.success(dict(x)) if x else view.already_exists('asset')
   else:
     return view.keep_away()
@@ -463,13 +463,15 @@ def parse_asset():
   try:
     # get means optional field, [] means required field
     y['tag_ece'] = request.form['tag_ece'] #
+    y['status'] = int(request.form['status']) #
+    y['item'] = int(request.form['item']) #
+    y['owner'] = str(request.form['owner'].lower())
+    y['home'] = int(request.form['home']) #
+
     y['tag_vu'] = request.form.get('tag_vu')
     y['tag_unit'] = request.form.get('tag_unit')
     y['tag_svc'] = request.form.get('tag_svc')
     y['serial'] = request.form.get('serial')
-
-    y['status'] = int(request.form['status']) #
-    y['item'] = int(request.form['item']) #
 
     y['price'] = request.form.get('price')
     y['price'] = float(y['price']) if y['price'] else None
@@ -479,11 +481,6 @@ def parse_asset():
     y['purchased'] = request.form.get('purchased')
     y['purchased'] = int(y['purchased']) if y['purchased'] else None
 
-    y['owner'] = request.form.get('owner')
-    y['owner'] = str(y['owner']).lower() if y['owner'] else "bkim11" 
-
-    y['home'] = request.form.get('home')
-    y['home'] = int(y['home']) if y['home'] else 0
     
   except KeyError as k:
     raise Exception(k.args[0])
