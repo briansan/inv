@@ -442,7 +442,7 @@ def edit_asset(id):
 
 def rm_asset(id):
   if check_auth(auth.EntityModify):
-    man = model.Asset.query.filter_by(id=id).first()
+    man = model.Asset.query.filter_by(tag_ece=id).first()
     model.db.session.delete(man)
     model.db.session.commit()
     return view.success('asset removed')
