@@ -1,10 +1,10 @@
 from flask import Blueprint, redirect, url_for, render_template
 
-site = Blueprint('site',__name__)
+site = Blueprint('site',__name__,template_folder='templates')
 
 @site.route('/', methods=['GET'])
 def home():
-  return redirect(url_for('about'))
+  return redirect(url_for('site.about'))
 
 @site.route('/about', methods=['GET'])
 def about():
