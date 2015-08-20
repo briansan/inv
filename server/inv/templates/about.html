@@ -1,0 +1,59 @@
+{% extends 'layout.html' %}
+{% block title %}About{% endblock %}
+{% block header %}
+  <h2>About <small>v0.1</small></h2>
+{% endblock %}
+{% block nav %}
+  <li role="presentation" class="active"><a href="#intro" aria-controls="help" role="tab" data-toggle="tab">Introduction</a></li>
+  <li role="presentation"><a href="#ack" aria-controls="help" role="tab" data-toggle="tab">Acknowledgements</a></li>
+  <li role="presentation"><a href="#license" aria-controls="feedback" role="tab" data-toggle="tab">License</a></li>
+{% endblock %}
+{% block content %}
+  <article role="tabpanel" class="tab-pane fade in active" id="intro">
+    <div class="panel-body">
+      <h3>Background</h3>
+      <p> In the spring of 2015, I was hired by the Vilanova University Department of Electrical and Computer Engineering to work at their Electronic Support office. There I saw a need for an inventorying system so that we could have a better idea of what assets we owned and where they were. I talked to my boss about it and he had an Android app that kind of got the job done but I assured him that I could do better.  Enter, inv.</p>
+      <h3>Description</h3>
+      <p> inv is really just another inventory management software, or you could call it asset tracking. Either way, you're keeping tabs on the things that you own.</p>
+      <h3>Status</h3>
+      <p>The full stack of this software is complete. The backend was built using Python-Flask and the frontend was developed under the Android platform. However, there are numerous amounts of functional and user-experience bugs that need to be taken care of. If you could <a href="{{ url_for('support') }}">send your feedback</a> while using this app, it would be much appreciated</p>
+    </div>
+  </article>
+  <article role="tabpanel" class="tab-pane fade" id="ack">
+    <div class="panel-body">
+      <ul class="list-group">
+        <li class="list-group-item"><a href="https://www.google.com/design/icons/">Google</a>: Iconography</li>
+        <li class="list-group-item"><a href="https://breadtech.com/interface">BreadInterface</a>: Interface</a></li>
+        <li class="list-group-item"><a href="https://github.com/google/gson">Gson</a>: JSON Parsing</li>
+        <li class="list-group-item"><a href="https://github.com/zxing/zxing">Zxing</a>: Barcode Scanner</li>
+      </ul>
+    </div>
+  </article>
+  <article role="tabpanel" class="tab-pane" id="license">
+    <div class="panel-body">
+      <blockquote style="font-family:monospace;font-size:12">
+        The MIT License (MIT)</br>
+        </br>
+        Copyright (c) 2015 Brian Kim
+        </br>
+        Permission is hereby granted, free of charge, to any person obtaining a copy
+        of this software and associated documentation files (the "Software"), to deal
+        in the Software without restriction, including without limitation the rights
+        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+        copies of the Software, and to permit persons to whom the Software is
+        furnished to do so, subject to the following conditions:
+        </br></br>
+        The above copyright notice and this permission notice shall be included in all
+        copies or substantial portions of the Software.
+        </br></br>
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+        SOFTWARE.
+      </blockquote>
+    </div>
+  </article>
+{% endblock %}

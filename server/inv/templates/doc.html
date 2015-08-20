@@ -1,0 +1,131 @@
+{% extends 'layout.html' %}
+{% block title %}Documentation{% endblock %}
+{% block header %}
+  <h2>Documentation</h2>
+{% endblock %}
+{% block nav %}
+  <li role="presentation" class="active"><a href="#getting-started" aria-controls="help" role="tab" data-toggle="tab">Getting Started</a></li>
+  <li role="presentation"><a href="#user-guide" aria-controls="feedback" role="tab" data-toggle="tab">User Guide</a></li>
+{% endblock %}
+{% block content %}
+  <article role="tabpanel" class="tab-pane fade in active" id="getting-started">
+    <div class="panel-body">
+      <div class="panel-group" id="gs-accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#login">
+              <h3 class="panel-title">Logging In</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="login">
+            <div class="panel-body">
+              <p>inv is currently only supported within Villanova University. 
+                 To log in, use your Villanova User ID. 
+                 (If you're seeing this, you probably already figured this part out...)</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#nav">
+              <h3 class="panel-title">Navigation</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="nav">
+            <div class="panel-body">
+              <p>inv uses BreadInterface, so learning how navigate through the app
+                 shouldn't take too long. In each menu, all the navigation buttons
+                 are located on the corners of the screen. Sometimes, the bottom-middle
+                 text is clickable too.</p>
+               <p hidden>Help menu: Clicking on the title of the menu 
+                  (or the top-middle text will display a help menu describing the
+                  position, icon, and action of each button.</p>
+               <p hidden>(Note to self: I should've implemented the help menu feature of BI
+                  for Android...DO IT.)</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#req">
+              <h3 class="panel-title">Requirements</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="req">
+            <div class="panel-body">
+              <p>The whole point of this software is to keep track of your belongings. 
+                 So before you begin, make sure that you have some items that you want to catalog</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#barcode">
+              <h3 class="panel-title">Barcode Scanner</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="barcode">
+            <div class="panel-body">
+              <p>Using this software is made infinitely easier with the integration of a barcode scanner.
+                 You can access this feature by clicking the bottom-left button of the home menu.
+                 Hold it to the barcode of the asset's unique tag (EE) and the app will find the matching
+                 asset or display a menu to add that asset into the database if it doesn't exist. From there,
+                 you will want to click the add button on the bottom-right to add an inventory record of
+                 that asset. At that point, you have updated the system on that asset's whereabouts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+  <article role="tabpanel" class="tab-pane" id="user-guide">
+    <div class="panel-body">
+      <div class="panel-group" id="gs-accordion">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#labels">
+              <h3 class="panel-title">Labels</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="labels">
+            <div class="panel-body">
+              <p>The first thing you want to do is to define your labels. The Item Category, Item Manufacturer, and Location Buildings are the three labels that you want to specify. For example, "Computer" would be an item category, "Dell" would be an item manufacturer, and "CEER" would be a location building.</p>
+              <p>To do this, go to the settings menu where you'll see one button for each label type and clicking it will display a list of that specific label. At the bottom-right, there will be a plus button for adding labels.</p>
+              <p>Note: you must have Operator level permissions to add, delete, or edit labels.</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#subentities">
+              <h3 class="panel-title">Subentities</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="subentities">
+            <div class="panel-body">
+              <p>Once you have defined your labels, now you can define your subentities: the Item and Location.</p>
+              <h3>Item</h3>
+              <p>To catalog this item:</p>
+              <img src="http://www7.pcmag.com/media/images/301211-dell-optiplex-9010-desktop.jpg" width="160px" height="160px">
+              <p>I would specify the Category as "Computer", Manufacturer as "Dell", and Model as "Optiplex 9010"</p>
+              <h3>Location</h3>
+              <p>It turns out that we have one of these computers at our office in CEER 008 so I would want to define a location where Building is "CEER" and Room is "008".</p>
+            </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <a data-toggle="collapse" data-parent="#gs-accordion" href="#entities">
+              <h3 class="panel-title">Entities</h3>
+            </a>
+          </div>
+          <div class="panel-collapse collapse" id="entities">
+            <div class="panel-body">
+              <p>Now that you have defined all the basic subentities, you can begin tracking your belongings using the core entities: the Asset and Inventory.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+{% endblock %}

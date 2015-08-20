@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block title %}Support{% endblock %}
+{% block header %}
+  <h2>Support</h2>
+{% endblock %}
+{% block nav %}
+  <li role="presentation" class="active"><a href="#help" aria-controls="help" role="tab" data-toggle="tab">Request Help</a></li>
+  <li role="presentation"><a href="#feedback" aria-controls="feedback" role="tab" data-toggle="tab">Send Feedback</a></li>
+{% endblock %}
+{% block content %}
+  <article role="tabpanel" class="tab-pane fade in active" id="help">
+    <div class="panel-body">
+      <p>To get personalized help on using inv, 
+         fill out this form with your question 
+         and we will contact you as soon as we can.</p>
+    </div>
+  </article>
+  <article role="tabpanel" class="tab-pane" id="feedback">
+    <div class="panel-body">
+      <p>We appreciate any comments, questions, or concerns 
+         you may have regarding your experience with inv.</p>
+    </div>
+  </article>
+{% endblock %}
