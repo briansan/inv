@@ -7,6 +7,7 @@
 from flask import Flask
 from flask_sslify import SSLify
 from api import api
+from site import site
 from model import db
 
 def create_app(conf):
@@ -21,6 +22,7 @@ def create_app(conf):
   SSLify(app)
   # register blueprints
   app.register_blueprint(api,url_prefix='/api/v1')
+  app.register_blueprint(site,url_prefix='/')
   return app
 
 if __name__=="__main__":
