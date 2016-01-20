@@ -1,0 +1,12 @@
+files:
+README, LICENSE: basic docs
+requirements.txt: for setting up Python library dependencies
+setup.sh: for initializing inv on a new system (sudo ./setup.sh)
+update.sh: for pushing out the new code onto the deployed system
+
+directories:
+diary: braindump (files are named by date eg. 20160120.txt)
+conf: inv.conf: used by apache to run inv as a web service
+server: Python
+client: Android (Java)
+doc: this
