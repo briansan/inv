@@ -1,0 +1,30 @@
+the third (and possibly biggest) project to have been neglected in fall2015
+
+current status:
+- http web server  defined via flask (py)
+- front-end client defined via android (java)
+
+core feature:
+- definition of assets as item instances
+- tracking of assets through inventorying
+- storage of data through web service
+
+data model:
+  subentities: item, location, user 
+  entities: asset, inventory
+  labels: item category, item manufacturer, location building
+
+issues:  
+  client:
+  - data fetching extremely inefficient
+    (does a refetch of all the data)
+  - difficult to maintain a tight coupling of data within its structures
+    (hashmap and arraylist)
+  - various ui bugs
+  
+  server:
+  - none that i can think of atm
+    - i guess i did a pretty good job implementing that :D
+
+future:
+- image uploading/capture
