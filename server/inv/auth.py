@@ -95,7 +95,7 @@ def auth_ldap(uid,passwd):
   return get_ldap_info( uid, passwd, uid, ['givenname','sn','ou','mail','employeecampusphone','mobile'] )
 
 
-def get_ldap_info( uid, passwd, who="bkim11", keys=["dn"] ):
+def get_ldap_info( uid, passwd, who="cbannan", keys=["dn"] ):
   # get ldap info
   import base64, getpass, requests
   filt = {'filter':'uid=%s'%who} # url encode the data
