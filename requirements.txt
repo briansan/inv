@@ -1,5 +1,6 @@
 flask
 flask-SQLAlchemy
 flask-sslify
+flask-testing
 requests
 pillow
