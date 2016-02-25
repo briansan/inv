@@ -18,6 +18,10 @@ pip install -r requirements.txt &>/dev/null
 
 # setup dir
 echo "inv: setting up inv directory"
+mkdir server/db server/img server/log server/receipt
+touch server/log/access.log server/log/error.log
+touch server/db/deploy.db
+
 cp -r `pwd`/server /var/inv
 chown -R www-data /var/inv
 chgrp -R www-data /var/inv
