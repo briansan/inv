@@ -114,7 +114,12 @@ def add_building():
 
 def view_building(id=0):
   if check_auth(auth.LabelView):
-    y = methods.read_building_all()
+    if id == 0:
+      y = methods.read_building_all()
+    else:
+      y = methods.read_building(id)
+      if not y: return view.dne('location building')
+      y = dict(y)
     return view.success(y)
   else:
     return view.keep_away()
@@ -224,6 +229,8 @@ def view_category(id=0):
       y = methods.read_category_all()
     else:
       y = methods.read_category(id)
+      if not y: return view.dne('item category')
+      y = dict(y)
     return view.success(y)
   else:
     return view.keep_away()
@@ -266,7 +273,12 @@ def add_manufacturer():
 
 def view_manufacturer(id=0):
   if check_auth(auth.LabelView):
-    y = methods.read_manufacturer_all()
+    if id == 0:
+      y = methods.read_manufacturer_all()
+    else:
+      y = methods.read_manufacturer(id)
+      if not y: return view.dne('item manufacturer')
+      y = dict(y)
     return view.success(y)
   else:
     return view.keep_away()
