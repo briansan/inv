@@ -10,3 +10,14 @@ img: contains the images of the assets (not implemented)
 inv: contains the inventory software codebase
 log: conatins the server logs
 receipt: contains the images of the receipt of asset purchases (not implemented)
+
+notes on updating:
+  when there are any changes made to the code ready for deployment, do the following...
+  - push out the code to github (dev)
+  - pull down the code (deploy)
+  - run 'sudo ./update' (deploy)
+  - modify '/var/inv/inv/conf/deploy.cfg' to update the SERVER_NAME to your hostname (deploy)
+  - run 'sudo service apache2 restart' (deploy)
+
+todo:
+  - explain how a request goes through the python code to generate the right response
