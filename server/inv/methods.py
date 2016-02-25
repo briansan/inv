@@ -60,7 +60,7 @@ def read_building(x):
    @param x str the name of the building
    @return y LocationBuilding or None 
   """
-  return LocationBuilding.query.filter_by(name=x).first()
+  return LocationBuilding.query.filter_by(id=x).first()
 
 def read_building_all():
   """
@@ -226,7 +226,7 @@ def read_manufacturer(x):
    @param x str the name of the manufacturer
    @return y ItemManufacturer or None 
   """
-  return ItemManufacturer.query.filter_by(name=x).first()
+  return ItemManufacturer.query.filter_by(id=x).first()
 
 def read_manufacturer_all():
   """
