@@ -222,7 +222,7 @@ def view_category(id=0):
   if check_auth(auth.LabelView):
     if id==0:
       y = methods.read_category_all()
-    else
+    else:
       y = methods.read_category(id)
     return view.success(y)
   else:
