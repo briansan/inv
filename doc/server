@@ -1,0 +1,12 @@
+inv server: a RESTful server that interfaces the inventory data over HTTP 
+- built using Python flask
+
+files:
+inv.wsgi: script to setup the web server gateway interface
+
+directories:
+db: contains the deploy, debug, and test databases
+img: contains the images of the assets (not implemented)
+inv: contains the inventory software codebase
+log: conatins the server logs
+receipt: contains the images of the receipt of asset purchases (not implemented)
