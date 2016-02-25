@@ -48,16 +48,23 @@ def create_building(x):
    @return y LocationBuilding the object that was placed into the db or None for failure
   """
   y = None
-  exists = read_building(x) 
+  exists = find_building(x) 
   if not exists:
     y = LocationBuilding(x)
     db.session.add(y)
     save()
   return y
 
-def read_building(x):
+def find_building(name):
   """
    @param x str the name of the building
+   @return y LocationBuilding or None 
+  """
+  return LocationBuilding.query.filter_by(name=name).first()
+
+def read_building(x):
+  """
+   @param x str the id of the building
    @return y LocationBuilding or None 
   """
   return LocationBuilding.query.filter_by(id=x).first()
@@ -106,7 +113,7 @@ def create_location(x):
   exists = Location.query.filter(Location.building.has(name=x['building']),Location.room.is_(x['room'])).first()
   if not exists:
     # get the values
-    building = read_building(x['building'])
+    building = find_building(x['building'])
     room = x['room']
     # create a building entry if it doesn't exist
     if not building:
@@ -135,7 +142,7 @@ def update_location(id,x):
   # building name
   new_build = x.get('building')
   if loc.building.name != new_build:
-    build = read_building(new_build)
+    build = find_building(new_build)
     build = create_building(new_build) if not build else build
     loc.building = build
   # room number
@@ -164,12 +171,19 @@ def create_category(x):
    @return y ItemCategory the object that was placed into the db or None for failure
   """
   y = None
-  exists = read_category(x) 
+  exists = find_category(x) 
   if not exists:
     y = ItemCategory(x)
     db.session.add(y)
     save()
   return y
+
+def find_category(name):
+  """
+   @param x str the name of the item category
+   @return y ItemCategory or None 
+  """
+  return ItemCategory.query.filter_by(name=name).first()
 
 def read_category(x):
   """
@@ -214,16 +228,23 @@ def create_manufacturer(x):
    @return y LocationBuilding the object that was placed into the db or None for failure
   """
   y = None
-  exists = read_manufacturer(x) 
+  exists = find_manufacturer(x) 
   if not exists:
     y = ItemManufacturer(x)
     db.session.add(y)
     save()
   return y
 
+def find_manufacturer(name):
+  """
+   @param x str the name of the item manufacturer
+   @return y ItemManufacturer or None 
+  """
+  return ItemManufacturer.query.filter_by(name=name).first()
+
 def read_manufacturer(x):
   """
-   @param x str the name of the manufacturer
+   @param x str the id of the manufacturer
    @return y ItemManufacturer or None 
   """
   return ItemManufacturer.query.filter_by(id=x).first()
@@ -271,8 +292,8 @@ def create_item(x):
   y = None
   if not item_exists(x):
     # get the values
-    category = read_category(x['category'])
-    manufacturer = read_manufacturer(x['manufacturer'])
+    category = find_category(x['category'])
+    manufacturer = find_manufacturer(x['manufacturer'])
     model = x['model']
     # create a building entry if it doesn't exist
     if not category:
@@ -303,13 +324,13 @@ def update_item(id,x):
   # item category
   new_cat = x.get('category')
   if i.category.name != new_cat:
-    cat = read_category(new_cat)
+    cat = find_category(new_cat)
     cat = create_category(new_cat) if not cat else cat
     i.category = cat
   # item manufacturer
   new_man = x.get('manufacturer')
   if i.manufacturer.name != new_man:
-    man = read_manufacturer(new_man)
+    man = find_manufacturer(new_man)
     man = create_manufacturer(new_man) if not man else man
     i.manufacturer = man
   # item model
