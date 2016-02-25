@@ -220,7 +220,10 @@ def add_category():
 
 def view_category(id=0):
   if check_auth(auth.LabelView):
-    y = methods.read_category_all()
+    if id==0:
+      y = methods.read_category_all()
+    else
+      y = methods.read_category(id)
     return view.success(y)
   else:
     return view.keep_away()
