@@ -1,0 +1,2 @@
+bug: asset already exists error doesn't display on client
+http error 500 when device locked during asset add 
