@@ -176,7 +176,7 @@ def read_category(x):
    @param x str the name of the category
    @return y ItemCategory or None 
   """
-  return ItemCategory.query.filter_by(name=x).first()
+  return ItemCategory.query.filter_by(id=x).first()
 
 def read_category_all():
   """
