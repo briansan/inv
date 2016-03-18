@@ -4,3 +4,5 @@ flask-sslify
 flask-testing
 requests
 pillow
+
+flask-pymongo
