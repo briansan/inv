@@ -1,19 +1,14 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import com.breadtech.breadinterface.BIActivity;
@@ -22,23 +17,22 @@ import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.fragment.AssetListFragment;
-import edu.villanova.ece.inv2.fragment.InvListFragment;
-import edu.villanova.ece.inv2.fragment.ItemListFragment;
-import edu.villanova.ece.inv2.fragment.LocationListFragment;
-import edu.villanova.ece.inv2.fragment.UserListFragment;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Inventory;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.fragment.AssetListFragment;
+import edu.villanova.ece.inv.fragment.InvListFragment;
+import edu.villanova.ece.inv.fragment.ItemListFragment;
+import edu.villanova.ece.inv.fragment.LocationListFragment;
+import edu.villanova.ece.inv.fragment.UserListFragment;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Inventory;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.User;
 
 
 public class MainActivity extends BIActivity implements DataManager.DataDelegate,
@@ -97,7 +91,7 @@ public class MainActivity extends BIActivity implements DataManager.DataDelegate
 
     protected DataManager dm;
     protected int mode;
-    protected boolean downloadFlag;
+    protected static boolean downloadFlag;
 
     //
     // ui
@@ -216,9 +210,9 @@ public class MainActivity extends BIActivity implements DataManager.DataDelegate
         if (u != null)
             Toast.makeText(this, "Welcome " +u.getFname()+" "+u.getLname(),Toast.LENGTH_LONG).show();
 
-        if (!this.downloadFlag) {
+        if (!downloadFlag) {
             downloadData();
-            this.downloadFlag = true;
+            downloadFlag = true;
         }
     }
 
@@ -259,12 +253,14 @@ public class MainActivity extends BIActivity implements DataManager.DataDelegate
     }
 
     public void downloadData() {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         downloadingProgress = initLoadingDialog();
         downloadingProgress.setTitle("Downloading data...");
         downloadingProgress.show();
         this.dm.setDelegate(this);
         this.dm.init();
     }
+
 
     @Override
     public void downloadingDidProgress(String msg) {
@@ -275,6 +271,7 @@ public class MainActivity extends BIActivity implements DataManager.DataDelegate
     @Override
     public void downloadingDidComplete() {
 
+
         downloadingProgress.setTitle("Done!");
         (new Timer()).schedule(new TimerTask() {
             @Override
@@ -283,7 +280,9 @@ public class MainActivity extends BIActivity implements DataManager.DataDelegate
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        downloadingProgress.dismiss();
+                        if (downloadingProgress != null && downloadingProgress.isShowing()) {
+                            downloadingProgress.dismiss();
+                        }
 
                         processingProgress = initLoadingDialog();
                         processingProgress.setProgress(0);
@@ -341,6 +340,15 @@ public class MainActivity extends BIActivity implements DataManager.DataDelegate
     // after login, show data
     //
 
+    @Override
+    public void pause() {
+        super.pause();
+
+        if (downloadingProgress != null && downloadingProgress.isShowing()) {
+            downloadingProgress.dismiss();
+        }
+        downloadingProgress = null;
+    }
     @Override
     public void update() {
         super.update();
