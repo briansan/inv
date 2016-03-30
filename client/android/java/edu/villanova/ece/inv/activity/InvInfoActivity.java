@@ -1,8 +1,6 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
@@ -22,14 +20,13 @@ import com.google.zxing.integration.android.IntentResult;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.fragment.AssetListFragment;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.model.Inventory;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.model.Inventory;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * Created by bk on 8/6/15.

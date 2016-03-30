@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -18,13 +18,13 @@ import android.widget.ViewSwitcher;
 
 import com.breadtech.breadinterface.BIActivity;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.fragment.AssetListFragment;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Label;
-import edu.villanova.ece.inv2.model.Location;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.fragment.AssetListFragment;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Label;
+import edu.villanova.ece.inv.model.Location;
 
 /**
  * Created by bk on 8/6/15.

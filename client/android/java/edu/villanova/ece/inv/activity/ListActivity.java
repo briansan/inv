@@ -1,34 +1,29 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.widget.EditText;
 
 import com.breadtech.breadinterface.BIActivity;
 
 import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.fragment.AssetListFragment;
-import edu.villanova.ece.inv2.fragment.BuildingListFragment;
-import edu.villanova.ece.inv2.fragment.CategoryListFragment;
-import edu.villanova.ece.inv2.fragment.InvListFragment;
-import edu.villanova.ece.inv2.fragment.ItemListFragment;
-import edu.villanova.ece.inv2.fragment.ManufacturerListFragment;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Inventory;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Label;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.fragment.AssetListFragment;
+import edu.villanova.ece.inv.fragment.BuildingListFragment;
+import edu.villanova.ece.inv.fragment.CategoryListFragment;
+import edu.villanova.ece.inv.fragment.InvListFragment;
+import edu.villanova.ece.inv.fragment.ItemListFragment;
+import edu.villanova.ece.inv.fragment.ManufacturerListFragment;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Inventory;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Label;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * Created by bk on 8/5/15.
@@ -74,7 +69,7 @@ public class ListActivity extends BIActivity implements ItemListFragment.Delegat
         //
         // check the history
         if (this.modeHistory.empty())
-           this.finish();
+            this.finish();
         else {
             //
             // if it's not empty, pop the values and update
