@@ -1,12 +1,12 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -14,15 +14,12 @@ import android.widget.Toast;
 
 import com.breadtech.breadinterface.BIActivity;
 
-import org.apache.http.auth.AUTH;
-
 import java.util.Date;
-import java.util.Set;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.manager.ApiManager;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.manager.ApiManager;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.model.User;
 
 
 public class SettingsActivity extends BIActivity {
@@ -82,6 +79,10 @@ public class SettingsActivity extends BIActivity {
                 android.R.layout.simple_spinner_item,
                 MainActivity.Mode.modes);
         defaultListSpinner.setAdapter(modeAdapter);
+
+        //
+        // prevent keyboard from automatically popping up
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         //
         // refresh login
