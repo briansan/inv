@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
 import android.app.AlertDialog;
 import android.app.FragmentManager;
@@ -18,13 +18,13 @@ import android.widget.ViewSwitcher;
 
 import com.breadtech.breadinterface.BIActivity;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.fragment.AssetListFragment;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Label;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.fragment.AssetListFragment;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Label;
 
 /**
  * Created by bk on 8/6/15.
@@ -76,8 +76,8 @@ public class ItemInfoActivity extends BIActivity implements DataManager.Modifica
     @Override
     public int tr_icon() {
         return AuthManager.checkAuth(AuthManager.SubentityModify) ?
-            this.editing ? R.drawable.ic_done_white_36dp : R.drawable.ic_edit_white_36dp :
-            0;
+                this.editing ? R.drawable.ic_done_white_36dp : R.drawable.ic_edit_white_36dp :
+                0;
     }
 
     @Override
@@ -257,12 +257,27 @@ public class ItemInfoActivity extends BIActivity implements DataManager.Modifica
         ArrayAdapter<String> cat_arrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item,
                 DataManager.sharedManager().getCategoryStrings());
+
         ArrayAdapter<String> man_arrayAdapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_item,
                 DataManager.sharedManager().getManufacturerStrings());
 
+        // retain the selected item positions in case the values were already set
+        int cat_i = 0;
+        int man_i = 0;
+        if (cat_spinner.getAdapter() != null) {
+            cat_i = cat_spinner.getSelectedItemPosition();
+        } else {
+            man_i = man_spinner.getSelectedItemPosition();
+        }
+
+        // set the adapter
         cat_spinner.setAdapter(cat_arrayAdapter);
         man_spinner.setAdapter(man_arrayAdapter);
+
+        // restore the selected item positions
+        cat_spinner.setSelection(cat_i);
+        man_spinner.setSelection(man_i);
 
         if (item != null) {
             DataManager dm = DataManager.sharedManager();
