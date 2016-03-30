@@ -1,11 +1,8 @@
-package edu.villanova.ece.inv2.activity;
+package edu.villanova.ece.inv.activity;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,25 +16,19 @@ import android.widget.ViewSwitcher;
 
 import com.breadtech.breadinterface.BIActivity;
 
-import org.apache.http.impl.cookie.DateUtils;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.adapter.ItemArrayAdapter;
-import edu.villanova.ece.inv2.adapter.LocationArrayAdapter;
-import edu.villanova.ece.inv2.adapter.UserArrayAdapter;
-import edu.villanova.ece.inv2.fragment.AssetListFragment;
-import edu.villanova.ece.inv2.manager.AuthManager;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.manager.AuthManager;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * Created by bk on 8/6/15.
@@ -56,13 +47,13 @@ public class AssetInfoActivity extends BIActivity implements DataManager.Modific
     //
     // ui
     private ViewSwitcher ece_switcher, item_switcher, status_switcher, vu_switcher,
-                         unit_switcher, svc_switcher, serial_switcher,
-                         price_switcher, purchase_switcher, owner_switcher, home_switcher,
-                         ip_switcher, comments_switcher;
+            unit_switcher, svc_switcher, serial_switcher,
+            price_switcher, purchase_switcher, owner_switcher, home_switcher,
+            ip_switcher, comments_switcher;
 
     private TextView ece_tv, item_tv, status_tv, lastinv_tv, holder_tv, current_tv, vu_tv,
-                     unit_tv, svc_tv, serial_tv, price_tv, purchase_tv, owner_tv, home_tv,
-                     ip_tv, comments_tv;
+            unit_tv, svc_tv, serial_tv, price_tv, purchase_tv, owner_tv, home_tv,
+            ip_tv, comments_tv;
 
     private Spinner item_spinner, status_spinner, owner_spinner, home_spinner;
     private EditText ece_et, vu_et, unit_et, svc_et, serial_et, price_et, purchase_et, ip_et, comments_et;
@@ -87,10 +78,10 @@ public class AssetInfoActivity extends BIActivity implements DataManager.Modific
 
     @Override
     public int tr_icon() {
-        boolean isOwner = this.asset == null && AuthManager.getUser().equals(this.asset.getOwner());
+        boolean isOwner = this.asset != null && AuthManager.getUser().equals(this.asset.getOwner());
         return AuthManager.checkAuth(AuthManager.EntityModifyWorld) || isOwner ?
-            this.editing ? R.drawable.ic_done_white_36dp : R.drawable.ic_edit_white_36dp :
-            0;
+                this.editing ? R.drawable.ic_done_white_36dp : R.drawable.ic_edit_white_36dp :
+                0;
     }
 
     @Override
@@ -134,7 +125,7 @@ public class AssetInfoActivity extends BIActivity implements DataManager.Modific
     @Override
     public void bl_clicked() {
         if (AuthManager.userCanModifyEntityWorld())
-             new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setIcon(R.drawable.ic_delete_white_36dp)
                     .setTitle("Delete")
                     .setMessage("Are you sure that you want to delete this asset?")
@@ -164,7 +155,7 @@ public class AssetInfoActivity extends BIActivity implements DataManager.Modific
 
     private void showInv() {
         Intent i = new Intent(this,ListActivity.class);
-        i.putExtra("Mode",ListActivity.Mode.InvByAsset);
+        i.putExtra("Mode", ListActivity.Mode.InvByAsset);
         i.putExtra("Asset",this.asset.tag_ece);
         startActivity(i);
     }
