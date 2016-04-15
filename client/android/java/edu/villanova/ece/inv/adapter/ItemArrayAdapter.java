@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.adapter;
+package edu.villanova.ece.inv.adapter;
 
 import android.content.Context;
 import android.view.View;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.model.Item;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.model.Item;
 
 /**
  * Created by bk on 7/28/15.

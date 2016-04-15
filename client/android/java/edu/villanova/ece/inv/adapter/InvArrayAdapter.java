@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.adapter;
+package edu.villanova.ece.inv.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,9 +11,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.model.Inventory;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.model.Inventory;
 
 /**
  * Created by bk on 8/4/15.
