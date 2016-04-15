@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.fragment;
+package edu.villanova.ece.inv.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,10 +12,10 @@ import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.adapter.UserArrayAdapter;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.adapter.UserArrayAdapter;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * A fragment representing a list of Items.
