@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.model;
+package edu.villanova.ece.inv.model;
 
 /**
  * Created by bk on 7/27/15.
@@ -33,6 +33,16 @@ public class Location {
         this.room = room;
     }
 
+    private static Location nullLocation;
+    public static Location getNullLocation() {
+        if (nullLocation == null) {
+            nullLocation =  new Location();
+            nullLocation.id = 0;
+            nullLocation.building = "No";
+            nullLocation.room = "Where";
+        }
+        return nullLocation;
+    }
 
     @Override
     public String toString() {
