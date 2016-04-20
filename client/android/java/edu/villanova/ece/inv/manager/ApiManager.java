@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.manager;
+package edu.villanova.ece.inv.manager;
 
 import android.os.Handler;
 import android.os.Looper;
@@ -26,13 +26,13 @@ import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.model.Inventory;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Label;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.Token;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.model.Inventory;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Label;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.Token;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * Created by bk on 7/27/15.
@@ -40,7 +40,8 @@ import edu.villanova.ece.inv2.model.User;
 public class ApiManager {
 
     // constants
-    private static final String API_URL = "https://inv.breadtech.com/api/v1/";
+    private static final String API_URL = "https://ceer-008-t430-2.villanova.edu/api/v1/";
+    // private static final String API_URL = "http://153.104.46.199:5000/api/v1/";
     private static final String USER_URL = API_URL + "user";
     private static final String SELF_URL = USER_URL + "/me";
     private static final String ITEM_URL = API_URL + "item";
@@ -135,7 +136,6 @@ public class ApiManager {
             @Override
             public void success() {
                 // convert the json to token
-                Log.d(TAG,body);
                 Token t = new Gson().fromJson(body, Token.class);
                 // tell the delegate that we got the token
                 delegate.gotToken(t.getToken());
@@ -315,10 +315,12 @@ public class ApiManager {
 
     // generic method to make api requests
     public static void addEntity( final Class type, Object obj, String token, final AddMethodDelegate delegate ) {
+
         // determine the correct url to use
         String url = mkurl(type);
         HttpURLConnection conn = makeUrlConnection( url, token );
 
+        Log.d( "APIManager", conn.toString() + "\t" + obj.toString() );
         // construct the http connection
         HttpResponder responder = new HttpResponder() {
             @Override
