@@ -1,23 +1,23 @@
-package edu.villanova.ece.inv2.manager;
+
+
+
+package edu.villanova.ece.inv.manager;
 
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.common.collect.Collections2;
-
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Timer;
-import java.util.TimerTask;
 
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.model.Inventory;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Label;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.model.Inventory;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Label;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * Created by bk on 8/3/15.
@@ -77,6 +77,36 @@ public class DataManager implements ApiManager.AddMethodDelegate, ApiManager.Get
     public HashMap<Integer, Inventory> getInvMap() {return invMap;}
     public HashMap<Asset, ArrayList<Inventory>> getAssetInvMap() {return assetInvMap;}
     public HashMap<User, ArrayList<Inventory>> getUserInvMap() {return userInvMap;}
+
+    public ArrayList <Asset> getAssetsForItem( Item i) {
+        ArrayList<Asset> y = new ArrayList<>();
+        for (Asset a : this.assets) {
+            if (a.getCurrent().equals(i)){
+                y.add(a);
+            }
+        }
+        return y;
+    }
+
+    public ArrayList<Asset> getAssetsForLocation( Location loc ) {
+        ArrayList<Asset> y = new ArrayList<>();
+        for (Asset a : this.assets) {
+            if (a.getCurrent().equals(loc)){
+                y.add(a);
+            }
+        }
+        return y;
+    }
+    public ArrayList<Inventory> getInvsForAsset( Asset a ) {
+        ArrayList<Inventory> y = new ArrayList<>();
+        for (Inventory inv : this.invs) {
+            if (inv.getWhat().equals(a)) {
+                y.add(inv);
+            }
+        }
+
+        return y;
+    }
 
     public ArrayList<String> getCategoryStrings() {
         ArrayList<Label.ItemCategory> x = getCategories();
@@ -411,7 +441,10 @@ public class DataManager implements ApiManager.AddMethodDelegate, ApiManager.Get
         else if (type == Inventory.class) {this.invs= obj; msg = "Invs loaded"; }
         else if (type == Label.ItemCategory.class) {this.categories = obj; msg = "Categories loaded"; }
         else if (type == Label.ItemManufacturer.class) {this.manufacturers = obj; msg = "Manufacturers loaded"; }
-        else if (type == Label.LocationBuilding.class) {this.buildings = obj; msg = "Buildings loaded"; }
+        else if (type == Label.LocationBuilding.class) {
+            this.buildings = obj; this.buildings.add(new Label.LocationBuilding());
+            msg = "Buildings loaded";
+        }
         else {
             msg = "empty list";
         }
@@ -517,7 +550,7 @@ public class DataManager implements ApiManager.AddMethodDelegate, ApiManager.Get
     }
 
     public void addLabel(Label i, Class type) {
-            ApiManager.addEntity(type, i, this.token, this);
+        ApiManager.addEntity(type, i, this.token, this);
     }
 
     @Override
