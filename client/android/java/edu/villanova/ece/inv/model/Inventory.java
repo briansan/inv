@@ -1,10 +1,10 @@
-package edu.villanova.ece.inv2.model;
+package edu.villanova.ece.inv.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import edu.villanova.ece.inv2.manager.DataManager;
+import edu.villanova.ece.inv.manager.DataManager;
 
 /**
  * Created by bk on 7/27/15.
