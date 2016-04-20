@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.model;
+package edu.villanova.ece.inv.model;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,7 +10,7 @@ import com.breadtech.breadinterface.BIActivity;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.villanova.ece.inv2.manager.DataManager;
+import edu.villanova.ece.inv.manager.DataManager;
 
 /**
  * Created by bk on 7/27/15.
@@ -19,6 +19,10 @@ public class Label {
     String name;
     int id;
 
+    public Label() {
+        this.id = 0;
+        this.name = "null";
+    }
     public String getName() {
         return name;
     }
@@ -76,8 +80,13 @@ public class Label {
                 .show();
     }
 
-    public class ItemCategory extends Label {}
-    public class LocationBuilding extends Label {}
-    public class ItemManufacturer extends Label {}
+    public static class ItemCategory extends Label {}
+    public static class LocationBuilding extends Label {
+        public LocationBuilding() {
+            this.id = 0;
+            this.name = "null";
+        }
+    }
+    public static class ItemManufacturer extends Label {}
 
 }
