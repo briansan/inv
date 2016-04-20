@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.manager;
+package edu.villanova.ece.inv.manager;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -17,9 +17,9 @@ import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.activity.MainActivity;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.activity.MainActivity;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * Created by bk on 8/11/15.
@@ -111,6 +111,7 @@ public class AuthManager
         public void tokenStale() {
             if (this.loginDialog != null && this.loginDialog.isShowing()) {
                 this.loginDialog.setTitle("Bad Credentials");
+                this.loginDialog.findViewById(R.id.login).setEnabled(true);
             } else {
                 displayLogin();
             }
@@ -136,7 +137,7 @@ public class AuthManager
             final EditText passwordET = (EditText)loginDialog.findViewById(R.id.passwd);
 
             // set the button click
-            Button login = (Button)loginDialog.findViewById(R.id.login);
+            final Button login = (Button)loginDialog.findViewById(R.id.login);
             login.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -145,6 +146,7 @@ public class AuthManager
                     String passwd = passwordET.getText().toString();
 
                     // perform login async
+                    login.setEnabled(false);
                     login(uname, passwd);
                     loginDialog.setTitle("Logging in...");
                 }
