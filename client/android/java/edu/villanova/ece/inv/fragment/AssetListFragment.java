@@ -1,6 +1,7 @@
-package edu.villanova.ece.inv2.fragment;
+package edu.villanova.ece.inv.fragment;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,14 +15,14 @@ import android.widget.SearchView;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import edu.villanova.ece.inv2.R;
+import edu.villanova.ece.inv.R;
 
-import edu.villanova.ece.inv2.adapter.AssetArrayAdapter;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Item;
-import edu.villanova.ece.inv2.model.Location;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.adapter.AssetArrayAdapter;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Item;
+import edu.villanova.ece.inv.model.Location;
+import edu.villanova.ece.inv.model.User;
 import com.breadtech.util.StringUtil;
 
 /**
@@ -37,7 +38,7 @@ public class AssetListFragment extends Fragment implements AbsListView.OnItemCli
 
     private SearchView searchBar;
     private Delegate mListener;
-    private ArrayList<Asset> assets;
+    private ArrayList<Asset> assets, displayedAssets;
     private Object ref;
 
     /**
@@ -125,7 +126,7 @@ public class AssetListFragment extends Fragment implements AbsListView.OnItemCli
         searchBar.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                return false;
+                return onQueryTextChange(query);
             }
 
             @Override
@@ -142,7 +143,8 @@ public class AssetListFragment extends Fragment implements AbsListView.OnItemCli
                         newAssets.add(a);
                     }
                 }
-                mListView.setAdapter(new AssetArrayAdapter(getActivity(),R.layout.list_item_no_img,newAssets));
+                displayedAssets = newText.length() > 0 ? newAssets : assets;
+                mListView.setAdapter(new AssetArrayAdapter(getActivity(),R.layout.list_item_no_img,displayedAssets));
                 return true;
             }
         });
@@ -151,7 +153,7 @@ public class AssetListFragment extends Fragment implements AbsListView.OnItemCli
     }
 
     @Override
-    public void onAttach(Activity activity) {
+    public void onAttach(Context activity) {
         super.onAttach(activity);
         try {
             mListener = (Delegate) activity;
@@ -172,7 +174,7 @@ public class AssetListFragment extends Fragment implements AbsListView.OnItemCli
         if (null != mListener) {
             // Notify the active callbacks interface (the activity, if the
             // fragment is attached to one) that an item has been selected.
-            Asset cat = assets.get(position);
+            Asset cat = displayedAssets != null ? displayedAssets.get(position) : assets.get(position);
             mListener.didSelectAsset(cat);
         }
     }
