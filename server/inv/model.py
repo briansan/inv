@@ -9,6 +9,45 @@ from itsdangerous import (TimedJSONWebSignatureSerializer as Serializer, BadSign
 
 db = SQLAlchemy()
 
+class Op(db.Model):
+  class Types():
+    Item = 0
+    ItemCategory = 1
+    ItemManufacturer = 2
+    Location = 3
+    LocationBuilding = 4
+    User = 5
+    Asset = 6
+    Inv = 7
+  id = db.Column(db.Integer, primary_key=True)
+  when = db.Column(db.DateTime)
+  obj_type = db.Column(db.Integer)
+  obj_id = db.Column(db.Integer)
+  key = db.Column(db.String(16))
+  value = db.Column(db.String(32))
+  
+  def __init__( self, id, when, obj_type, obj_id, key, value ):
+    self.id = id
+    self.when = when
+    self.obj_type = obj_type
+    self.obj_id = obj_id
+    self.key = key
+    self.value = value
+  
+  def __repr__(self):
+    return '<Op %s>' % self
+
+  def __str__(self):
+    return str(self.id)
+
+  def __iter__(self):
+    yield ('id', self.id)
+    yield ('when', self.when.strftime("%s"))
+    yield ('obj_type', self.obj_type)
+    yield ('obj_type', self.obj_id)
+    yield ('key', self.key)
+    yield ('value', self.value)
+
 class User(db.Model):
   class Groups():
     NoGroup = 0
