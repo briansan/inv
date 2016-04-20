@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.model;
+package edu.villanova.ece.inv.model;
 
 /**
  * Created by bk on 7/27/15.
@@ -22,6 +22,17 @@ public class User
     private String email;
     private String phone;
     private boolean annon;
+
+    private static User nullUser;
+    public static User getNullUser() {
+        if (nullUser == null) {
+            nullUser = new User();
+            nullUser.fname = "No";
+            nullUser.lname = "One";
+            nullUser.uid = "No One";
+        }
+        return nullUser;
+    }
 
     public String getLname() {
         return lname;
