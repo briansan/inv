@@ -1,4 +1,4 @@
-package edu.villanova.ece.inv2.fragment;
+package edu.villanova.ece.inv.fragment;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,12 +12,12 @@ import android.widget.ListAdapter;
 
 import java.util.ArrayList;
 
-import edu.villanova.ece.inv2.R;
-import edu.villanova.ece.inv2.adapter.InvArrayAdapter;
-import edu.villanova.ece.inv2.model.Asset;
-import edu.villanova.ece.inv2.manager.DataManager;
-import edu.villanova.ece.inv2.model.Inventory;
-import edu.villanova.ece.inv2.model.User;
+import edu.villanova.ece.inv.R;
+import edu.villanova.ece.inv.adapter.InvArrayAdapter;
+import edu.villanova.ece.inv.model.Asset;
+import edu.villanova.ece.inv.manager.DataManager;
+import edu.villanova.ece.inv.model.Inventory;
+import edu.villanova.ece.inv.model.User;
 
 /**
  * A fragment representing a list of Items.
@@ -72,12 +72,14 @@ public class InvListFragment extends Fragment implements AbsListView.OnItemClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (ref.getClass() == Asset.class) {
-            invs = DataManager.sharedManager().getAssetInvMap().get(this.ref);
-        } else if (ref.getClass() == User.class) {
-            invs = DataManager.sharedManager().getUserInvMap().get(this.ref);
-        } else {
-            invs = DataManager.sharedManager().getInvs();
+        if (ref != null) {
+            if (ref.getClass() == Asset.class) {
+                invs = DataManager.sharedManager().getAssetInvMap().get(this.ref);
+            } else if (ref.getClass() == User.class) {
+                invs = DataManager.sharedManager().getUserInvMap().get(this.ref);
+            } else {
+                invs = DataManager.sharedManager().getInvs();
+            }
         }
         mAdapter = new InvArrayAdapter(this.getActivity(),R.layout.list_item_no_img,invs);
     }
